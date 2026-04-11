@@ -10,7 +10,7 @@
 
 | Layer | Source Files | Test Files | Coverage Ratio | Notes |
 |-------|-------------|------------|----------------|-------|
-| **Backend** | 27 | 17 | ~63% | Many tournament sub-modules untested |
+| **Backend** | 28 | 17 | ~61% | Many tournament sub-modules untested |
 | **Frontend (components)** | 60 | 23 | ~38% | Game components well covered; app/ routes = 0 |
 | **Logic (game engine)** | 8 | 7 | ~88% | Best-covered area; engine tested deeply |
 | **Shared** | 10 | 7 | ~70% | 3 utility modules missing tests |
@@ -21,7 +21,7 @@
 | **hooks/** | 5 | 1 | ~20% | Only useMatchmaking tested |
 | **app/ (routes)** | 19 | 5 | ~26% | Zero route-level tests |
 | **tutorials/** | 3 | 1 | ~33% | Playthrough tested |
-| **TOTAL** | ~292 | ~92* | ~32% | *Excluding node_modules and type-only files |
+| **TOTAL** | ~32588 | ~138* | ~0% | *Excluding node_modules and type-only files |
 
 ## Notes
 

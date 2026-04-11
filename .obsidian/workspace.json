@@ -182,6 +182,7 @@
   },
   "active": "caf06d91fe62d75c",
   "lastOpenFiles": [
+    "wiki/sources/2026-04-11-190351-ur-codebase.md",
     "wiki/sources/2026-04-11-190050-ur-codebase.md",
     "claude-memory-compiler/scripts/generate_ur_codebase_snapshot.py",
     "wiki/index.md",
@@ -218,7 +219,6 @@
     "wiki/concepts/nakama-runtime.md",
     "Untitled.canvas",
     "sources/ur/node_modules/eslint-plugin-react/README.md",
-    "sources/ur/node_modules/minimatch/README.md",
     "ur/node_modules/@jest/reporters/assets/jest_logo.png",
     "ur/node_modules/istanbul-reports/lib/html-spa/assets/sort-arrow-sprite.png",
     "ur/node_modules/istanbul-reports/lib/html/assets/sort-arrow-sprite.png",

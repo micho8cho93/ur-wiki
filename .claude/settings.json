@@ -1,0 +1,45 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --directory claude-memory-compiler python claude-memory-compiler/hooks/session-start.py",
+            "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": "uv run --directory claude-memory-compiler python claude-memory-compiler/hooks/sources-check.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --directory claude-memory-compiler python claude-memory-compiler/hooks/pre-compact.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "uv run --directory claude-memory-compiler python claude-memory-compiler/hooks/session-end.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

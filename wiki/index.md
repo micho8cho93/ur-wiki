@@ -1,7 +1,7 @@
 # Wiki Index
 
 **Last updated:** 2026-04-12  
-**Total pages:** 20  
+**Total pages:** 21  
 **Total sources ingested:** 1 (+ 4 git updates, commits `e6c9c06b`, `94debe5`, 8×commits `d81fd307`→`014062358`, `0d6cc748`)
 
 ---
@@ -36,7 +36,8 @@
 - [[wiki/entities/nakama-service]] — Singleton auth + session + socket manager (`services/nakama.ts`)
 - [[wiki/entities/zustand-game-store]] — Single source of truth for all runtime state (`store/useGameStore.ts`)
 - [[wiki/entities/expo-router]] — Screen map, route groups, provider stack (`app/`)
+- [[wiki/entities/ur-internals]] — Admin web app: auth, session storage, RPC client (`ur-internals/`)
 
-## Queries
+## Reference
 
-- [[wiki/queries/q-tournament-bugs]] — Root causes and fixes for 3 bugs observed in 16-player tournament (2026-04-11)
+- [[wiki/next-steps]] — Open bugs, performance gaps, test coverage gaps, and wiki maintenance tasks

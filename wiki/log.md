@@ -3,6 +3,14 @@
 Append-only chronological record of all wiki operations.  
 Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
 
+## [2026-04-12] schema-update | Wiki restructure — queries removed, ur-internals added, next-steps added
+
+- **Removed:** `wiki/queries/` folder (manually delete `wiki/queries/q-tournament-bugs.md` — file deletion not available via tool)
+  - Content preserved in `wiki/log.md` and `wiki/concepts/tournament-flow.md` / `wiki/concepts/nakama-runtime.md` which document all three bug fixes
+- **Created:** `wiki/entities/ur-internals.md` — admin web app entity page covering auth flow, session storage hardening, API client, test coverage (~3%), and open security issues (BUG-A01)
+- **Created:** `wiki/next-steps.md` — living task list covering open bugs, performance gaps, test coverage gaps, and wiki maintenance items
+- **Updated:** `wiki/index.md` — Queries section replaced with Reference section; `ur-internals` added to Entities; page count 20→21
+
 ## [2026-04-12] schema-update | Codebase ingest path changed to GitHub API
 
 - Added Section 13 to CLAUDE.md defining the new codebase source workflow

@@ -2,9 +2,9 @@
 
 > How players find each other: ranked queue, private matches, and the matchmaking service layer.
 
-**Last updated:** 2026-04-11  
+**Last updated:** 2026-04-12 (commit `0d6cc748`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
-**Related:** [[transport-layer]], [[nakama-service]], [[match-protocol]], [[architecture]]
+**Related:** [[transport-layer]], [[nakama-service]], [[match-protocol]], [[architecture]], [[spectator-mode]]
 
 ---
 
@@ -77,3 +77,38 @@ Private matches use a direct RPC (HTTP) call via `client.rpc()`, not the socket 
 ## Module-Level State
 
 `activeMatchmakerTicket` is a module-level `let` — not in the store. This means if the module is hot-reloaded or the component unmounts without calling `cancelMatchmaking()`, the ticket reference could be lost. This is a known trade-off of the current architecture.
+
+---
+
+## Spectatable Match Listing (commit `0d6cc748`)
+
+`services/matchmaking.ts` now exports a function for listing live matches available to watch as a spectator.
+
+**New exported type:**
+```typescript
+type SpectatableMatch = {
+  matchId: string;
+  modeId: MatchModeId;
+  startedAt: string | null;
+  playerLabels: string[];   // max 2, whitespace-trimmed
+};
+```
+
+**New function:** `listSpectatableMatches(): Promise<SpectatableMatch[]>`
+- Calls RPC `list_spectatable_matches` via HTTP (`client.rpc`)
+- Parses response via `parseSpectatableMatchesPayload()` which handles both array and object-wrapper formats from the backend
+- Each entry validated by `parseSpectatableMatchEntry()`: filters invalid mode IDs, normalizes player labels (max 2), rejects entries with missing required fields
+- Returns empty array (not an error) if no matches are available
+
+**Socket vs HTTP table updated:**
+
+| Operation | Transport |
+|---|---|
+| Ranked matchmaking | WebSocket (socket.addMatchmaker) |
+| Private match create/join/status | HTTP RPC (client.rpc) |
+| List spectatable matches | HTTP RPC (`list_spectatable_matches`) |
+| In-match messages (roll, move, emoji) | WebSocket (socket.sendMatchState) |
+| State snapshots from server | WebSocket (socket.onmatchdata) |
+| Post-match data (progression, ELO) | WebSocket notifications |
+
+See [[spectator-mode]] for the full spectator flow.

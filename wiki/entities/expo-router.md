@@ -2,9 +2,9 @@
 
 > File-based routing layout of the app — all screens, groups, and provider wrapping.
 
-**Last updated:** 2026-04-11  
+**Last updated:** 2026-04-12 (commit `0d6cc748`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
-**Related:** [[architecture]], [[transport-layer]], [[matchmaking]]
+**Related:** [[architecture]], [[transport-layer]], [[matchmaking]], [[spectator-mode]]
 
 ---
 
@@ -38,7 +38,9 @@ Stack-level options: transparent header with parchment text, Fredoka font family
 | `/oauthredirect` | `app/oauthredirect.tsx` | Google OAuth redirect handler |
 | `/tutorial/*` | `app/tutorial/` | Tutorial flow |
 | `/match/*` | `app/match/` | In-progress match screen |
+| `/match/[id]?spectator=1` | `app/match/[id].tsx` | Match viewed in spectator mode |
 | `/(game)/*` | `app/(game)/` | Game mode selection group |
+| `/(game)/spectate` | `app/(game)/spectate.tsx` | Browse live matches to spectate (NEW) |
 | `/(auth)/*` | `app/(auth)/` | Auth screens group |
 
 ---
@@ -49,7 +51,8 @@ Stack-level options: transparent header with parchment text, Fredoka font family
 - `_layout.tsx` — layout for the group
 - `bot.tsx` — bot/offline game launch
 - `game-modes.tsx` — mode selection screen
-- `lobby.tsx` — online lobby / waiting for match
+- `lobby.tsx` — online lobby / waiting for match (updated for 4-column ultra-wide layout)
+- `spectate.tsx` — browse spectatable live matches (NEW, 449 lines, commit `0d6cc748`)
 - `tournaments/` — tournament-specific screens
 
 **`(auth)/`** — auth screens:

@@ -2,9 +2,9 @@
 
 > The authoritative match server: how the backend tick loop, state machine, and timer system work inside `backend/modules/index.ts`.
 
-**Last updated:** 2026-04-12 (commits `5435613c`, `54b3a797`, `a1e996f4`)  
+**Last updated:** 2026-04-12 (commits `5435613c`, `54b3a797`, `a1e996f4`, `0d6cc748`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
-**Related:** [[transport-layer]], [[match-protocol]], [[tournament-flow]], [[matchmaking]], [[zustand-game-store]]
+**Related:** [[transport-layer]], [[match-protocol]], [[tournament-flow]], [[matchmaking]], [[zustand-game-store]], [[spectator-mode]]
 
 ---
 
@@ -37,6 +37,7 @@ All timing constants are defined at the top of `backend/modules/index.ts`:
 ```typescript
 type MatchState = {
   presences: { [userId: string]: nkruntime.Presence };
+  spectatorPresences: Record<string, Record<string, nkruntime.Presence>>; // NEW: separate pool for spectators
   assignments: { [userId: string]: PlayerColor };   // userId → 'light' | 'dark'
   bot: BotState | null;                              // non-null in bot matches
   gameState: UrGameState;                            // the board, turn, phase, etc.
@@ -49,6 +50,11 @@ type MatchState = {
   tournamentContext: TournamentContext | null;        // non-null in tournament matches
 };
 ```
+
+**Spectator presences** are stored in a separate `spectatorPresences` map, completely distinct from `presences` (the player pool). This ensures that:
+- Spectators can never be assigned a player color
+- The match start/end logic based on player count is unaffected by spectator joins/leaves
+- Game commands from spectators are rejected via the `READ_ONLY` error code (see [[match-protocol]])
 
 ---
 
@@ -67,10 +73,16 @@ Called once when `nk.matchCreate()` is invoked (either by the matchmaker or by `
 
 Called before a player's presence is committed. Validates:
 
-- The joining userId is in `assignments`
+- The joining userId is in `assignments` **OR** the join metadata indicates `role: 'spectator'`
 - The match hasn't ended (`matchEnd === null`)
 
 If rejected, the player never appears in `presences`. This is the gatekeeper that prevents uninvited players from joining.
+
+**Spectator join path (commit `0d6cc748`):** `isSpectatorPresenceRequest()` checks the presence metadata for `{ role: 'spectator' }`. Spectators are accepted without being in `assignments`, allowing any user to watch a live match. After `matchJoinAttempt` passes, `matchJoin` routes them into `spectatorPresences` instead of `presences`. Three helper functions manage this:
+
+- `getPresenceMetadata(presence)` — extracts metadata object from the presence
+- `isSpectatorPresenceRequest(presence)` — returns `true` if metadata contains `role: 'spectator'`
+- `isSpectatorPresence(state, presence)` — checks if a given presence is already stored in `spectatorPresences`
 
 ### `matchJoin`
 

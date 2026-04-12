@@ -13,7 +13,7 @@ const config: QuartzConfig = {
     enablePopovers: true,
     analytics: null, // set to { provider: "plausible" } or similar if you want analytics
     locale: "en-US",
-    baseUrl: "micho8cho93.github.io/ur-wiki", // ← CHANGE THIS to your GitHub Pages URL
+    baseUrl: "https://micho8cho93.github.io/ur-wiki", // ← CHANGE THIS to your GitHub Pages URL
     ignorePatterns: [
       "private",
       "templates",

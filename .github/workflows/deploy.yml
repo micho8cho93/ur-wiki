@@ -34,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Build wiki
-        run: npx quartz build
+        run: npx quartz build --directory quartz-content
 
       - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v3

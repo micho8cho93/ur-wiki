@@ -1,8 +1,8 @@
 # Wiki Index
 
 **Last updated:** 2026-04-12  
-**Total pages:** 19  
-**Total sources ingested:** 1 (+ 3 git updates, commits `e6c9c06b`, `94debe5`, 8×commits `d81fd307`→`014062358`)
+**Total pages:** 20  
+**Total sources ingested:** 1 (+ 4 git updates, commits `e6c9c06b`, `94debe5`, 8×commits `d81fd307`→`014062358`, `0d6cc748`)
 
 ---
 
@@ -29,6 +29,7 @@
 - [[wiki/concepts/progression-system]] — XP sources, 15-rank ladder, server-authoritative grants
 - [[wiki/concepts/elo-system]] — Rating formula, K-factors, provisional period, leaderboard
 - [[wiki/concepts/performance]] — Frontend and backend performance findings, bottlenecks, and optimization opportunities
+- [[wiki/concepts/spectator-mode]] — Read-only live match viewing: browse screen, route param, backend presence segregation (NEW)
 
 ## Entities
 

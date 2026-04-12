@@ -2,13 +2,13 @@
 
 > How the app switches between offline (local bot) and online (Nakama) gameplay modes, and where the seam lives in the code.
 
-**Last updated:** 2026-04-11  
+**Last updated:** 2026-04-12 (commit `0d6cc748`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
-**Related:** [[architecture]], [[zustand-game-store]], [[nakama-service]], [[match-protocol]], [[game-engine]], [[nakama-runtime]]
+**Related:** [[architecture]], [[zustand-game-store]], [[nakama-service]], [[match-protocol]], [[game-engine]], [[nakama-runtime]], [[spectator-mode]]
 
 ---
 
-## The Two Modes
+## The Two Modes (plus Spectator)
 
 Selected at build/run time by the env var `EXPO_PUBLIC_GAME_TRANSPORT`:
 
@@ -18,6 +18,8 @@ Selected at build/run time by the env var `EXPO_PUBLIC_GAME_TRANSPORT`:
 | Online | `nakama` | Client connects to Nakama WebSocket. All actions sent to server; server is authoritative. |
 
 The store field `onlineMode: 'offline' | 'nakama'` reflects this at runtime.
+
+**Spectator mode** (commit `0d6cc748`) is not a separate `onlineMode` value — it rides on top of `nakama` mode. The match screen detects `?spectator=1` in the URL and sets `isSpectatorMode = true`, which clears all command senders (`rollCommandSender`, `moveCommandSender`) and disables all interactive controls. The socket still connects and receives `STATE_SNAPSHOT` messages normally — the board renders in real time — but no outgoing game commands are ever sent. See [[spectator-mode]] for full details.
 
 ---
 

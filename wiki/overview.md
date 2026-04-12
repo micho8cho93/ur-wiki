@@ -2,7 +2,7 @@
 
 > Master synthesis of the Royal Game of Ur codebase wiki.
 
-**Last updated:** 2026-04-12 (rev 3)  
+**Last updated:** 2026-04-12 (rev 4)  
 **Sources:** [[2026-04-11-ur-codebase]]  
 **Related:** [[wiki/index]]
 
@@ -18,6 +18,8 @@ This wiki is a **codebase second brain** for the Royal Game of Ur — a multipla
 
 The app has two runtime modes: **offline** (local bot opponent) and **online** (authoritative Nakama server). The same pure game engine runs on both sides, which is the architectural invariant everything else depends on. The switch between modes is a single seam in the [[zustand-game-store]] — `store.roll()` and `store.makeMove()` check `onlineMode` and either compute locally or delegate to the server via WebSocket.
 
+A third participation type — **spectator** — was added in commit `0d6cc748`. Spectators connect via the same Nakama WebSocket as players and receive live `STATE_SNAPSHOT` broadcasts, but all command senders are cleared and the backend rejects any game actions with a `READ_ONLY` error. Spectators join with `{ role: 'spectator' }` metadata and are stored in a separate `spectatorPresences` pool on the server.
+
 ---
 
 ## Architecture in One Paragraph
@@ -32,7 +34,8 @@ Expo Router handles file-based screen routing with a transparent Stack navigator
 - [[game-engine]] — types, engine functions, rules variants, path system, bot
 - [[transport-layer]] — the offline/nakama mode seam, command senders, snapshot flow, no optimistic UI
 - [[nakama-runtime]] — match lifecycle handlers, tick loop, timer/AFK/disconnect state machine
-- [[matchmaking]] — ranked queue, private matches, socket vs HTTP
+- [[matchmaking]] — ranked queue, private matches, spectatable match listing, socket vs HTTP
+- [[spectator-mode]] — read-only live match viewing: browse screen, route param, backend presence segregation
 - [[tournament-flow]] — full tournament lifecycle: registration → bracket → launch → result → next round
 - [[challenge-system]] — shared evaluator definitions, server-side evaluation, telemetry
 - [[match-protocol]] — op codes, all payload types, type guards
@@ -86,3 +89,4 @@ The Nakama backend runtime, tournament system, and challenge system are fully ma
 - **2026-04-11** — Wiki initialized and first codebase ingest completed. 12 pages created across concepts and entities.
 - **2026-04-11** — Backend deep-dive: Nakama runtime, tournament flow, challenge system, and optimistic UI question fully mapped. 4 new pages, 1 updated (transport-layer), 1 query saved. All open questions from first ingest answered.
 - **2026-04-12** — 8-commit pull ingested. Performance audit issues confirmed applied. Secure RNG, socket hardening, analytics batching, ELO batching, tournament OCC hardening, and vertical board alignment refactor all documented. Test coverage updated (~92→~98 test files). 7 pages updated.
+- **2026-04-12** — Spectator mode feature ingested (commit `0d6cc748`). New concept page created. 6 pages updated: matchmaking, match-protocol, nakama-runtime, transport-layer, expo-router, overview.

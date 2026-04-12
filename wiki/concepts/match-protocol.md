@@ -2,9 +2,9 @@
 
 > The typed message bus between client and Nakama server: op codes, payload types, and flow.
 
-**Last updated:** 2026-04-11  
+**Last updated:** 2026-04-12 (commit `0d6cc748`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
-**Related:** [[transport-layer]], [[architecture]], [[zustand-game-store]], [[game-engine]]
+**Related:** [[transport-layer]], [[architecture]], [[zustand-game-store]], [[game-engine]], [[spectator-mode]]
 
 ---
 
@@ -115,3 +115,9 @@ The server runtime receives raw binary from Nakama and decodes it the same way.
 Every payload type has a corresponding runtime type guard (`isStateSnapshotPayload`, `isMoveRequestPayload`, etc.). These are used by both the client message handler and the server runtime to safely parse incoming messages.
 
 `isExtendedServerMatchPayload` is the top-level union guard that covers all server→client message types.
+
+---
+
+## Spectator Error Code (commit `0d6cc748`)
+
+`shared/urMatchProtocol.ts` now includes a `READ_ONLY` server error code used to reject game commands from spectator presences. When the backend receives a roll, move, or other game action from a user who joined with `role: 'spectator'` metadata, it responds with a `SERVER_ERROR` (op 101) payload whose error code is `READ_ONLY`. This enforces read-only participation at the protocol level regardless of what the client sends. See [[spectator-mode]].

@@ -41,6 +41,30 @@ Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
 
 ---
 
+## [2026-04-12] ingest | git commit `0d6cc748` — Add spectator mode entry from lobby
+
+- **Commit:** `0d6cc7487048b7f746fee8f4b0441f1a3795ace0` (2026-04-12T19:30:42Z)
+- **Summary:** Spectator mode feature — watch live matches in real time without participating as a player
+- **Files changed:** 13 files (2 new, 11 modified)
+- **Pages created:**
+  - `wiki/concepts/spectator-mode.md` — Full spectator mode documentation: browse screen, route convention, client restrictions, backend presence segregation, service layer, analytics enhancement
+- **Pages updated:**
+  - `wiki/concepts/matchmaking.md` — New `listSpectatableMatches()` function, `SpectatableMatch` type, `list_spectatable_matches` RPC, updated socket vs HTTP table
+  - `wiki/concepts/match-protocol.md` — New `READ_ONLY` error code for rejecting spectator game commands
+  - `wiki/concepts/nakama-runtime.md` — `spectatorPresences` field in MatchState, `matchJoinAttempt` updated for spectator bypass, three new helper functions documented
+  - `wiki/concepts/transport-layer.md` — Spectator as third participation type on top of `nakama` mode
+  - `wiki/entities/expo-router.md` — New `/(game)/spectate` route and `?spectator=1` match route variant
+  - `wiki/overview.md` — Spectator added to Big Picture, spectator-mode added to Key Concepts, evolution note added
+  - `wiki/index.md` — Total pages 19→20, git update count bumped, spectator-mode link added
+- **Key takeaways:**
+  - Spectator mode is built entirely on top of the existing `nakama` online mode — no new store field required
+  - Backend segregates spectators cleanly: `spectatorPresences` separate from `presences` (player pool)
+  - Backend enforces read-only via `READ_ONLY` error code; client enforces via clearing command senders and disabling all UI controls
+  - Analytics `ActiveTrackedMatch` now includes `classification` field, enabling the `list_spectatable_matches` RPC to filter match types
+  - Lobby `lobby.tsx` got a minor responsive layout enhancement (4-column grid at ≥1180px width)
+
+---
+
 ## [2026-04-12] lint | Codex performance fix verification pass
 
 - Audited all 14 issues in `wiki/concepts/performance.md` against live codebase after Codex fix run

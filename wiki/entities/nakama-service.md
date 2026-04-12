@@ -2,7 +2,7 @@
 
 > The singleton service class that manages Nakama auth sessions, the WebSocket, and token lifecycle.
 
-**Last updated:** 2026-04-11  
+**Last updated:** 2026-04-12 (commit `eddbabca`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
 **Related:** [[transport-layer]], [[matchmaking]], [[architecture]]
 
@@ -68,13 +68,31 @@ loadSession()
 
 ## Socket
 
-`connectSocket(createStatus?)` — creates socket, connects with session, caches in `this.socket`. Returns cached socket if already connected.
+`connectSocket(createStatus?)` — creates socket, connects with session, caches in `this.socket`. Returns cached socket **only if** the socket reference is non-null, `socketConnected` is true, **and** `isSocketOpen()` confirms the adapter is still open. Previously it returned a stale closed socket if the connection had silently dropped.
 
 `connectSocketWithRetry(options?)` — wraps `connectSocket` with retry loop: default 3 attempts, 1.2s delay.
 
-`disconnectSocket(fireDisconnectEvent?)` — closes socket and nulls reference.
+`disconnectSocket(fireDisconnectEvent?)` — nulls `this.socket` and sets `socketConnected = false` **before** calling `socket.disconnect()`. This prevents a race where a reconnect attempt could observe a non-null socket mid-teardown.
 
 `getSocket()` — returns cached socket or null (used by matchmaking to send messages).
+
+### Stale socket fix (commit `eddbabca`)
+
+Prior to this commit, `connectSocket` reused `this.socket` without checking whether the underlying WebSocket was still open. A socket that had been silently disconnected (network drop, heartbeat timeout) would be returned as "connected" and all subsequent match messages would be lost.
+
+**Changes:**
+- Added private `socketConnected: boolean` flag alongside the `socket` reference
+- `registerSocketLifecycleHandlers(socket)` chains `ondisconnect`, `onerror`, and `onheartbeattimeout` to call `handleSocketDisconnected`, which nulls `this.socket` and clears `socketConnected`
+- `isSocketOpen(socket)` inspects the adapter's `isOpen()` method (via `SocketWithAdapter` cast) with a fallback to `socketConnected`
+- If `connectSocket` finds a stale socket, it calls `disconnectSocket(false)` to clean up before creating a new one
+
+### Session storage hardening (`ur-internals`, commit `eddbabca`)
+
+`ur-internals/src/auth/sessionStorage.ts` was refactored to improve security and reliability:
+- Admin sessions are now stored in **`sessionStorage`** (tab-scoped, cleared on tab close) instead of `localStorage` (persistent)
+- An **in-memory cache** (`inMemorySession`) avoids repeated storage reads within a session
+- **One-time migration**: on first read, any session found in `localStorage` is migrated to `sessionStorage` and the `localStorage` entry is deleted (`clearLegacyLocalStorageSession`)
+- All storage access is guarded with try/catch for restricted browser contexts
 
 ---
 

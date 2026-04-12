@@ -2,7 +2,7 @@
 
 > End-to-end lifecycle of a public tournament: registration, bracket creation, match launch (including the race condition), in-match play, result recording, and round advancement.
 
-**Last updated:** 2026-04-11 (bracket notifications + idempotent launch — commit `e6c9c06b`)  
+**Last updated:** 2026-04-12 (commits `a1e996f4`, `eddbabca`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
 **Related:** [[matchmaking]], [[nakama-runtime]], [[match-protocol]], [[zustand-game-store]], [[q-tournament-bugs]]
 
@@ -86,11 +86,22 @@ bracket exists?
 
 When `canLaunch: true`, the client shows the "Enter Match" button.
 
-### Socket Notification Listener (`useTournamentDetail`)
+### Socket Notification Listeners (`useTournamentDetail` + `useTournamentList`)
 
-`useTournamentDetail` now attaches a `socket.onnotification` handler while the tournament detail screen is mounted. On receipt of a `tournament_bracket_ready` notification matching the current `runId`, it immediately calls `refresh()` — bypassing the 4-second poll cycle entirely.
+Both `useTournamentDetail` and `useTournamentList` now attach socket notification listeners (commit `a1e996f4`).
 
-The hook chains notifications: it saves the socket's previous `onnotification` handler and restores it on cleanup, so other notification consumers aren't displaced. If the socket connection fails, the hook falls back silently to polling. Stale-update safety is handled via `isMountedRef` + `refreshSequenceRef`.
+**`useTournamentDetail`** (unchanged from prior commit) attaches `socket.onnotification` while mounted. On `tournament_bracket_ready` for the current `runId`, it immediately calls `refresh()`.
+
+**`useTournamentList`** (new in `a1e996f4`) also attaches a socket listener. On any `tournament_bracket_ready` notification (regardless of runId), it calls `refresh()` — useful for the list view where the player may be registered in any tournament.
+
+Both hooks:
+- Use `connectSocketWithRetry({ attempts: 2, retryDelayMs: 800, createStatus: true })`
+- Track `isSocketNotificationAvailable` state; the polling interval is only active when `isSocketNotificationAvailable === false`
+- Chain previous `socket.onnotification` and `socket.ondisconnect` handlers correctly
+- Set `isSocketNotificationAvailable = false` on socket disconnect, re-enabling polling fallback
+- Clean up fully on unmount (restore previous handlers, set `isDisposed = true`)
+
+This fixes the redundant polling/notification double-fetch described in [[performance]] #5.
 
 ---
 
@@ -111,6 +122,8 @@ Both players assigned to the same bracket entry independently call this RPC. Flo
 ```
 
 **Idempotent since commit `e6c9c06b`**: `nk.matchCreate` is now called **inside** `updateRunWithRetry`, behind the idempotency guard. A `createdMatchId` closure variable ensures at most one match is created per RPC invocation, even across OCC retries. If another player already committed a `matchId`, this invocation returns that one. One match per entry, guaranteed. See [[q-tournament-bugs]] for the prior race condition details.
+
+**OCC version hardening (commit `a1e996f4`):** `updateRunWithRetry` in `backend/modules/tournaments/admin.ts` now uses `getRunObjectVersionOrThrow(runId, object)` to assert the storage version is a non-empty string before each write. If the version is missing, it throws rather than writing with an empty version (which would silently overwrite any existing document). Conflict errors are detected via `isStorageVersionConflict(error)` (checks for "version check", "version conflict", "version mismatch", "storage write rejected", "already exists" in the error message) and trigger a retry. Other errors propagate immediately.
 
 ---
 

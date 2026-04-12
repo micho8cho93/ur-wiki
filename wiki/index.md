@@ -1,8 +1,8 @@
 # Wiki Index
 
-**Last updated:** 2026-04-11  
-**Total pages:** 18  
-**Total sources ingested:** 1 (+ 1 git update, commit `e6c9c06b`)
+**Last updated:** 2026-04-12  
+**Total pages:** 19  
+**Total sources ingested:** 1 (+ 3 git updates, commits `e6c9c06b`, `94debe5`, 8×commits `d81fd307`→`014062358`)
 
 ---
 
@@ -13,6 +13,7 @@
 ## Sources
 
 - [[wiki/sources/2026-04-11-ur-codebase]] — Full Expo + Nakama codebase for the Royal Game of Ur (2026-04-11)
+- [[wiki/sources/2026-04-11-190351-ur-codebase]] — Auto-generated snapshot after "Fix test coverage snapshot generation" (2026-04-11)
 
 ## Concepts
 

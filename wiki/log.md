@@ -3,6 +3,85 @@
 Append-only chronological record of all wiki operations.  
 Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
 
+## [2026-04-12] schema-update | Codebase ingest path changed to GitHub API
+
+- Added Section 13 to CLAUDE.md defining the new codebase source workflow
+- `sources/ur/` is no longer the ingest path — too large (523MB with node_modules), causes Quartz watcher EMFILE errors
+- Codebase changes now fetched on-demand via GitHub API raw URLs or sparse clone into /tmp
+- `sources/` reserved for non-repo materials only (PDFs, design docs, notes)
+- Repo URL recorded: https://github.com/micho8cho93/ur
+
+## [2026-04-12] ingest | git pull — 8 commits (`d81fd307` → `014062358`)
+
+- **Commits pulled:**
+  - `d81fd307` — Prevent duplicate board move and capture animations
+  - `54b3a797` — Harden RPC payload parsing and private match code reservation flow
+  - `eddbabca` — Harden dev security and fix stale Nakama socket reuse
+  - `5435613c` — Use secure RNG for authoritative rolls and stabilize animation effects
+  - `243ee9d2` — Harden session restore and tighten validation across auth and protocol
+  - `c79284cb` — Optimize match and board rendering with memoized selectors and tiles
+  - `a1e996f4` — Refine tournament flows and expand unit test coverage
+  - `014062358` — Calibrate vertical board piece alignment
+- **Pages updated:**
+  - `wiki/concepts/performance.md` — All confirmed-applied issues updated with actual implementation details; issues #1, #2, #4, #7, #8, #12 now describe the concrete fix (useShallow, areTilePropsEqual, granular selectors, Reanimated, paused prop, AnalyticsEventWriteBuffer). Issue #5 updated with socket-conditional polling detail. Board section (#3) expanded with vertical alignment refactor (non-uniform row heights, exported constants).
+  - `wiki/entities/nakama-service.md` — Stale socket fix documented (socketConnected flag, lifecycle handlers, isSocketOpen); ur-internals session storage migration (localStorage→sessionStorage, in-memory cache) documented.
+  - `wiki/concepts/nakama-runtime.md` — `finalizeCompletedMatch` flow rewritten with tournament deferral guard and analytics buffer; Authoritative Dice Roll section added (CSPRNG via `getSecureRandomUnit`, `rollAuthoritativeDice`); RPC hardening section added.
+  - `wiki/concepts/tournament-flow.md` — `useTournamentList` socket notification listener documented; `updateRunWithRetry` OCC version hardening (`getRunObjectVersionOrThrow`, `isStorageVersionConflict`) documented.
+  - `wiki/concepts/elo-system.md` — Backend storage refactor documented (`readRankedMatchStorageState` batching idempotency + profile reads into one `storageRead` call).
+  - `wiki/concepts/game-engine.md` — `rollDice` updated with `DiceRandomSource` injectable parameter.
+  - `wiki/concepts/test-coverage.md` — 8 new/expanded test files documented; totals updated (~92→~98 test files, ~35%→~38%).
+  - `wiki/index.md` — git update count bumped to 3.
+- **Key takeaways:**
+  - Performance work from the prior audit is now fully applied and verified in code — #1, #2, #4, #5, #6, #7, #8, #12 are all confirmed
+  - Server-side dice rolls are now CSPRNG-backed (cannot use Math.random in Nakama runtime)
+  - NakamaService socket management is substantially more robust — stale sockets are detected and replaced
+  - Analytics writes are now fully batched at match end — no synchronous per-event writes in the tick loop
+  - Tournament OCC writes are hardened — version missing = throw, conflict error = retry, other = propagate
+  - Test coverage jumped meaningfully: nakama.test.ts (268 lines), useTournamentList.test.tsx (180 lines), useTournamentDetail.test.tsx expanded, Tile/Piece tests added
+
+---
+
+## [2026-04-12] lint | Codex performance fix verification pass
+
+- Audited all 14 issues in `wiki/concepts/performance.md` against live codebase after Codex fix run
+- Pages updated:
+  - `wiki/concepts/performance.md` — status badges added to each issue heading, Priority Matrix updated with Status column, Remaining Work section added
+- Results: 13 of 14 issues confirmed fixed; 1 partial; 1 not addressed
+- Fixed (✅): #1 (Zustand selectors → useShallow), #2 (React.memo on Tile/Piece with custom comparators), #4 (useGameLoop narrow selectors), #5 (tournament polling conditional on socket), #6 (asset preloading gated), #7 (FloatingEmoji migrated to Reanimated), #8 (AmbientEffects paused prop), #10 (finalizeCompletedMatch batched storageRead), #11 (ELO idempotency + profile read batched), #12 (analytics buffered write), #13 (title caching moved to matchJoin), #14 (OCC version threaded through retry)
+- Partially fixed (⚠️): #3 (Board — buildAnimatedMove dependency chain fixed; LayoutAnimation.configureNext still present on line 913, useEffect count grew to 16)
+- Not fixed (❌): #9 (TICK_RATE still 10 Hz, no empty-tick batching added)
+
+## [2026-04-11] schema-update | Harden snapshot/coverage scripts against node_modules bleed
+
+- Root cause: `sources/ur/node_modules` is tracked in git (53,410 files), so `git ls-files` returns them; the EXCLUDE_PREFIXES filter was correct but had no fallback if it failed
+- Fixed `claude-memory-compiler/scripts/generate_test_coverage.py`:
+  - Added `get_files()` with sanity check: aborts with `RuntimeError` if >2000 `.ts/.tsx` files survive filtering (normal count is ~350)
+  - Fixed `total_tests` in `render()` to use `TEST_SUFFIXES` + `EXCLUDE_SUFFIXES` constants (was using a raw inline tuple, missing `.d.ts` exclusion)
+- Fixed `claude-memory-compiler/scripts/generate_ur_codebase_snapshot.py`:
+  - Same sanity check added before the per-folder loop
+
+---
+
+## [2026-04-11] ingest | commit `94debe5` — Fix test coverage snapshot generation
+
+- Commit touched 2 wiki files + `.obsidian/workspace.json`
+- `wiki/sources/2026-04-11-190351-ur-codebase.md` — new auto-generated snapshot page added; added to `index.md`
+- `wiki/concepts/test-coverage.md` — commit applied backend 27→28 (1 new module), ur-internals 65→66; TOTAL row was corrupted by script (node_modules included, showing 32,588 src / 138 tests / ~0%) — corrected to ~258 src / ~92 tests / ~36%
+- Pages updated:
+  - `wiki/concepts/test-coverage.md` — backend 28, ~61%; ur-internals 66; TOTAL ~258/~92/~36%
+  - `wiki/index.md` — new snapshot source page added, total pages 18→19, git update count updated
+
+---
+
+## [2026-04-11] session-start | git pull — codebase snapshot update
+
+- `git pull` brought in 2 changed files: `wiki/concepts/test-coverage.md`, `wiki/sources/2026-04-11-190351-ur-codebase.md`
+- The auto-generated snapshot script miscounted: backend shown as 28 (actual: 27), components as 60 (actual: 56), TOTAL corrupted to ~32,588 (node_modules included)
+- Pages updated:
+  - `wiki/concepts/test-coverage.md` — corrected backend (27), components (56), TOTAL (~253 src / ~92 tests / ~36%)
+  - `wiki/sources/2026-04-11-190351-ur-codebase.md` — corrected backend (27) and components (56) counts
+- No net new source files added to `sources/ur/` in this pull (no new backend module confirmed by manual count)
+
 ---
 
 ## [2026-04-11] query | Performance analysis — frontend and backend optimization audit
@@ -95,3 +174,33 @@ Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
 - `index.md` updated: 12 pages, 1 source
 - Key takeaways documented in source summary and overview
 - Open questions logged in overview
+
+## [2026-04-11] lint | Codex bug fix verification pass
+
+- Verified all medium and low severity bugs (A06–A23) against live codebase after Codex fix run
+- Pages updated:
+  - `wiki/concepts/bugs.md` — statuses updated, fix details added to each entry
+- Results: 16 of 18 medium/low bugs confirmed fixed; 2 were NOT addressed by Codex
+- Verified fixed (✅): A06, A07, A08, A09, A10, A11, A12, A13, A14, A15, A16, A17, A18, A19, A20, A21, A22
+- Not fixed (⚠️): A02 (inverted onboarding guard — `\!` still missing), A04 (presence payload string not JSON.parsed — always throws)
+- A23 (iOS entitlements) remains `needs-investigation` — empty file unchanged, needs manual Xcode capability audit
+
+## [2026-04-11] schema-update | Auto-ingest on sources-check hook output
+
+- Updated `CLAUDE.md` section 9 (Session Start Protocol)
+- Added step 4: if session context contains a `📥 SOURCES UPDATED` block from the sources-check hook, immediately begin batch ingest for each listed source without waiting to be asked
+- This makes the hook actually trigger action instead of just surfacing a report
+- Michel still sees what's being ingested and why; back-and-forth discussion is skipped (batch mode) unless change set is ambiguous
+
+## [2026-04-11] ingest | 4 commits — Codex bug fix batch (d81fd307..243ee9d2)
+
+- Reviewed diffs for all 4 commits introduced since last wiki update
+- Pages updated:
+  - `wiki/concepts/bugs.md` — commit hashes added to all fixed entries; BUG-A24 added as new fixed entry
+- Commits ingested:
+  - `d81fd307` — Prevent duplicate board move and capture animations (`Board.tsx`): signature guard + highlight ref extraction + removed spurious `LayoutAnimation.configureNext` → **BUG-A24 (new, fixed)**
+  - `54b3a797` — Harden RPC payload parsing and private match code reservation flow → **BUG-A06, A07, A08 fixed**
+  - `eddbabca` — Harden dev security and fix stale Nakama socket reuse → **BUG-A09, A10, A11 fixed**
+  - `5435613c` — Use secure RNG for authoritative rolls and stabilize animation effects → **BUG-A12, A13, A14 fixed**
+  - `243ee9d2` — Harden session restore and tighten validation across auth and protocol → **BUG-A15, A16, A17, A18, A19, A20, A21, A22 fixed**
+- Still open (not addressed): BUG-A02 (inverted onboarding guard), BUG-A04 (presence payload not JSON.parsed)

@@ -2,7 +2,7 @@
 
 > The pure, transport-agnostic logic layer that implements the Royal Game of Ur rules.
 
-**Last updated:** 2026-04-11  
+**Last updated:** 2026-04-12 (commit `5435613c`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
 **Related:** [[architecture]], [[match-configs]], [[transport-layer]], [[zustand-game-store]]
 
@@ -71,7 +71,7 @@ TileNode (for board rendering)
 
 **`createInitialState(matchConfig?)`** — builds a fresh `GameState`. All pieces at position `-1` (reserve), `currentTurn: 'light'`, `phase: 'rolling'`.
 
-**`rollDice()`** — rolls 4 binary "tetrahedral" dice (each 0 or 1 with equal probability). Returns sum 0–4.
+**`rollDice(randomSource?)`** — rolls 4 binary "tetrahedral" dice (each 0 or 1 with equal probability). Returns sum 0–4. The `randomSource` parameter is a `DiceRandomSource = () => number` (defaults to `Math.random`). This injection point exists so the backend can provide a CSPRNG — see [[nakama-runtime]] → Authoritative Dice Roll. Client-side and offline use continue to use `Math.random`.
 
 **`getValidMoves(state, roll)`** — returns all legal `MoveAction[]` for the current player given a roll value. Key logic:
 - Skips pieces already finished

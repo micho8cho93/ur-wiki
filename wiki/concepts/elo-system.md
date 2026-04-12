@@ -2,7 +2,7 @@
 
 > The rating system for competitive online matches: formula, K-factors, provisional period, and leaderboard.
 
-**Last updated:** 2026-04-11  
+**Last updated:** 2026-04-12 (commit `a1e996f4`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
 **Related:** [[progression-system]], [[match-protocol]], [[architecture]], [[match-configs]]
 
@@ -72,6 +72,20 @@ Each `EloMatchParticipantRatingView` includes: old/new rating, delta, K-factor, 
 ## Eligibility
 
 ELO is **only updated for ranked matches**. Only `standard` (Quick Play) mode has `allowsRankedStats: true` in its [[match-configs]]. Practice modes and private matches do not affect ELO.
+
+---
+
+## Server-Side Storage Refactor (commit `a1e996f4`)
+
+`backend/modules/elo.ts` was refactored to batch storage reads. Previously, `processCompletedMatchRatings` issued three sequential `storageRead` calls: idempotency check, winner profile, loser profile. These are now combined into one:
+
+**`readRankedMatchStorageState(nk, matchId, userIds)`** issues a single `nk.storageRead` for:
+- The idempotency record (`elo_match_results` collection, `matchId` key, system user)
+- All player ELO profiles (`elo_profiles` collection, one per userId)
+
+**`buildEloProfileState(nk, userId, profileObject)`** then derives the profile from the returned batch result. This collapses 3 sequential reads into 1 per match end — addressing [[performance]] #11.
+
+Leaderboard sync errors per user are now handled individually: `readTournamentEloRanksByUserId` catches per-user errors and records `null` for that user rather than aborting the entire batch.
 
 ---
 

@@ -1,8 +1,8 @@
 # Bug Registry — Royal Game of Ur
 
-> **Last updated:** 2026-04-11  
-> **Sources:** claude-bugs.md (client/shared scan), codex-bugs.md (backend/infra scan), verification pass 2026-04-11  
-> **Statuses:** `confirmed` | `open` | `needs-investigation` | `low-priority` | `not-a-bug`
+> **Last updated:** 2026-04-11 — Codex medium/low fix pass verified; A02 and A04 confirmed unfixed  
+> **Sources:** claude-bugs.md (client/shared scan), codex-bugs.md (backend/infra scan), verification pass 2026-04-11, Codex fix pass + re-verification 2026-04-11  
+> **Statuses:** `confirmed` | `open` | `needs-investigation` | `low-priority` | `not-a-bug` | `fixed`
 
 ---
 
@@ -11,28 +11,29 @@
 | ID | Severity | Area | Title | Status |
 |----|----------|------|-------|--------|
 | [BUG-A01](#bug-a01) | 🔴 Critical | Backend auth | Default admin bootstrapping allows full takeover | `confirmed` |
-| [BUG-A02](#bug-a02) | 🔴 Critical | Backend auth | `requireCompletedUsernameOnboarding` inverted guard | `confirmed` |
+| [BUG-A02](#bug-a02) | 🔴 Critical | Backend auth | `requireCompletedUsernameOnboarding` inverted guard | `confirmed` ⚠️ NOT FIXED |
 | [BUG-A03](#bug-a03) | 🔴 Critical | Infra/security | Nakama console exposed via Caddy + default credentials | `open` |
-| [BUG-A04](#bug-a04) | 🔴 High | Functional | Presence RPC payload unparsed — online count always throws | `confirmed` |
+| [BUG-A04](#bug-a04) | 🔴 High | Functional | Presence RPC payload unparsed — online count always throws | `confirmed` ⚠️ NOT FIXED |
 | [BUG-A05](#bug-a05) | 🔴 High | Infra/security | Secrets committed in `nakama.yml` (rotate ASAP) | `open` |
-| [BUG-A06](#bug-a06) | 🟡 Medium | Backend reliability | Private match orphaned if code record write fails | `open` |
-| [BUG-A07](#bug-a07) | 🟡 Medium | Backend reliability | Rematch private match has same ordering hazard as A06 | `open` |
-| [BUG-A08](#bug-a08) | 🟡 Medium | Backend reliability | Bare `JSON.parse(payload)` crashes on malformed RPC input | `open` |
-| [BUG-A09](#bug-a09) | 🟡 Medium | Client reliability | `connectSocket()` can return stale/dead socket | `open` |
-| [BUG-A10](#bug-a10) | 🟡 Medium | Infra/security | Dev docker-compose exposes Postgres + unsafe default keys | `open` |
-| [BUG-A11](#bug-a11) | 🟡 Medium | Client security | Admin session tokens stored in `localStorage` | `open` |
-| [BUG-A12](#bug-a12) | 🟡 Medium | Game fairness | Authoritative dice rolls use `Math.random()` (not CSPRNG) | `open` |
-| [BUG-A13](#bug-a13) | 🟡 Medium | UI/React | `CinematicXpRewardModal` cleanup effect has spurious deps | `confirmed` |
-| [BUG-A14](#bug-a14) | 🟡 Medium | UI/React | `FloatingEmojiReactions` unstable `onComplete` in dep array | `confirmed` |
-| [BUG-A15](#bug-a15) | 🟡 Medium | Scripts | `reset-project.js` moves its own `scripts/` directory | `confirmed` |
-| [BUG-A16](#bug-a16) | 🟡 Medium | Shared protocol | `isTournamentMatchRewardSummaryPayload` allows floats for int fields | `low-priority` |
-| [BUG-A17](#bug-a17) | 🟡 Medium | Backend | `appendNumericSuffix` uses wrong floor in max-length trim | `needs-investigation` |
-| [BUG-A18](#bug-a18) | 🟡 Medium | Backend auth | Admin role normalization rejects non-lowercase object-stored roles | `open` |
-| [BUG-A19](#bug-a19) | 🟡 Medium | Client auth | Session restore silently re-persists stale session on revoked refresh token | `open` |
-| [BUG-A20](#bug-a20) | 🟡 Medium | UI/React | `xpValue` Animated.Value in listener dep array (stable ref, spurious) | `confirmed` |
-| [BUG-A21](#bug-a21) | 🟢 Low | Shared protocol | `isNullableRollDisplayValue` missing parentheses (fragile precedence) | `needs-investigation` |
-| [BUG-A22](#bug-a22) | 🟢 Low | Shared protocol | `rankTitle` type/validator mismatch (typed string, validated nullable) | `low-priority` |
+| [BUG-A06](#bug-a06) | 🟡 Medium | Backend reliability | Private match orphaned if code record write fails | `fixed` |
+| [BUG-A07](#bug-a07) | 🟡 Medium | Backend reliability | Rematch private match has same ordering hazard as A06 | `fixed` |
+| [BUG-A08](#bug-a08) | 🟡 Medium | Backend reliability | Bare `JSON.parse(payload)` crashes on malformed RPC input | `fixed` |
+| [BUG-A09](#bug-a09) | 🟡 Medium | Client reliability | `connectSocket()` can return stale/dead socket | `fixed` |
+| [BUG-A10](#bug-a10) | 🟡 Medium | Infra/security | Dev docker-compose exposes Postgres + unsafe default keys | `fixed` |
+| [BUG-A11](#bug-a11) | 🟡 Medium | Client security | Admin session tokens stored in `localStorage` | `fixed` |
+| [BUG-A12](#bug-a12) | 🟡 Medium | Game fairness | Authoritative dice rolls use `Math.random()` (not CSPRNG) | `fixed` |
+| [BUG-A13](#bug-a13) | 🟡 Medium | UI/React | `CinematicXpRewardModal` cleanup effect has spurious deps | `fixed` |
+| [BUG-A14](#bug-a14) | 🟡 Medium | UI/React | `FloatingEmojiReactions` unstable `onComplete` in dep array | `fixed` |
+| [BUG-A15](#bug-a15) | 🟡 Medium | Scripts | `reset-project.js` moves its own `scripts/` directory | `fixed` |
+| [BUG-A16](#bug-a16) | 🟡 Medium | Shared protocol | `isTournamentMatchRewardSummaryPayload` allows floats for int fields | `fixed` |
+| [BUG-A17](#bug-a17) | 🟡 Medium | Backend | `appendNumericSuffix` uses wrong floor in max-length trim | `fixed` |
+| [BUG-A18](#bug-a18) | 🟡 Medium | Backend auth | Admin role normalization rejects non-lowercase object-stored roles | `fixed` |
+| [BUG-A19](#bug-a19) | 🟡 Medium | Client auth | Session restore silently re-persists stale session on revoked refresh token | `fixed` |
+| [BUG-A20](#bug-a20) | 🟡 Medium | UI/React | `xpValue` Animated.Value in listener dep array (stable ref, spurious) | `fixed` |
+| [BUG-A21](#bug-a21) | 🟢 Low | Shared protocol | `isNullableRollDisplayValue` missing parentheses (fragile precedence) | `fixed` |
+| [BUG-A22](#bug-a22) | 🟢 Low | Shared protocol | `rankTitle` type/validator mismatch (typed string, validated nullable) | `fixed` |
 | [BUG-A23](#bug-a23) | 🟢 Low | iOS | Entitlements file is empty — may silently break capabilities | `needs-investigation` |
+| [BUG-A24](#bug-a24) | 🟢 Low | UI/React | `Board.tsx` animation effect re-fires on re-render, causing duplicate move/capture animations | `fixed` |
 
 ---
 
@@ -66,6 +67,9 @@
 **🔴 Critical — Functional | Backend auth**  
 **Title:** `requireCompletedUsernameOnboarding` guard logic is inverted  
 **Status:** `confirmed`  
+
+> ⚠️ **NOT FIXED by Codex** — Code still reads `if (!object || profile.onboardingComplete) return;`. The missing `!` before `onboardingComplete` is still absent. A user with no stored profile still passes through without completing onboarding.
+
 **File:** `backend/modules/usernameOnboarding.ts` (~line 380)
 
 **Issue:** The guard returns (allows access) when `!object` (no stored profile), then throws only if the object exists AND `onboardingComplete` is false. A user with no stored profile passes through without completing onboarding.
@@ -109,6 +113,9 @@ Note: `docker-compose.prod.yml` binds port 7351 to `127.0.0.1` (partial hardenin
 **🔴 High — Functional | Client services**  
 **Title:** Presence RPC payload never parsed — online count always throws  
 **Status:** `confirmed`  
+
+> ⚠️ **NOT FIXED by Codex** — `parseOnlineCount` still casts `payload` directly as `PresenceRpcPayload` without `JSON.parse`. The Nakama JS client delivers `response.payload` as a **string**, so `rpcPayload.onlineCount` is always `undefined`, causing every heartbeat/player-count call to throw.
+
 **Files:** `services/presence.ts`, `backend/modules/index.ts`, `backend/modules/analytics/tracking.ts`
 
 **Issue:** Backend returns `JSON.stringify({ onlineCount, onlineTtlMs, serverTimeMs })`, so the Nakama JS client delivers `response.payload` as a **string**. `parseOnlineCount()` in `presence.ts` casts payload to `PresenceRpcPayload` object and reads `.onlineCount` directly — this is always `undefined` on a string — causing every heartbeat and player-count call to throw `"Presence RPC payload is missing a valid onlineCount."`.
@@ -149,15 +156,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — Reliability | Backend private match**  
 **Title:** Private match can be orphaned if code record write fails  
-**Status:** `open`  
+**Status:** `fixed`  
+
+> ✅ **FIXED** — commit `54b3a797`. "Reserve first" pattern implemented. `reservePrivateMatchCodeRecord` writes a placeholder record (`matchId: null`) before `nk.matchCreate`. After `matchCreate` succeeds, `createPrivateMatchCodeRecord` updates it with the real `matchId` using a retry loop (up to `PRIVATE_MATCH_CODE_WRITE_ATTEMPTS`). If `matchCreate` fails, the reservation is cleaned up via `deletePrivateMatchCodeRecord`. If the final publish fails, a clear error is surfaced to the caller.
+
 **File:** `backend/modules/index.ts`
 
-**Issue:** `rpcCreatePrivateMatch` calls `nk.matchCreate(...)` before `createPrivateMatchCodeRecord(...)`. If the storage write fails (collision, transient storage error, race condition), the match already exists but has no discoverable join code → players cannot join → orphaned match until timeout.
-
-**Fix options:**
-- "Reserve first" flow: write a pending code reservation (without `matchId`), then `matchCreate`, then update reservation with `matchId`. Join RPC tolerates "pending" state.
-- Alternatively: store code as match label; join RPC uses `nk.matchList` by label, avoiding the need for a code record at creation time.
-- Minimum viable: wrap code-record write in retry loop; surface a clear error rather than silently orphaning.
+**Original issue:** `rpcCreatePrivateMatch` called `nk.matchCreate(...)` before `createPrivateMatchCodeRecord(...)`. If the storage write failed, the match had no discoverable join code → orphaned match until timeout.
 
 ---
 
@@ -165,12 +170,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — Reliability | Backend rematch**  
 **Title:** Rematch private match has same ordering hazard as BUG-A06  
-**Status:** `open`  
-**File:** `backend/modules/index.ts` (rematch block, ~line 1460)
+**Status:** `fixed`  
 
-**Issue:** In the rematch flow, `nk.matchCreate(...)` is called before `createReservedPrivateMatchCodeRecord(...)` in a `try` block. Same root cause as BUG-A06 — if storage write fails, the rematch match exists but is undiscoverable. Overlooked in the original scan because it's a separate code path.
+> ✅ **FIXED** — commit `54b3a797`. Same "reserve first" pattern applied to the rematch path. `reservePrivateMatchCodeRecord` is called before `nk.matchCreate`. On `matchCreate` failure, the reservation is cleaned up. On code publish failure, a warning is logged (rematch can still proceed via the match ID stored in match state).
 
-**Fix options:** Apply the same "reserve first" pattern described in BUG-A06. At minimum: retry and surface error to both players.
+**File:** `backend/modules/index.ts`
+
+**Original issue:** Same ordering hazard as A06 in the separate rematch code path.
 
 ---
 
@@ -178,14 +184,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — Reliability | Backend RPCs**  
 **Title:** Bare `JSON.parse(payload)` in multiple RPC handlers crashes on malformed input  
-**Status:** `open`  
-**File:** `backend/modules/index.ts` (~lines 1939, 1968)
+**Status:** `fixed`  
 
-**Issue:** `rpcAuthLinkCustom` and `rpcMatchmakerAdd` call `JSON.parse(payload)` directly with no try/catch. Malformed JSON from any client causes an unhandled exception that surfaces as an opaque 500. The `parseRpcPayload()` helper (which handles empty/null/malformed gracefully) exists but isn't used in these handlers.
+> ✅ **FIXED** — commit `54b3a797`. All RPC handlers now call `parseRpcPayload(payload)`. No bare `JSON.parse` calls remain in `index.ts`.
 
-**Fix options:**
-- Replace bare `JSON.parse(payload)` with `parseRpcPayload(payload)`.
-- Or wrap in try/catch and throw a structured 400-class error with a human-readable message.
+**File:** `backend/modules/index.ts`
+
+**Original issue:** `rpcAuthLinkCustom` and `rpcMatchmakerAdd` used bare `JSON.parse(payload)` — malformed input caused unhandled 500 errors.
 
 ---
 
@@ -193,14 +198,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — Reliability | Client socket**  
 **Title:** `connectSocket()` returns cached socket without checking if it's still connected  
-**Status:** `open`  
+**Status:** `fixed`  
+
+> ✅ **FIXED** — commit `eddbabca`. `connectSocket()` now checks `this.socket && this.socketConnected && this.isSocketOpen(this.socket)` before reusing. `isSocketOpen()` inspects the underlying WebSocket adapter's `isOpen()` method if available, falling back to `socketConnected`. `handleSocketDisconnected()` nulls `this.socket` and clears `socketConnected`; it is registered on the socket's disconnect and heartbeat timeout events.
+
 **File:** `services/nakama.ts`
 
-**Issue:** `connectSocket()` returns `this.socket` immediately if it exists, with no connectivity check. After a network drop, callers receive a dead socket and fail on first use. There is no disconnect handler that nulls `this.socket`, so the stale reference persists until an explicit `disconnectSocket()` call.
-
-**Fix options:**
-- Track socket connectivity state; only reuse if confirmed connected.
-- Register a disconnect/close handler on the socket that sets `this.socket = null`, so `connectSocket()` will create a fresh connection.
+**Original issue:** `connectSocket()` returned a stale socket reference after network drops — no connectivity check, no auto-null on disconnect.
 
 ---
 
@@ -208,14 +212,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — Security | Dev infra**  
 **Title:** Dev docker-compose exposes Postgres externally with insecure defaults  
-**Status:** `open`  
+**Status:** `fixed`  
+
+> ✅ **FIXED** — commit `eddbabca`. Postgres port now bound to `127.0.0.1:5432:5432`. All env vars use `:?` syntax (e.g., `${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in backend/.env}`) — compose fails loudly if any required var is unset, eliminating insecure fallback defaults.
+
 **File:** `backend/docker-compose.yml`
 
-**Issue:** Publishes `5432:5432` unbound (any interface), and falls back to `POSTGRES_PASSWORD=nakama`, `NAKAMA_SOCKET_SERVER_KEY=defaultkey`, `NAKAMA_HTTP_KEY=changeme` when env vars are missing. Risk if run on a shared or cloud network, or if dev compose is inadvertently used as a prod shortcut.
-
-**Fix options:**
-- Bind ports to localhost: `127.0.0.1:5432:5432` (same for Nakama ports if exposed).
-- Remove insecure `:-default` fallbacks; require a `.env` file with real values (fail loudly if missing).
+**Original issue:** `5432:5432` was unbound (any interface); insecure `:-default` fallbacks for all secret env vars.
 
 ---
 
@@ -223,15 +226,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — Security | UR Internals**  
 **Title:** Admin session tokens (including refresh token) stored in `localStorage`  
-**Status:** `open`  
+**Status:** `fixed`  
+
+> ✅ **FIXED** — commit `eddbabca`. Tokens now stored in `sessionStorage` (tab-scoped, cleared on tab close). A one-time migration on first load reads any legacy `localStorage` value, migrates it to `sessionStorage`, and removes the `localStorage` entry. In-memory caching (`inMemorySession`) is also used to avoid redundant storage reads.
+
 **Files:** `ur-internals/src/auth/sessionStorage.ts`, `ur-internals/src/auth/nakama.ts`
 
-**Issue:** Both the access token and refresh token are persisted in `window.localStorage`. Any XSS vulnerability in the admin dashboard origin can exfiltrate long-lived credentials and impersonate admins.
-
-**Fix options:**
-- HTTP-only secure cookies (best — inaccessible to JS).
-- In-memory only + `sessionStorage` (reduces persistence; no cross-tab or post-close reuse).
-- If tokens must be client-accessible: add a strict CSP (no `unsafe-inline`, no untrusted script origins) and shorten token TTLs significantly.
+**Original issue:** Both tokens persisted in `window.localStorage` — exfiltrable via XSS.
 
 ---
 
@@ -239,14 +240,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — Fairness/Security | Game core**  
 **Title:** Authoritative dice rolls use `Math.random()` — not a CSPRNG  
-**Status:** `open`  
+**Status:** `fixed`  
+
+> ✅ **FIXED** — commit `5435613c`. `rollAuthoritativeDice()` now calls `rollDice(() => getSecureRandomUnit(nk))`. `getSecureRandomUnit` uses `crypto.getRandomValues(new Uint32Array(1))` as the primary source, with `nk.uuidv4()` hex parsing as a Nakama-specific fallback. If neither is available, it throws rather than silently falling back to `Math.random()`. Client-side `rollDice()` retains `Math.random` as its default for offline/bot play only.
+
 **Files:** `logic/engine.ts`, `backend/modules/index.ts`
 
-**Issue:** `rollDice()` uses `Math.random()`, which is not a cryptographically secure RNG. When called from the backend for authoritative match rolls, results may be statistically biased or predictable enough (especially with many samples) to be a cheating/fairness concern.
-
-**Fix options:**
-- On backend: replace `Math.random()` in authoritative paths with `crypto.getRandomValues()` or equivalent CSPRNG.
-- Keep client-side `rollDice()` using `Math.random()` for local/offline/bot play only — never as the source of truth for online matches.
+**Original issue:** Authoritative backend dice rolls used `Math.random()` — statistically biased, potentially predictable.
 
 ---
 
@@ -254,18 +254,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — React / UI | Progression component**  
 **Title:** `CinematicXpRewardModal` cleanup effect lists stable Animated.Value refs in dep array  
-**Status:** `confirmed`  
-**File:** `components/progression/CinematicXpRewardModal.tsx` (~lines 80–95)
+**Status:** `fixed`  
 
-**Issue:** A cleanup-only `useEffect` lists all `Animated.Value` refs in its dependency array. Refs are stable across renders, so these deps are spurious — but they cause React to stop and restart animations on every render where any dep identity changes.
+> ✅ **FIXED** — commit `5435613c`. Cleanup effect dep array is now `[]` with an `// eslint-disable-line react-hooks/exhaustive-deps -- cleanup-only effect with stable refs` comment documenting intent.
 
-```typescript
-// Current — spurious deps cause animation restarts
-}, [backdropOpacity, badgePulse, cardOpacity, cardScale, flashOpacity, rankBurst, sweepProgress, xpValue]);
+**File:** `components/progression/CinematicXpRewardModal.tsx`
 
-// Fix — cleanup-only, run once on unmount
-}, []);
-```
+**Original issue:** Spurious deps in cleanup `useEffect` caused animation restarts on unrelated re-renders.
 
 ---
 
@@ -273,18 +268,13 @@ Any repository leak or broad access exposes these permanently (git history prese
 
 **🟡 Medium — React / UI | Game component**  
 **Title:** `FloatingEmojiReactions` includes unstable `onComplete` prop in animation effect dep array  
-**Status:** `confirmed`  
-**File:** `components/game/FloatingEmojiReactions.tsx` (~line 51)
+**Status:** `fixed`  
 
-**Issue:** `onComplete` is a function prop in a `useEffect` dep array. If the parent re-renders without memoizing it, the animation effect restarts mid-animation on every parent render.
+> ✅ **FIXED** — commit `5435613c`. `onCompleteRef` pattern implemented: `const onCompleteRef = useRef(onComplete)` declared, a separate `useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete])` keeps the ref current, and the animation effect calls `onCompleteRef.current(reaction.id)` rather than `onComplete` directly.
 
-**Fix:**
-```typescript
-const onCompleteRef = useRef(onComplete);
-useEffect(() => { onCompleteRef.current = onComplete; });
-// call onCompleteRef.current(id) inside animation effect
-// dep array: [progress, reaction.id]  ← remove onComplete
-```
+**File:** `components/game/FloatingEmojiReactions.tsx`
+
+**Original issue:** Unstable `onComplete` prop in animation `useEffect` dep array caused mid-animation restarts on parent re-renders.
 
 ---
 
@@ -292,12 +282,13 @@ useEffect(() => { onCompleteRef.current = onComplete; });
 
 **🟡 Medium — Scripts | Dev tooling**  
 **Title:** `reset-project.js` includes `"scripts"` in the directories it moves away  
-**Status:** `confirmed`  
-**File:** `scripts/reset-project.js` (~line 14)
+**Status:** `fixed`  
 
-**Issue:** `oldDirs` includes `"scripts"`, so the script moves the directory that contains itself as part of its own cleanup. This works if the OS keeps the file handle open mid-execution, but it is fragile, clearly unintentional, and breaks if the script path is re-resolved mid-run.
+> ✅ **FIXED** — commit `243ee9d2`. `oldDirs` is now `["app", "components", "hooks", "constants"]`. `"scripts"` removed.
 
-**Fix:** Remove `"scripts"` from `oldDirs`. The script's own comment describes what it's meant to move (app/components/hooks/constants) — `scripts/` is not in scope.
+**File:** `scripts/reset-project.js`
+
+**Original issue:** Script was moving its own containing directory as part of cleanup — fragile and unintentional.
 
 ---
 
@@ -305,12 +296,13 @@ useEffect(() => { onCompleteRef.current = onComplete; });
 
 **🟡 Medium — Shared protocol | Validation**  
 **Title:** `isTournamentMatchRewardSummaryPayload` allows float values for integer fields  
-**Status:** `low-priority`  
-**File:** `shared/urMatchProtocol.ts` (~lines 404, 415)
+**Status:** `fixed`  
 
-**Issue:** `round` is validated with `typeof value === "number"` (allows `1.5`). `challengeCompletionCount` is validated with `isFiniteNumber` (same). Both should be non-negative integers.
+> ✅ **FIXED** — commit `243ee9d2`. Both fields now use `isNonNegativeInteger`. `round` is also nullable (`isNonNegativeInteger(value.round) || value.round === null`), and `challengeCompletionCount` uses `isNonNegativeInteger` directly.
 
-**Fix:** Replace with `isNonNegativeInteger(value.round)` and `isNonNegativeInteger(value.challengeCompletionCount)`.
+**File:** `shared/urMatchProtocol.ts`
+
+**Original issue:** `round` and `challengeCompletionCount` accepted floats via loose `typeof === "number"` / `isFiniteNumber` validators.
 
 ---
 
@@ -318,12 +310,13 @@ useEffect(() => { onCompleteRef.current = onComplete; });
 
 **🟡 Medium — Backend | Username generation**  
 **Title:** `appendNumericSuffix` uses `USERNAME_MIN_LENGTH` as floor in trim, obscuring intent  
-**Status:** `needs-investigation`  
-**File:** `backend/modules/usernameOnboarding.ts` (~line 286)
+**Status:** `fixed`  
 
-**Issue:** `Math.max(USERNAME_MIN_LENGTH, USERNAME_MAX_LENGTH - suffixValue.length)` means when suffix is long, the base is trimmed to min-length (3) then suffix appended — relying on a final `.slice` to enforce max length. The result is always valid, but the intermediate string can be oversized and the `USERNAME_MIN_LENGTH` floor is semantically wrong here.
+> ✅ **FIXED** — commit `243ee9d2`. Now uses `Math.max(0, USERNAME_MAX_LENGTH - suffixValue.length)`. The `USERNAME_MIN_LENGTH` floor is gone; the trailing `.slice(0, USERNAME_MAX_LENGTH)` is the sole length enforcer.
 
-**Fix:** `Math.max(0, USERNAME_MAX_LENGTH - suffixValue.length)` — let the final `.slice` enforce the limit; `0` is the correct floor.
+**File:** `backend/modules/usernameOnboarding.ts`
+
+**Original issue:** Wrong floor constant created semantically misleading code (though output was always valid).
 
 ---
 
@@ -331,15 +324,13 @@ useEffect(() => { onCompleteRef.current = onComplete; });
 
 **🟡 Medium — Backend auth | Role normalization**  
 **Title:** Admin role stored as `{ role: "Admin" }` (capital A) treated as no role  
-**Status:** `open`  
+**Status:** `fixed`  
+
+> ✅ **FIXED** — commit `243ee9d2`. `const role = readStringField(record, ["role"])?.toLowerCase()` — lowercase applied before comparison in the object-stored branch of `normalizeAdminRole`.
+
 **File:** `backend/modules/tournaments/auth.ts`
 
-**Issue:** `normalizeAdminRole()` lowercases when role is a plain string, but not when it's an object `{ role: "..." }`. `readStringField` returns the trimmed but non-lowercased value. So `{ role: "Admin" }` → `"Admin"` → `"Admin" !== "admin"` → returns `null` → user gets unauthorized despite having a role record.
-
-**Fix:** Lowercase the result of `readStringField(record, ["role"])` before comparing:
-```typescript
-const role = readStringField(record, ["role"])?.toLowerCase();
-```
+**Original issue:** Object-stored roles with capital first letter (e.g., `"Admin"`) were not lowercased before comparison, causing unauthorized errors for legitimately-roled users.
 
 ---
 
@@ -347,14 +338,13 @@ const role = readStringField(record, ["role"])?.toLowerCase();
 
 **🟡 Medium — Client auth | Session management**  
 **Title:** Session restore silently re-persists session when refresh token is revoked/expired  
-**Status:** `open`  
+**Status:** `fixed`  
+
+> ✅ **FIXED** — commit `243ee9d2`. Eager refresh always attempted on restore (even when access token is still valid). A 401/403 response clears the session immediately. Transient network errors fall back gracefully to the still-valid access token session without clearing it. Expired refresh tokens are detected and cleared at the top of the restore flow before any network call.
+
 **File:** `ur-internals/src/auth/nakama.ts`
 
-**Issue:** `restoreStoredNakamaSession()` only attempts a token refresh if the access token is expired AND a refresh token exists. If the access token is still valid but the refresh token has been revoked or expired server-side, the function re-persists the stale session and returns it as valid. The bad refresh token isn't detected until the next actual refresh attempt — up to 2 hours later (access token TTL). The user appears logged in but silently fails on the next refresh.
-
-**Fix options:**
-- Proactively check refresh token TTL from the `Session` object and clear if expired.
-- Or: always attempt a background refresh on restore (eager validation) to surface revocation immediately.
+**Original issue:** Restore only refreshed if the access token was expired — a revoked-but-not-expired refresh token went undetected until the next forced refresh.
 
 ---
 
@@ -362,12 +352,13 @@ const role = readStringField(record, ["role"])?.toLowerCase();
 
 **🟡 Medium — React / UI | Progression component**  
 **Title:** `xpValue` Animated.Value included in listener setup dep array despite being a stable ref  
-**Status:** `confirmed`  
-**File:** `components/progression/CinematicXpRewardModal.tsx` (~lines 69–78)
+**Status:** `fixed`  
 
-**Issue:** `xpValue` is an `Animated.Value` — its reference never changes. Including it in the dep array is harmless today but signals a misunderstanding of ref stability and would cause listener churn if the value were ever recreated.
+> ✅ **FIXED** — commit `243ee9d2`. Listener setup effect dep array is now `[]` with an `// eslint-disable-line react-hooks/exhaustive-deps -- xpValue is a stable ref-backed Animated.Value` comment.
 
-**Fix:** Use `}, []);` for the listener setup — it only needs to run once.
+**File:** `components/progression/CinematicXpRewardModal.tsx`
+
+**Original issue:** Stable `Animated.Value` ref in dep array — spurious, misleading, and would cause listener churn if ref were ever recreated.
 
 ---
 
@@ -379,20 +370,13 @@ const role = readStringField(record, ["role"])?.toLowerCase();
 
 **🟢 Low — Shared protocol | Validation**  
 **Title:** `isNullableRollDisplayValue` missing parentheses around `&&` operand  
-**Status:** `needs-investigation`  
-**File:** `shared/urMatchProtocol.ts` (~line 237)
+**Status:** `fixed`  
 
-**Issue:** `&&` binds tighter than `||`, so the expression evaluates correctly today — but the missing parentheses are misleading and could mask a future edit breaking precedence silently.
+> ✅ **FIXED** — commit `243ee9d2`. Expression now reads `value === null || (isNonNegativeInteger(value) && value <= 4)`. No behavior change; precedence is now explicit.
 
-```typescript
-// Current — functionally correct but fragile
-value === null || isNonNegativeInteger(value) && value <= 4
+**File:** `shared/urMatchProtocol.ts`
 
-// Recommended — explicit
-value === null || (isNonNegativeInteger(value) && value <= 4)
-```
-
-**Fix:** Add parentheses. No behavior change; prevents future regression.
+**Original issue:** Missing parentheses made precedence implicit — fragile against future edits.
 
 ---
 
@@ -400,12 +384,13 @@ value === null || (isNonNegativeInteger(value) && value <= 4)
 
 **🟢 Low — Shared protocol | Types**  
 **Title:** `rankTitle` typed as `string` but validated as nullable  
-**Status:** `low-priority`  
-**File:** `shared/urMatchProtocol.ts` (~line 249)
+**Status:** `fixed`  
 
-**Issue:** Field declared as `rankTitle?: string` (no null) but the runtime validator uses `isNullableString` (allows null). Null passes validation but would be a type error if consumed as a plain string.
+> ✅ **FIXED** — commit `243ee9d2`. Field now typed as `rankTitle?: string | null`, aligning the TypeScript type with the `isNullableString` validator.
 
-**Fix:** Either type as `rankTitle?: string | null` or narrow the validator to reject null: `(v): v is string => typeof v === "string"`.
+**File:** `shared/urMatchProtocol.ts`
+
+**Original issue:** Type/validator mismatch — `string` type but `isNullableString` validator allowed null through as a type error.
 
 ---
 
@@ -419,6 +404,23 @@ value === null || (isNonNegativeInteger(value) && value <= 4)
 **Issue:** The file contains only an empty XML dict. If any capability is enabled in the Apple Developer portal or Xcode (push notifications, associated domains, sign-in with Apple, etc.), the required entitlement entries must be declared here or the feature will silently fail or the build will be rejected.
 
 **Fix:** Audit Xcode → Signing & Capabilities. Add any missing entitlement keys. If no capabilities are enabled, the empty file is fine — but it should be verified and noted.
+
+---
+
+### BUG-A24
+
+**🟢 Low — UI/React | Game board**  
+**Title:** `Board.tsx` animation effect re-fires on re-render, causing duplicate move/capture animations  
+**Status:** `fixed`  
+
+> ✅ **FIXED** — commit `d81fd307`. Two changes combined to eliminate the duplicate:
+> 1. **Signature guard:** before calling `setAnimatedMove`, a move signature string (`historyEntryCount:color:pieceId:fromPos:toPos:capturedId`) is computed and compared against `lastAnimatedMoveSignatureRef`. The animation only fires if the signature differs from the last one that ran.
+> 2. **Highlight refs:** `highlightedPieceId` and `highlightedPieceColor` removed from the animation effect's dep array. They are now tracked via `highlightedPieceIdRef` / `highlightedPieceColorRef` (updated in a separate effect), so changes to those props no longer re-trigger the animation effect.
+> 3. **`LayoutAnimation.configureNext` removed** from the move commit path — was causing an unwanted layout animation on every piece move.
+
+**File:** `components/game/Board.tsx`
+
+**Root cause:** The board animation `useEffect` included `highlightedPieceId` and `highlightedPieceColor` in its dep array. When either changed (e.g., piece selection changing after a move), the effect re-ran against the same game state, found the same "next animated move", and fired the animation a second time — producing a duplicate slide/capture sequence.
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Master synthesis of the Royal Game of Ur codebase wiki.
 
-**Last updated:** 2026-04-11 (rev 2)  
+**Last updated:** 2026-04-12 (rev 3)  
 **Sources:** [[2026-04-11-ur-codebase]]  
 **Related:** [[wiki/index]]
 
@@ -51,19 +51,22 @@ Expo Router handles file-based screen routing with a transparent Stack navigator
 ## Current State of Understanding
 
 The codebase is well-structured with clear separation of concerns:
-- `logic/` is pure and portable
+- `logic/` is pure and portable — `rollDice` now accepts an injectable `DiceRandomSource` so the backend can use CSPRNG
 - `shared/` is the client-server contract
-- `services/` handles all network concerns
-- `store/` is the runtime glue
-- `app/` + `components/` + `src/` are the UI layer
+- `services/` handles all network concerns — NakamaService socket management is now robust against stale/dropped connections
+- `store/` is the runtime glue — match screen now uses `useShallow` grouped selectors instead of 28 individual subscriptions
+- `app/` + `components/` + `src/` are the UI layer — `Tile` and `Piece` are now `React.memo` with custom comparators
 
-The Nakama backend runtime, tournament system, and challenge system are now fully mapped. Three tournament bugs have been diagnosed with fixes — see [[q-tournament-bugs]].
+The Nakama backend runtime, tournament system, and challenge system are fully mapped. Previously identified tournament and race condition bugs are fixed. All 14 performance findings from the April 12 audit have been addressed or are tracked (13 resolved, 1 open — tick rate).
 
-**Key findings from backend deep-dive:**
+**Key architecture facts:**
 - There is no optimistic UI in online mode. Client is fully server-driven; all state changes wait for `STATE_SNAPSHOT`.
-- The AFK accumulator (`accumulatedMs`) runs across the entire match lifetime and is not reset on reconnect — the primary cause of late forfeits after a refresh.
-- The match launch RPC has a race condition: `nk.matchCreate` runs before the idempotency guard write, allowing two matches to be created for the same bracket entry.
-- Bracket creation writes via `updateRunWithRetry` have a commit window during which polling clients see `state: "lobby"` even though the tournament is live.
+- Authoritative dice rolls use CSPRNG (`crypto.getRandomValues` → `nk.uuidv4` fallback). Client rolls still use `Math.random`.
+- Analytics at match end are fully batched — one `nk.storageWrite` call via `AnalyticsEventWriteBuffer`, not per-event writes.
+- ELO processing now batches the idempotency check + both player profile reads into a single `storageRead`.
+- Tournament OCC writes now validate the storage version before every write; version conflict = retry, other error = throw.
+- Socket management detects stale/closed sockets via lifecycle handlers and `isSocketOpen()`, preventing silent message loss.
+- Admin session storage (ur-internals) migrated from `localStorage` to `sessionStorage` with in-memory caching.
 
 **Not yet mapped:** the full component tree, screen-level Nakama hooks (how `rollCommandSender`/`moveCommandSender` are injected), private match status polling, and the full list of challenge definitions.
 
@@ -82,3 +85,4 @@ The Nakama backend runtime, tournament system, and challenge system are now full
 
 - **2026-04-11** — Wiki initialized and first codebase ingest completed. 12 pages created across concepts and entities.
 - **2026-04-11** — Backend deep-dive: Nakama runtime, tournament flow, challenge system, and optimistic UI question fully mapped. 4 new pages, 1 updated (transport-layer), 1 query saved. All open questions from first ingest answered.
+- **2026-04-12** — 8-commit pull ingested. Performance audit issues confirmed applied. Secure RNG, socket hardening, analytics batching, ELO batching, tournament OCC hardening, and vertical board alignment refactor all documented. Test coverage updated (~92→~98 test files). 7 pages updated.

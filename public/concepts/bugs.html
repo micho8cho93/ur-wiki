@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"><head><title>bugs — Royal Game of Ur</title><meta charset="utf-8"/><link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Source Sans Pro:ital,wght@0,400;0,600;1,400;1,600&amp;family=JetBrains Mono:wght@400;600&amp;display=swap"/><link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin="anonymous"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><meta name="og:site_name" content="Ur Wiki"/><meta property="og:title" content="bugs — Royal Game of Ur"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:title" content="bugs — Royal Game of Ur"/><meta name="twitter:description" content="Bug Registry — Royal Game of Ur Last updated: 2026-04-11 — Codex medium/low fix pass verified; A02 and A04 confirmed unfixed Sources: claude-bugs.md (client/shared scan), codex-bugs.md (backend/infra scan), verification pass 2026-04-11, Codex fix pass + re-verification 2026-04-11 Statuses: confirmed..."/><meta property="og:description" content="Bug Registry — Royal Game of Ur Last updated: 2026-04-11 — Codex medium/low fix pass verified; A02 and A04 confirmed unfixed Sources: claude-bugs.md (client/shared scan), codex-bugs.md (backend/infra scan), verification pass 2026-04-11, Codex fix pass + re-verification 2026-04-11 Statuses: confirmed..."/><meta property="og:image:alt" content="Bug Registry — Royal Game of Ur Last updated: 2026-04-11 — Codex medium/low fix pass verified; A02 and A04 confirmed unfixed Sources: claude-bugs.md (client/shared scan), codex-bugs.md (backend/infra scan), verification pass 2026-04-11, Codex fix pass + re-verification 2026-04-11 Statuses: confirmed..."/><meta property="og:image" content="https://micho8cho93.github.io/ur-wiki/static/og-image.png"/><meta property="og:image:url" content="https://micho8cho93.github.io/ur-wiki/static/og-image.png"/><meta name="twitter:image" content="https://micho8cho93.github.io/ur-wiki/static/og-image.png"/><meta property="og:image:type" content="image/.png"/><meta property="twitter:domain" content="micho8cho93.github.io/ur-wiki"/><meta property="og:url" content="https://micho8cho93.github.io/ur-wiki/concepts/bugs"/><meta property="twitter:url" content="https://micho8cho93.github.io/ur-wiki/concepts/bugs"/><link rel="icon" href="../static/icon.png"/><meta name="description" content="Bug Registry — Royal Game of Ur Last updated: 2026-04-11 — Codex medium/low fix pass verified; A02 and A04 confirmed unfixed Sources: claude-bugs.md (client/shared scan), codex-bugs.md (backend/infra scan), verification pass 2026-04-11, Codex fix pass + re-verification 2026-04-11 Statuses: confirmed..."/><meta name="generator" content="Quartz"/><link href="../index.css" rel="stylesheet" type="text/css" data-persist="true"/><style>.expand-button {
+  position: absolute;
+  display: flex;
+  float: right;
+  padding: 0.4rem;
+  margin: 0.3rem;
+  right: 0;
+  color: var(--gray);
+  border-color: var(--dark);
+  background-color: var(--light);
+  border: 1px solid;
+  border-radius: 5px;
+  opacity: 0;
+  transition: 0.2s;
+}
+.expand-button > svg {
+  fill: var(--light);
+  filter: contrast(0.3);
+}
+.expand-button:hover {
+  cursor: pointer;
+  border-color: var(--secondary);
+}
+.expand-button:focus {
+  outline: 0;
+}
+
+pre:hover > .expand-button {
+  opacity: 1;
+  transition: 0.2s;
+}
+
+#mermaid-container {
+  position: fixed;
+  contain: layout;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.5);
+}
+#mermaid-container.active {
+  display: inline-block;
+}
+#mermaid-container > #mermaid-space {
+  border: 1px solid var(--lightgray);
+  background-color: var(--light);
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80vh;
+  width: 80vw;
+  overflow: hidden;
+}
+#mermaid-container > #mermaid-space > .mermaid-content {
+  position: relative;
+  transform-origin: 0 0;
+  transition: transform 0.1s ease;
+  overflow: visible;
+  min-height: 200px;
+  min-width: 200px;
+}
+#mermaid-container > #mermaid-space > .mermaid-content pre {
+  margin: 0;
+  border: none;
+}
+#mermaid-container > #mermaid-space > .mermaid-content svg {
+  max-width: none;
+  height: auto;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  background: var(--light);
+  border: 1px solid var(--lightgray);
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--lightgray);
+  background: var(--light);
+  color: var(--dark);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  font-family: var(--bodyFont);
+  transition: all 0.2s ease;
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:hover {
+  background: var(--lightgray);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:active {
+  transform: translateY(1px);
+}
+#mermaid-container > #mermaid-space > .mermaid-controls .mermaid-control-button:nth-child(2) {
+  width: auto;
+  padding: 0 12px;
+  font-size: 14px;
+}
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VSb290IjoiL1VzZXJzL01pY2hlbC9EZXNrdG9wL3VyLXdpa2kvcXVhcnR6L2NvbXBvbmVudHMvc3R5bGVzIiwic291cmNlcyI6WyJtZXJtYWlkLmlubGluZS5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFHRjtFQUNFOzs7QUFLRjtFQUNFO0VBQ0E7OztBQUlKO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTs7QUFFQTtFQUNFOztBQUdGO0VBQ0U7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBOztBQUdGO0VBQ0U7RUFDQTs7QUFJSjtFQUNFO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7O0FBRUE7RUFDRTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBO0VBQ0E7RUFDQTtFQUNBOztBQUVBO0VBQ0U7O0FBR0Y7RUFDRTs7QUFJRjtFQUNFO0VBQ0E7RUFDQSIsInNvdXJjZXNDb250ZW50IjpbIi5leHBhbmQtYnV0dG9uIHtcbiAgcG9zaXRpb246IGFic29sdXRlO1xuICBkaXNwbGF5OiBmbGV4O1xuICBmbG9hdDogcmlnaHQ7XG4gIHBhZGRpbmc6IDAuNHJlbTtcbiAgbWFyZ2luOiAwLjNyZW07XG4gIHJpZ2h0OiAwOyAvLyBOT1RFOiByaWdodCB3aWxsIGJlIHNldCBpbiBtZXJtYWlkLmlubGluZS50c1xuICBjb2xvcjogdmFyKC0tZ3JheSk7XG4gIGJvcmRlci1jb2xvcjogdmFyKC0tZGFyayk7XG4gIGJhY2tncm91bmQtY29sb3I6IHZhcigtLWxpZ2h0KTtcbiAgYm9yZGVyOiAxcHggc29saWQ7XG4gIGJvcmRlci1yYWRpdXM6IDVweDtcbiAgb3BhY2l0eTogMDtcbiAgdHJhbnNpdGlvbjogMC4ycztcblxuICAmID4gc3ZnIHtcbiAgICBmaWxsOiB2YXIoLS1saWdodCk7XG4gICAgZmlsdGVyOiBjb250cmFzdCgwLjMpO1xuICB9XG5cbiAgJjpob3ZlciB7XG4gICAgY3Vyc29yOiBwb2ludGVyO1xuICAgIGJvcmRlci1jb2xvcjogdmFyKC0tc2Vjb25kYXJ5KTtcbiAgfVxuXG4gICY6Zm9jdXMge1xuICAgIG91dGxpbmU6IDA7XG4gIH1cbn1cblxucHJlIHtcbiAgJjpob3ZlciA+IC5leHBhbmQtYnV0dG9uIHtcbiAgICBvcGFjaXR5OiAxO1xuICAgIHRyYW5zaXRpb246IDAuMnM7XG4gIH1cbn1cblxuI21lcm1haWQtY29udGFpbmVyIHtcbiAgcG9zaXRpb246IGZpeGVkO1xuICBjb250YWluOiBsYXlvdXQ7XG4gIHotaW5kZXg6IDk5OTtcbiAgbGVmdDogMDtcbiAgdG9wOiAwO1xuICB3aWR0aDogMTAwdnc7XG4gIGhlaWdodDogMTAwdmg7XG4gIG92ZXJmbG93OiBoaWRkZW47XG4gIGRpc3BsYXk6IG5vbmU7XG4gIGJhY2tkcm9wLWZpbHRlcjogYmx1cig0cHgpO1xuICBiYWNrZ3JvdW5kOiByZ2JhKDAsIDAsIDAsIDAuNSk7XG5cbiAgJi5hY3RpdmUge1xuICAgIGRpc3BsYXk6IGlubGluZS1ibG9jaztcbiAgfVxuXG4gICYgPiAjbWVybWFpZC1zcGFjZSB7XG4gICAgYm9yZGVyOiAxcHggc29saWQgdmFyKC0tbGlnaHRncmF5KTtcbiAgICBiYWNrZ3JvdW5kLWNvbG9yOiB2YXIoLS1saWdodCk7XG4gICAgYm9yZGVyLXJhZGl1czogNXB4O1xuICAgIHBvc2l0aW9uOiBmaXhlZDtcbiAgICB0b3A6IDUwJTtcbiAgICBsZWZ0OiA1MCU7XG4gICAgdHJhbnNmb3JtOiB0cmFuc2xhdGUoLTUwJSwgLTUwJSk7XG4gICAgaGVpZ2h0OiA4MHZoO1xuICAgIHdpZHRoOiA4MHZ3O1xuICAgIG92ZXJmbG93OiBoaWRkZW47XG5cbiAgICAmID4gLm1lcm1haWQtY29udGVudCB7XG4gICAgICBwb3NpdGlvbjogcmVsYXRpdmU7XG4gICAgICB0cmFuc2Zvcm0tb3JpZ2luOiAwIDA7XG4gICAgICB0cmFuc2l0aW9uOiB0cmFuc2Zvcm0gMC4xcyBlYXNlO1xuICAgICAgb3ZlcmZsb3c6IHZpc2libGU7XG4gICAgICBtaW4taGVpZ2h0OiAyMDBweDtcbiAgICAgIG1pbi13aWR0aDogMjAwcHg7XG5cbiAgICAgIHByZSB7XG4gICAgICAgIG1hcmdpbjogMDtcbiAgICAgICAgYm9yZGVyOiBub25lO1xuICAgICAgfVxuXG4gICAgICBzdmcge1xuICAgICAgICBtYXgtd2lkdGg6IG5vbmU7XG4gICAgICAgIGhlaWdodDogYXV0bztcbiAgICAgIH1cbiAgICB9XG5cbiAgICAmID4gLm1lcm1haWQtY29udHJvbHMge1xuICAgICAgcG9zaXRpb246IGFic29sdXRlO1xuICAgICAgYm90dG9tOiAyMHB4O1xuICAgICAgcmlnaHQ6IDIwcHg7XG4gICAgICBkaXNwbGF5OiBmbGV4O1xuICAgICAgZ2FwOiA4cHg7XG4gICAgICBwYWRkaW5nOiA4cHg7XG4gICAgICBiYWNrZ3JvdW5kOiB2YXIoLS1saWdodCk7XG4gICAgICBib3JkZXI6IDFweCBzb2xpZCB2YXIoLS1saWdodGdyYXkpO1xuICAgICAgYm9yZGVyLXJhZGl1czogNnB4O1xuICAgICAgYm94LXNoYWRvdzogMCAycHggNHB4IHJnYmEoMCwgMCwgMCwgMC4xKTtcbiAgICAgIHotaW5kZXg6IDI7XG5cbiAgICAgIC5tZXJtYWlkLWNvbnRyb2wtYnV0dG9uIHtcbiAgICAgICAgZGlzcGxheTogZmxleDtcbiAgICAgICAgYWxpZ24taXRlbXM6IGNlbnRlcjtcbiAgICAgICAganVzdGlmeS1jb250ZW50OiBjZW50ZXI7XG4gICAgICAgIHdpZHRoOiAzMnB4O1xuICAgICAgICBoZWlnaHQ6IDMycHg7XG4gICAgICAgIHBhZGRpbmc6IDA7XG4gICAgICAgIGJvcmRlcjogMXB4IHNvbGlkIHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0KTtcbiAgICAgICAgY29sb3I6IHZhcigtLWRhcmspO1xuICAgICAgICBib3JkZXItcmFkaXVzOiA0cHg7XG4gICAgICAgIGN1cnNvcjogcG9pbnRlcjtcbiAgICAgICAgZm9udC1zaXplOiAxNnB4O1xuICAgICAgICBmb250LWZhbWlseTogdmFyKC0tYm9keUZvbnQpO1xuICAgICAgICB0cmFuc2l0aW9uOiBhbGwgMC4ycyBlYXNlO1xuXG4gICAgICAgICY6aG92ZXIge1xuICAgICAgICAgIGJhY2tncm91bmQ6IHZhcigtLWxpZ2h0Z3JheSk7XG4gICAgICAgIH1cblxuICAgICAgICAmOmFjdGl2ZSB7XG4gICAgICAgICAgdHJhbnNmb3JtOiB0cmFuc2xhdGVZKDFweCk7XG4gICAgICAgIH1cblxuICAgICAgICAvLyBTdHlsZSB0aGUgcmVzZXQgYnV0dG9uIGRpZmZlcmVudGx5XG4gICAgICAgICY6bnRoLWNoaWxkKDIpIHtcbiAgICAgICAgICB3aWR0aDogYXV0bztcbiAgICAgICAgICBwYWRkaW5nOiAwIDEycHg7XG4gICAgICAgICAgZm9udC1zaXplOiAxNHB4O1xuICAgICAgICB9XG4gICAgICB9XG4gICAgfVxuICB9XG59XG4iXX0= */</style><link href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" rel="stylesheet" type="text/css" data-persist="true"/><script src="../prescript.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">const fetchData = fetch("../static/contentIndex.json").then(data => data.json())</script><link rel="alternate" type="application/rss+xml" title="RSS Feed" href="https://micho8cho93.github.io/ur-wiki/index.xml"/></head><body data-slug="concepts/bugs"><div id="quartz-root" class="page"><div id="quartz-body"><div class="left sidebar"><h2 class="page-title"><a href="..">Ur Wiki</a></h2><div class="spacer mobile-only"></div><div class="flex-component" style="flex-direction: row; flex-wrap: nowrap; gap: 1rem;"><div style="flex-grow: 1; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><div class="search"><button class="search-button"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.9 19.7"><title>Search</title><g class="search-path" fill="none"><path stroke-linecap="square" d="M18.5 18.3l-5.4-5.4"></path><circle cx="8" cy="8" r="7"></circle></g></svg><p>Search</p></button><div class="search-container"><div class="search-space"><input autocomplete="off" class="search-bar" name="search" type="text" aria-label="Search for something" placeholder="Search for something"/><div class="search-layout" data-preview="true"></div></div></div></div></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="darkmode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="dayIcon" x="0px" y="0px" viewBox="0 0 35 35" style="enable-background:new 0 0 35 35" xml:space="preserve" aria-label="Dark mode"><title>Dark mode</title><path d="M6,17.5C6,16.672,5.328,16,4.5,16h-3C0.672,16,0,16.672,0,17.5    S0.672,19,1.5,19h3C5.328,19,6,18.328,6,17.5z M7.5,26c-0.414,0-0.789,0.168-1.061,0.439l-2,2C4.168,28.711,4,29.086,4,29.5    C4,30.328,4.671,31,5.5,31c0.414,0,0.789-0.168,1.06-0.44l2-2C8.832,28.289,9,27.914,9,27.5C9,26.672,8.329,26,7.5,26z M17.5,6    C18.329,6,19,5.328,19,4.5v-3C19,0.672,18.329,0,17.5,0S16,0.672,16,1.5v3C16,5.328,16.671,6,17.5,6z M27.5,9    c0.414,0,0.789-0.168,1.06-0.439l2-2C30.832,6.289,31,5.914,31,5.5C31,4.672,30.329,4,29.5,4c-0.414,0-0.789,0.168-1.061,0.44    l-2,2C26.168,6.711,26,7.086,26,7.5C26,8.328,26.671,9,27.5,9z M6.439,8.561C6.711,8.832,7.086,9,7.5,9C8.328,9,9,8.328,9,7.5    c0-0.414-0.168-0.789-0.439-1.061l-2-2C6.289,4.168,5.914,4,5.5,4C4.672,4,4,4.672,4,5.5c0,0.414,0.168,0.789,0.439,1.06    L6.439,8.561z M33.5,16h-3c-0.828,0-1.5,0.672-1.5,1.5s0.672,1.5,1.5,1.5h3c0.828,0,1.5-0.672,1.5-1.5S34.328,16,33.5,16z     M28.561,26.439C28.289,26.168,27.914,26,27.5,26c-0.828,0-1.5,0.672-1.5,1.5c0,0.414,0.168,0.789,0.439,1.06l2,2    C28.711,30.832,29.086,31,29.5,31c0.828,0,1.5-0.672,1.5-1.5c0-0.414-0.168-0.789-0.439-1.061L28.561,26.439z M17.5,29    c-0.829,0-1.5,0.672-1.5,1.5v3c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5v-3C19,29.672,18.329,29,17.5,29z M17.5,7    C11.71,7,7,11.71,7,17.5S11.71,28,17.5,28S28,23.29,28,17.5S23.29,7,17.5,7z M17.5,25c-4.136,0-7.5-3.364-7.5-7.5    c0-4.136,3.364-7.5,7.5-7.5c4.136,0,7.5,3.364,7.5,7.5C25,21.636,21.636,25,17.5,25z"></path></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="nightIcon" x="0px" y="0px" viewBox="0 0 100 100" style="enable-background:new 0 0 100 100" xml:space="preserve" aria-label="Light mode"><title>Light mode</title><path d="M96.76,66.458c-0.853-0.852-2.15-1.064-3.23-0.534c-6.063,2.991-12.858,4.571-19.655,4.571  C62.022,70.495,50.88,65.88,42.5,57.5C29.043,44.043,25.658,23.536,34.076,6.47c0.532-1.08,0.318-2.379-0.534-3.23  c-0.851-0.852-2.15-1.064-3.23-0.534c-4.918,2.427-9.375,5.619-13.246,9.491c-9.447,9.447-14.65,22.008-14.65,35.369  c0,13.36,5.203,25.921,14.65,35.368s22.008,14.65,35.368,14.65c13.361,0,25.921-5.203,35.369-14.65  c3.872-3.871,7.064-8.328,9.491-13.246C97.826,68.608,97.611,67.309,96.76,66.458z"></path></svg></button></div><div style="flex-grow: 0; flex-shrink: 1; flex-basis: auto; order: 0; align-self: center; justify-self: center;"><button class="readermode"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="readerIcon" fill="currentColor" stroke="currentColor" stroke-width="0.2" stroke-linecap="round" stroke-linejoin="round" width="64px" height="64px" viewBox="0 0 24 24" aria-label="Reader mode"><title>Reader mode</title><g transform="translate(-1.8, -1.8) scale(1.15, 1.2)"><path d="M8.9891247,2.5 C10.1384702,2.5 11.2209868,2.96705384 12.0049645,3.76669482 C12.7883914,2.96705384 13.8709081,2.5 15.0202536,2.5 L18.7549359,2.5 C19.1691495,2.5 19.5049359,2.83578644 19.5049359,3.25 L19.5046891,4.004 L21.2546891,4.00457396 C21.6343849,4.00457396 21.9481801,4.28672784 21.9978425,4.6528034 L22.0046891,4.75457396 L22.0046891,20.25 C22.0046891,20.6296958 21.7225353,20.943491 21.3564597,20.9931534 L21.2546891,21 L2.75468914,21 C2.37499337,21 2.06119817,20.7178461 2.01153575,20.3517706 L2.00468914,20.25 L2.00468914,4.75457396 C2.00468914,4.37487819 2.28684302,4.061083 2.65291858,4.01142057 L2.75468914,4.00457396 L4.50368914,4.004 L4.50444233,3.25 C4.50444233,2.87030423 4.78659621,2.55650904 5.15267177,2.50684662 L5.25444233,2.5 L8.9891247,2.5 Z M4.50368914,5.504 L3.50468914,5.504 L3.50468914,19.5 L10.9478955,19.4998273 C10.4513189,18.9207296 9.73864328,18.5588115 8.96709342,18.5065584 L8.77307039,18.5 L5.25444233,18.5 C4.87474657,18.5 4.56095137,18.2178461 4.51128895,17.8517706 L4.50444233,17.75 L4.50368914,5.504 Z M19.5049359,17.75 C19.5049359,18.1642136 19.1691495,18.5 18.7549359,18.5 L15.2363079,18.5 C14.3910149,18.5 13.5994408,18.8724714 13.0614828,19.4998273 L20.5046891,19.5 L20.5046891,5.504 L19.5046891,5.504 L19.5049359,17.75 Z M18.0059359,3.999 L15.0202536,4 L14.8259077,4.00692283 C13.9889509,4.06666544 13.2254227,4.50975805 12.7549359,5.212 L12.7549359,17.777 L12.7782651,17.7601316 C13.4923805,17.2719483 14.3447024,17 15.2363079,17 L18.0059359,16.999 L18.0056891,4.798 L18.0033792,4.75457396 L18.0056891,4.71 L18.0059359,3.999 Z M8.9891247,4 L6.00368914,3.999 L6.00599909,4.75457396 L6.00599909,4.75457396 L6.00368914,4.783 L6.00368914,16.999 L8.77307039,17 C9.57551536,17 10.3461406,17.2202781 11.0128313,17.6202194 L11.2536891,17.776 L11.2536891,5.211 C10.8200889,4.56369974 10.1361548,4.13636104 9.37521067,4.02745763 L9.18347055,4.00692283 L8.9891247,4 Z"></path></g></svg></button></div></div><div class="explorer" data-behavior="link" data-collapsed="collapsed" data-savestate="true" data-data-fns="{&quot;order&quot;:[&quot;filter&quot;,&quot;map&quot;,&quot;sort&quot;],&quot;sortFn&quot;:&quot;(a,b)=>!a.isFolder&amp;&amp;!b.isFolder||a.isFolder&amp;&amp;b.isFolder?a.displayName.localeCompare(b.displayName,void 0,{numeric:!0,sensitivity:\&quot;base\&quot;}):!a.isFolder&amp;&amp;b.isFolder?1:-1&quot;,&quot;filterFn&quot;:&quot;node=>node.slugSegment!==\&quot;tags\&quot;&quot;,&quot;mapFn&quot;:&quot;node=>node&quot;}"><button type="button" class="explorer-toggle mobile-explorer hide-until-loaded" data-mobile="true" aria-controls="explorer-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide-menu"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg></button><button type="button" class="title-button explorer-toggle desktop-explorer" data-mobile="false" aria-expanded="true"><h2>Explorer</h2><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><div id="explorer-3" class="explorer-content" aria-expanded="false" role="group"><ul class="explorer-ul overflow" id="list-0"><li class="overflow-end"></li></ul></div><template id="template-file"><li><a href="#"></a></li></template><template id="template-folder"><li><div class="folder-container"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="5 8 14 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="folder-icon"><polyline points="6 9 12 15 18 9"></polyline></svg><div><button class="folder-button"><span class="folder-title"></span></button></div></div><div class="folder-outer"><ul class="content"></ul></div></li></template></div></div><div class="center"><div class="page-header"><div class="popover-hint"><nav class="breadcrumb-container" aria-label="breadcrumbs"><div class="breadcrumb-element"><a href="../">Home</a><p> ❯ </p></div><div class="breadcrumb-element"><a href="../concepts/">concepts</a><p> ❯ </p></div><div class="breadcrumb-element"><a href>bugs</a></div></nav><h1 class="article-title">bugs</h1><p show-comma="true" class="content-meta"><time datetime="2026-04-11T20:57:45.823Z">Apr 11, 2026</time><span>13 min read</span></p></div></div><article class="popover-hint"><h1 id="bug-registry--royal-game-of-ur">Bug Registry — Royal Game of Ur<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-registry--royal-game-of-ur" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h1>
+<blockquote>
+<p><strong>Last updated:</strong> 2026-04-11 — Codex medium/low fix pass verified; A02 and A04 confirmed unfixed<br/>
+<strong>Sources:</strong> claude-bugs.md (client/shared scan), codex-bugs.md (backend/infra scan), verification pass 2026-04-11, Codex fix pass + re-verification 2026-04-11<br/>
+<strong>Statuses:</strong> <code>confirmed</code> | <code>open</code> | <code>needs-investigation</code> | <code>low-priority</code> | <code>not-a-bug</code> | <code>fixed</code></p>
+</blockquote>
+<hr/>
+<h2 id="quick-reference">Quick Reference<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#quick-reference" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="table-container"><table><thead><tr><th>ID</th><th>Severity</th><th>Area</th><th>Title</th><th>Status</th></tr></thead><tbody><tr><td><a href="#bug-a01" class="internal alias">BUG-A01</a></td><td>🔴 Critical</td><td>Backend auth</td><td>Default admin bootstrapping allows full takeover</td><td><code>confirmed</code></td></tr><tr><td><a href="#bug-a02" class="internal alias">BUG-A02</a></td><td>🔴 Critical</td><td>Backend auth</td><td><code>requireCompletedUsernameOnboarding</code> inverted guard</td><td><code>confirmed</code> ⚠️ NOT FIXED</td></tr><tr><td><a href="#bug-a03" class="internal alias">BUG-A03</a></td><td>🔴 Critical</td><td>Infra/security</td><td>Nakama console exposed via Caddy + default credentials</td><td><code>open</code></td></tr><tr><td><a href="#bug-a04" class="internal alias">BUG-A04</a></td><td>🔴 High</td><td>Functional</td><td>Presence RPC payload unparsed — online count always throws</td><td><code>confirmed</code> ⚠️ NOT FIXED</td></tr><tr><td><a href="#bug-a05" class="internal alias">BUG-A05</a></td><td>🔴 High</td><td>Infra/security</td><td>Secrets committed in <code>nakama.yml</code> (rotate ASAP)</td><td><code>open</code></td></tr><tr><td><a href="#bug-a06" class="internal alias">BUG-A06</a></td><td>🟡 Medium</td><td>Backend reliability</td><td>Private match orphaned if code record write fails</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a07" class="internal alias">BUG-A07</a></td><td>🟡 Medium</td><td>Backend reliability</td><td>Rematch private match has same ordering hazard as A06</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a08" class="internal alias">BUG-A08</a></td><td>🟡 Medium</td><td>Backend reliability</td><td>Bare <code>JSON.parse(payload)</code> crashes on malformed RPC input</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a09" class="internal alias">BUG-A09</a></td><td>🟡 Medium</td><td>Client reliability</td><td><code>connectSocket()</code> can return stale/dead socket</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a10" class="internal alias">BUG-A10</a></td><td>🟡 Medium</td><td>Infra/security</td><td>Dev docker-compose exposes Postgres + unsafe default keys</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a11" class="internal alias">BUG-A11</a></td><td>🟡 Medium</td><td>Client security</td><td>Admin session tokens stored in <code>localStorage</code></td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a12" class="internal alias">BUG-A12</a></td><td>🟡 Medium</td><td>Game fairness</td><td>Authoritative dice rolls use <code>Math.random()</code> (not CSPRNG)</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a13" class="internal alias">BUG-A13</a></td><td>🟡 Medium</td><td>UI/React</td><td><code>CinematicXpRewardModal</code> cleanup effect has spurious deps</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a14" class="internal alias">BUG-A14</a></td><td>🟡 Medium</td><td>UI/React</td><td><code>FloatingEmojiReactions</code> unstable <code>onComplete</code> in dep array</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a15" class="internal alias">BUG-A15</a></td><td>🟡 Medium</td><td>Scripts</td><td><code>reset-project.js</code> moves its own <code>scripts/</code> directory</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a16" class="internal alias">BUG-A16</a></td><td>🟡 Medium</td><td>Shared protocol</td><td><code>isTournamentMatchRewardSummaryPayload</code> allows floats for int fields</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a17" class="internal alias">BUG-A17</a></td><td>🟡 Medium</td><td>Backend</td><td><code>appendNumericSuffix</code> uses wrong floor in max-length trim</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a18" class="internal alias">BUG-A18</a></td><td>🟡 Medium</td><td>Backend auth</td><td>Admin role normalization rejects non-lowercase object-stored roles</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a19" class="internal alias">BUG-A19</a></td><td>🟡 Medium</td><td>Client auth</td><td>Session restore silently re-persists stale session on revoked refresh token</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a20" class="internal alias">BUG-A20</a></td><td>🟡 Medium</td><td>UI/React</td><td><code>xpValue</code> Animated.Value in listener dep array (stable ref, spurious)</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a21" class="internal alias">BUG-A21</a></td><td>🟢 Low</td><td>Shared protocol</td><td><code>isNullableRollDisplayValue</code> missing parentheses (fragile precedence)</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a22" class="internal alias">BUG-A22</a></td><td>🟢 Low</td><td>Shared protocol</td><td><code>rankTitle</code> type/validator mismatch (typed string, validated nullable)</td><td><code>fixed</code></td></tr><tr><td><a href="#bug-a23" class="internal alias">BUG-A23</a></td><td>🟢 Low</td><td>iOS</td><td>Entitlements file is empty — may silently break capabilities</td><td><code>needs-investigation</code></td></tr><tr><td><a href="#bug-a24" class="internal alias">BUG-A24</a></td><td>🟢 Low</td><td>UI/React</td><td><code>Board.tsx</code> animation effect re-fires on re-render, causing duplicate move/capture animations</td><td><code>fixed</code></td></tr></tbody></table></div>
+<hr/>
+<h2 id="critical--high-severity">Critical &amp; High Severity<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#critical--high-severity" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<hr/>
+<h3 id="bug-a01">BUG-A01<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a01" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🔴 Critical — Security | Backend admin auth</strong><br/>
+<strong>Title:</strong> Default admin bootstrapping allows full privilege escalation<br/>
+<strong>Status:</strong> <code>confirmed</code><br/>
+<strong>Files:</strong> <code>backend/modules/tournaments/auth.ts</code>, <code>ur-internals/src/auth/nakama.ts</code></p>
+<p><strong>Issue:</strong> Two interconnected problems create an exploitable admin takeover path:</p>
+<ol>
+<li>The backend auto-grants the <code>admin</code> role to any Nakama user whose username is <code>&quot;admin&quot;</code> via <code>maybeBootstrapTestAdminRole</code>. No server-side secret required.</li>
+<li><code>ur-internals</code> authenticates by calling <code>authenticateCustom(&quot;ur-internals-admin&quot;, create=true, username=&quot;admin&quot;)</code> — the custom ID and username are hardcoded and public. The password check (<code>&quot;admin&quot;/&quot;password&quot;</code>) is client-side only. An attacker can call the Nakama API directly, skip the UI entirely, and receive admin role.</li>
+</ol>
+<p><strong>Attack vector:</strong> Call <code>authenticateCustom</code> with <code>custom_id=ur-internals-admin</code> → Nakama creates/finds user with username <code>admin</code> → bootstrap grants <code>admin</code> role → all admin RPCs accessible.</p>
+<p><strong>Fix options:</strong></p>
+<ul>
+<li>Remove <code>maybeBootstrapTestAdminRole</code> entirely for production builds (recommended).</li>
+<li>If a break-glass admin is needed: gate behind an env flag, verify by exact <code>userId</code> (not username), or require a backend-issued short-lived HMAC token as the credential.</li>
+<li>Replace hardcoded custom ID + client-side password check with real operator auth (OIDC/SSO, or Nakama console-issued tokens with server-validated secret).</li>
+</ul>
+<hr/>
+<h3 id="bug-a02">BUG-A02<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a02" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🔴 Critical — Functional | Backend auth</strong><br/>
+<strong>Title:</strong> <code>requireCompletedUsernameOnboarding</code> guard logic is inverted<br/>
+<strong>Status:</strong> <code>confirmed</code></p>
+<blockquote>
+<p>⚠️ <strong>NOT FIXED by Codex</strong> — Code still reads <code>if (!object || profile.onboardingComplete) return;</code>. The missing <code>!</code> before <code>onboardingComplete</code> is still absent. A user with no stored profile still passes through without completing onboarding.</p>
+</blockquote>
+<p><strong>File:</strong> <code>backend/modules/usernameOnboarding.ts</code> (~line 380)</p>
+<p><strong>Issue:</strong> The guard returns (allows access) when <code>!object</code> (no stored profile), then throws only if the object exists AND <code>onboardingComplete</code> is false. A user with no stored profile passes through without completing onboarding.</p>
+<figure data-rehype-pretty-code-figure><pre tabindex="0" data-language="typescript" data-theme="github-light github-dark"><code data-language="typescript" data-theme="github-light github-dark" style="display:grid;"><span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// Current (broken) — no profile = passes through</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">object </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">||</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> profile.onboardingComplete) </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">return</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">;</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">throw</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> new</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> Error</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;...&quot;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line> </span>
+<span data-line><span style="--shiki-light:#6A737D;--shiki-dark:#6A737D;">// Correct — no profile OR incomplete = blocked</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">if</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;"> (</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">!</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">object </span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">||</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> !</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">profile.onboardingComplete) {</span></span>
+<span data-line><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;">  throw</span><span style="--shiki-light:#D73A49;--shiki-dark:#F97583;"> new</span><span style="--shiki-light:#6F42C1;--shiki-dark:#B392F0;"> Error</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">(</span><span style="--shiki-light:#032F62;--shiki-dark:#9ECBFF;">&quot;Choose a username before accessing multiplayer or social features.&quot;</span><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">);</span></span>
+<span data-line><span style="--shiki-light:#24292E;--shiki-dark:#E1E4E8;">}</span></span></code></pre></figure>
+<p><strong>Fix:</strong> Flip the condition on <code>onboardingComplete</code> — add the missing <code>!</code>.</p>
+<hr/>
+<h3 id="bug-a03">BUG-A03<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a03" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🔴 Critical — Security | Infra/deploy</strong><br/>
+<strong>Title:</strong> Nakama console exposed publicly via Caddy with default credentials<br/>
+<strong>Status:</strong> <code>open</code><br/>
+<strong>Files:</strong> <code>backend/deploy/Caddyfile</code>, <code>backend/nakama.yml</code></p>
+<p><strong>Issue:</strong> The Caddyfile contains a <code>admin-nakama.urgame.live</code> site that reverse-proxies directly to <code>nakama:7351</code> (the Nakama admin console) with no authentication middleware. <code>nakama.yml</code> sets <code>console.username: &quot;admin&quot;</code> and <code>console.password: &quot;password&quot;</code>. If DNS is pointed, the console is internet-accessible with default credentials — full server control.</p>
+<p>Note: <code>docker-compose.prod.yml</code> binds port 7351 to <code>127.0.0.1</code> (partial hardening), but the Caddyfile routes around that by proxying internally.</p>
+<p><strong>Fix options:</strong></p>
+<ul>
+<li>Remove the <code>admin-nakama.*</code> site from Caddyfile entirely (recommended). Access console via SSH tunnel.</li>
+<li>If remote access is required: IP allowlist + mTLS/basic-auth at Caddy layer before proxying.</li>
+<li>Rotate <code>console.signing_key</code> and set non-default credentials regardless.</li>
+<li>Align <code>backend/deploy/README.md</code> with Caddyfile (README says local-only; Caddyfile contradicts).</li>
+</ul>
+<hr/>
+<h3 id="bug-a04">BUG-A04<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a04" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🔴 High — Functional | Client services</strong><br/>
+<strong>Title:</strong> Presence RPC payload never parsed — online count always throws<br/>
+<strong>Status:</strong> <code>confirmed</code></p>
+<blockquote>
+<p>⚠️ <strong>NOT FIXED by Codex</strong> — <code>parseOnlineCount</code> still casts <code>payload</code> directly as <code>PresenceRpcPayload</code> without <code>JSON.parse</code>. The Nakama JS client delivers <code>response.payload</code> as a <strong>string</strong>, so <code>rpcPayload.onlineCount</code> is always <code>undefined</code>, causing every heartbeat/player-count call to throw.</p>
+</blockquote>
+<p><strong>Files:</strong> <code>services/presence.ts</code>, <code>backend/modules/index.ts</code>, <code>backend/modules/analytics/tracking.ts</code></p>
+<p><strong>Issue:</strong> Backend returns <code>JSON.stringify({ onlineCount, onlineTtlMs, serverTimeMs })</code>, so the Nakama JS client delivers <code>response.payload</code> as a <strong>string</strong>. <code>parseOnlineCount()</code> in <code>presence.ts</code> casts payload to <code>PresenceRpcPayload</code> object and reads <code>.onlineCount</code> directly — this is always <code>undefined</code> on a string — causing every heartbeat and player-count call to throw <code>&quot;Presence RPC payload is missing a valid onlineCount.&quot;</code>.</p>
+<p><strong>Fix options:</strong></p>
+<ul>
+<li>Parse before reading: <code>const parsed = typeof payload === &quot;string&quot; ? JSON.parse(payload) : payload;</code></li>
+<li>Reuse the <code>unwrapRpcPayload</code> / <code>tryParseJsonString</code> pattern already used in <code>ur-internals/src/api/client.ts</code>.</li>
+</ul>
+<hr/>
+<h3 id="bug-a05">BUG-A05<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a05" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🔴 High — Security | Infra/config</strong><br/>
+<strong>Title:</strong> Long-lived secrets committed to <code>nakama.yml</code><br/>
+<strong>Status:</strong> <code>open</code><br/>
+<strong>Files:</strong> <code>backend/nakama.yml</code>, <code>backend/deploy/docker-compose.prod.yml</code></p>
+<p><strong>Issue:</strong> <code>nakama.yml</code> contains hardcoded long-lived secrets in the repository:</p>
+<ul>
+<li><code>session.encryption_key</code></li>
+<li><code>session.refresh_encryption_key</code></li>
+<li><code>console.signing_key</code></li>
+<li>Console <code>username</code> / <code>password</code></li>
+</ul>
+<p>Any repository leak or broad access exposes these permanently (git history preserves them even after removal).</p>
+<p><strong>Fix options:</strong></p>
+<ul>
+<li>Move all secrets to environment variables injected at deploy time (prod compose already supports this pattern for DB/socket keys — extend it).</li>
+<li>Add a separate <code>nakama.prod.yml</code> outside git for prod-only config.</li>
+<li>Rotate all keys immediately in production; invalidate existing sessions as needed.</li>
+</ul>
+<hr/>
+<h2 id="medium-severity">Medium Severity<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#medium-severity" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<hr/>
+<h3 id="bug-a06">BUG-A06<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a06" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Reliability | Backend private match</strong><br/>
+<strong>Title:</strong> Private match can be orphaned if code record write fails<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>54b3a797</code>. “Reserve first” pattern implemented. <code>reservePrivateMatchCodeRecord</code> writes a placeholder record (<code>matchId: null</code>) before <code>nk.matchCreate</code>. After <code>matchCreate</code> succeeds, <code>createPrivateMatchCodeRecord</code> updates it with the real <code>matchId</code> using a retry loop (up to <code>PRIVATE_MATCH_CODE_WRITE_ATTEMPTS</code>). If <code>matchCreate</code> fails, the reservation is cleaned up via <code>deletePrivateMatchCodeRecord</code>. If the final publish fails, a clear error is surfaced to the caller.</p>
+</blockquote>
+<p><strong>File:</strong> <code>backend/modules/index.ts</code></p>
+<p><strong>Original issue:</strong> <code>rpcCreatePrivateMatch</code> called <code>nk.matchCreate(...)</code> before <code>createPrivateMatchCodeRecord(...)</code>. If the storage write failed, the match had no discoverable join code → orphaned match until timeout.</p>
+<hr/>
+<h3 id="bug-a07">BUG-A07<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a07" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Reliability | Backend rematch</strong><br/>
+<strong>Title:</strong> Rematch private match has same ordering hazard as BUG-A06<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>54b3a797</code>. Same “reserve first” pattern applied to the rematch path. <code>reservePrivateMatchCodeRecord</code> is called before <code>nk.matchCreate</code>. On <code>matchCreate</code> failure, the reservation is cleaned up. On code publish failure, a warning is logged (rematch can still proceed via the match ID stored in match state).</p>
+</blockquote>
+<p><strong>File:</strong> <code>backend/modules/index.ts</code></p>
+<p><strong>Original issue:</strong> Same ordering hazard as A06 in the separate rematch code path.</p>
+<hr/>
+<h3 id="bug-a08">BUG-A08<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a08" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Reliability | Backend RPCs</strong><br/>
+<strong>Title:</strong> Bare <code>JSON.parse(payload)</code> in multiple RPC handlers crashes on malformed input<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>54b3a797</code>. All RPC handlers now call <code>parseRpcPayload(payload)</code>. No bare <code>JSON.parse</code> calls remain in <code>index.ts</code>.</p>
+</blockquote>
+<p><strong>File:</strong> <code>backend/modules/index.ts</code></p>
+<p><strong>Original issue:</strong> <code>rpcAuthLinkCustom</code> and <code>rpcMatchmakerAdd</code> used bare <code>JSON.parse(payload)</code> — malformed input caused unhandled 500 errors.</p>
+<hr/>
+<h3 id="bug-a09">BUG-A09<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a09" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Reliability | Client socket</strong><br/>
+<strong>Title:</strong> <code>connectSocket()</code> returns cached socket without checking if it’s still connected<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>eddbabca</code>. <code>connectSocket()</code> now checks <code>this.socket &amp;&amp; this.socketConnected &amp;&amp; this.isSocketOpen(this.socket)</code> before reusing. <code>isSocketOpen()</code> inspects the underlying WebSocket adapter’s <code>isOpen()</code> method if available, falling back to <code>socketConnected</code>. <code>handleSocketDisconnected()</code> nulls <code>this.socket</code> and clears <code>socketConnected</code>; it is registered on the socket’s disconnect and heartbeat timeout events.</p>
+</blockquote>
+<p><strong>File:</strong> <code>services/nakama.ts</code></p>
+<p><strong>Original issue:</strong> <code>connectSocket()</code> returned a stale socket reference after network drops — no connectivity check, no auto-null on disconnect.</p>
+<hr/>
+<h3 id="bug-a10">BUG-A10<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a10" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Security | Dev infra</strong><br/>
+<strong>Title:</strong> Dev docker-compose exposes Postgres externally with insecure defaults<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>eddbabca</code>. Postgres port now bound to <code>127.0.0.1:5432:5432</code>. All env vars use <code>:?</code> syntax (e.g., <code>${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in backend/.env}</code>) — compose fails loudly if any required var is unset, eliminating insecure fallback defaults.</p>
+</blockquote>
+<p><strong>File:</strong> <code>backend/docker-compose.yml</code></p>
+<p><strong>Original issue:</strong> <code>5432:5432</code> was unbound (any interface); insecure <code>:-default</code> fallbacks for all secret env vars.</p>
+<hr/>
+<h3 id="bug-a11">BUG-A11<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a11" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Security | UR Internals</strong><br/>
+<strong>Title:</strong> Admin session tokens (including refresh token) stored in <code>localStorage</code><br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>eddbabca</code>. Tokens now stored in <code>sessionStorage</code> (tab-scoped, cleared on tab close). A one-time migration on first load reads any legacy <code>localStorage</code> value, migrates it to <code>sessionStorage</code>, and removes the <code>localStorage</code> entry. In-memory caching (<code>inMemorySession</code>) is also used to avoid redundant storage reads.</p>
+</blockquote>
+<p><strong>Files:</strong> <code>ur-internals/src/auth/sessionStorage.ts</code>, <code>ur-internals/src/auth/nakama.ts</code></p>
+<p><strong>Original issue:</strong> Both tokens persisted in <code>window.localStorage</code> — exfiltrable via XSS.</p>
+<hr/>
+<h3 id="bug-a12">BUG-A12<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a12" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Fairness/Security | Game core</strong><br/>
+<strong>Title:</strong> Authoritative dice rolls use <code>Math.random()</code> — not a CSPRNG<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>5435613c</code>. <code>rollAuthoritativeDice()</code> now calls <code>rollDice(() => getSecureRandomUnit(nk))</code>. <code>getSecureRandomUnit</code> uses <code>crypto.getRandomValues(new Uint32Array(1))</code> as the primary source, with <code>nk.uuidv4()</code> hex parsing as a Nakama-specific fallback. If neither is available, it throws rather than silently falling back to <code>Math.random()</code>. Client-side <code>rollDice()</code> retains <code>Math.random</code> as its default for offline/bot play only.</p>
+</blockquote>
+<p><strong>Files:</strong> <code>logic/engine.ts</code>, <code>backend/modules/index.ts</code></p>
+<p><strong>Original issue:</strong> Authoritative backend dice rolls used <code>Math.random()</code> — statistically biased, potentially predictable.</p>
+<hr/>
+<h3 id="bug-a13">BUG-A13<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a13" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — React / UI | Progression component</strong><br/>
+<strong>Title:</strong> <code>CinematicXpRewardModal</code> cleanup effect lists stable Animated.Value refs in dep array<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>5435613c</code>. Cleanup effect dep array is now <code>[]</code> with an <code>// eslint-disable-line react-hooks/exhaustive-deps -- cleanup-only effect with stable refs</code> comment documenting intent.</p>
+</blockquote>
+<p><strong>File:</strong> <code>components/progression/CinematicXpRewardModal.tsx</code></p>
+<p><strong>Original issue:</strong> Spurious deps in cleanup <code>useEffect</code> caused animation restarts on unrelated re-renders.</p>
+<hr/>
+<h3 id="bug-a14">BUG-A14<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a14" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — React / UI | Game component</strong><br/>
+<strong>Title:</strong> <code>FloatingEmojiReactions</code> includes unstable <code>onComplete</code> prop in animation effect dep array<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>5435613c</code>. <code>onCompleteRef</code> pattern implemented: <code>const onCompleteRef = useRef(onComplete)</code> declared, a separate <code>useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete])</code> keeps the ref current, and the animation effect calls <code>onCompleteRef.current(reaction.id)</code> rather than <code>onComplete</code> directly.</p>
+</blockquote>
+<p><strong>File:</strong> <code>components/game/FloatingEmojiReactions.tsx</code></p>
+<p><strong>Original issue:</strong> Unstable <code>onComplete</code> prop in animation <code>useEffect</code> dep array caused mid-animation restarts on parent re-renders.</p>
+<hr/>
+<h3 id="bug-a15">BUG-A15<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a15" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Scripts | Dev tooling</strong><br/>
+<strong>Title:</strong> <code>reset-project.js</code> includes <code>&quot;scripts&quot;</code> in the directories it moves away<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>243ee9d2</code>. <code>oldDirs</code> is now <code>[&quot;app&quot;, &quot;components&quot;, &quot;hooks&quot;, &quot;constants&quot;]</code>. <code>&quot;scripts&quot;</code> removed.</p>
+</blockquote>
+<p><strong>File:</strong> <code>scripts/reset-project.js</code></p>
+<p><strong>Original issue:</strong> Script was moving its own containing directory as part of cleanup — fragile and unintentional.</p>
+<hr/>
+<h3 id="bug-a16">BUG-A16<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a16" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Shared protocol | Validation</strong><br/>
+<strong>Title:</strong> <code>isTournamentMatchRewardSummaryPayload</code> allows float values for integer fields<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>243ee9d2</code>. Both fields now use <code>isNonNegativeInteger</code>. <code>round</code> is also nullable (<code>isNonNegativeInteger(value.round) || value.round === null</code>), and <code>challengeCompletionCount</code> uses <code>isNonNegativeInteger</code> directly.</p>
+</blockquote>
+<p><strong>File:</strong> <code>shared/urMatchProtocol.ts</code></p>
+<p><strong>Original issue:</strong> <code>round</code> and <code>challengeCompletionCount</code> accepted floats via loose <code>typeof === &quot;number&quot;</code> / <code>isFiniteNumber</code> validators.</p>
+<hr/>
+<h3 id="bug-a17">BUG-A17<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a17" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Backend | Username generation</strong><br/>
+<strong>Title:</strong> <code>appendNumericSuffix</code> uses <code>USERNAME_MIN_LENGTH</code> as floor in trim, obscuring intent<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>243ee9d2</code>. Now uses <code>Math.max(0, USERNAME_MAX_LENGTH - suffixValue.length)</code>. The <code>USERNAME_MIN_LENGTH</code> floor is gone; the trailing <code>.slice(0, USERNAME_MAX_LENGTH)</code> is the sole length enforcer.</p>
+</blockquote>
+<p><strong>File:</strong> <code>backend/modules/usernameOnboarding.ts</code></p>
+<p><strong>Original issue:</strong> Wrong floor constant created semantically misleading code (though output was always valid).</p>
+<hr/>
+<h3 id="bug-a18">BUG-A18<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a18" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Backend auth | Role normalization</strong><br/>
+<strong>Title:</strong> Admin role stored as <code>{ role: &quot;Admin&quot; }</code> (capital A) treated as no role<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>243ee9d2</code>. <code>const role = readStringField(record, [&quot;role&quot;])?.toLowerCase()</code> — lowercase applied before comparison in the object-stored branch of <code>normalizeAdminRole</code>.</p>
+</blockquote>
+<p><strong>File:</strong> <code>backend/modules/tournaments/auth.ts</code></p>
+<p><strong>Original issue:</strong> Object-stored roles with capital first letter (e.g., <code>&quot;Admin&quot;</code>) were not lowercased before comparison, causing unauthorized errors for legitimately-roled users.</p>
+<hr/>
+<h3 id="bug-a19">BUG-A19<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a19" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — Client auth | Session management</strong><br/>
+<strong>Title:</strong> Session restore silently re-persists session when refresh token is revoked/expired<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>243ee9d2</code>. Eager refresh always attempted on restore (even when access token is still valid). A 401/403 response clears the session immediately. Transient network errors fall back gracefully to the still-valid access token session without clearing it. Expired refresh tokens are detected and cleared at the top of the restore flow before any network call.</p>
+</blockquote>
+<p><strong>File:</strong> <code>ur-internals/src/auth/nakama.ts</code></p>
+<p><strong>Original issue:</strong> Restore only refreshed if the access token was expired — a revoked-but-not-expired refresh token went undetected until the next forced refresh.</p>
+<hr/>
+<h3 id="bug-a20">BUG-A20<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a20" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟡 Medium — React / UI | Progression component</strong><br/>
+<strong>Title:</strong> <code>xpValue</code> Animated.Value included in listener setup dep array despite being a stable ref<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>243ee9d2</code>. Listener setup effect dep array is now <code>[]</code> with an <code>// eslint-disable-line react-hooks/exhaustive-deps -- xpValue is a stable ref-backed Animated.Value</code> comment.</p>
+</blockquote>
+<p><strong>File:</strong> <code>components/progression/CinematicXpRewardModal.tsx</code></p>
+<p><strong>Original issue:</strong> Stable <code>Animated.Value</code> ref in dep array — spurious, misleading, and would cause listener churn if ref were ever recreated.</p>
+<hr/>
+<h2 id="low-severity">Low Severity<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#low-severity" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h2>
+<hr/>
+<h3 id="bug-a21">BUG-A21<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a21" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟢 Low — Shared protocol | Validation</strong><br/>
+<strong>Title:</strong> <code>isNullableRollDisplayValue</code> missing parentheses around <code>&amp;&amp;</code> operand<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>243ee9d2</code>. Expression now reads <code>value === null || (isNonNegativeInteger(value) &amp;&amp; value &lt;= 4)</code>. No behavior change; precedence is now explicit.</p>
+</blockquote>
+<p><strong>File:</strong> <code>shared/urMatchProtocol.ts</code></p>
+<p><strong>Original issue:</strong> Missing parentheses made precedence implicit — fragile against future edits.</p>
+<hr/>
+<h3 id="bug-a22">BUG-A22<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a22" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟢 Low — Shared protocol | Types</strong><br/>
+<strong>Title:</strong> <code>rankTitle</code> typed as <code>string</code> but validated as nullable<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>243ee9d2</code>. Field now typed as <code>rankTitle?: string | null</code>, aligning the TypeScript type with the <code>isNullableString</code> validator.</p>
+</blockquote>
+<p><strong>File:</strong> <code>shared/urMatchProtocol.ts</code></p>
+<p><strong>Original issue:</strong> Type/validator mismatch — <code>string</code> type but <code>isNullableString</code> validator allowed null through as a type error.</p>
+<hr/>
+<h3 id="bug-a23">BUG-A23<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a23" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟢 Low — iOS | Build config</strong><br/>
+<strong>Title:</strong> iOS entitlements file is empty — may silently break capabilities<br/>
+<strong>Status:</strong> <code>needs-investigation</code><br/>
+<strong>File:</strong> <code>ios/royalgameofur/royalgameofur.entitlements</code></p>
+<p><strong>Issue:</strong> The file contains only an empty XML dict. If any capability is enabled in the Apple Developer portal or Xcode (push notifications, associated domains, sign-in with Apple, etc.), the required entitlement entries must be declared here or the feature will silently fail or the build will be rejected.</p>
+<p><strong>Fix:</strong> Audit Xcode → Signing &amp; Capabilities. Add any missing entitlement keys. If no capabilities are enabled, the empty file is fine — but it should be verified and noted.</p>
+<hr/>
+<h3 id="bug-a24">BUG-A24<a role="anchor" aria-hidden="true" tabindex="-1" data-no-popover="true" href="#bug-a24" class="internal"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg></a></h3>
+<p><strong>🟢 Low — UI/React | Game board</strong><br/>
+<strong>Title:</strong> <code>Board.tsx</code> animation effect re-fires on re-render, causing duplicate move/capture animations<br/>
+<strong>Status:</strong> <code>fixed</code></p>
+<blockquote>
+<p>✅ <strong>FIXED</strong> — commit <code>d81fd307</code>. Two changes combined to eliminate the duplicate:</p>
+<ol>
+<li><strong>Signature guard:</strong> before calling <code>setAnimatedMove</code>, a move signature string (<code>historyEntryCount:color:pieceId:fromPos:toPos:capturedId</code>) is computed and compared against <code>lastAnimatedMoveSignatureRef</code>. The animation only fires if the signature differs from the last one that ran.</li>
+<li><strong>Highlight refs:</strong> <code>highlightedPieceId</code> and <code>highlightedPieceColor</code> removed from the animation effect’s dep array. They are now tracked via <code>highlightedPieceIdRef</code> / <code>highlightedPieceColorRef</code> (updated in a separate effect), so changes to those props no longer re-trigger the animation effect.</li>
+<li><strong><code>LayoutAnimation.configureNext</code> removed</strong> from the move commit path — was causing an unwanted layout animation on every piece move.</li>
+</ol>
+</blockquote>
+<p><strong>File:</strong> <code>components/game/Board.tsx</code></p>
+<p><strong>Root cause:</strong> The board animation <code>useEffect</code> included <code>highlightedPieceId</code> and <code>highlightedPieceColor</code> in its dep array. When either changed (e.g., piece selection changing after a move), the effect re-ran against the same game state, found the same “next animated move”, and fired the animation a second time — producing a duplicate slide/capture sequence.</p>
+<hr/>
+<p><em>End of bug registry. New bugs go in the Quick Reference table and get a full entry. IDs are permanent — don’t renumber on resolution, mark <code>fixed</code> instead.</em></p></article><hr/><div class="page-footer"></div></div><div class="right sidebar"><div class="graph"><h3>Graph View</h3><div class="graph-outer"><div class="graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:1,&quot;scale&quot;:1.1,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.3,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:false,&quot;enableRadial&quot;:false}"></div><button class="global-graph-icon" aria-label="Global Graph"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 55 55" fill="currentColor" xml:space="preserve"><path d="M49,0c-3.309,0-6,2.691-6,6c0,1.035,0.263,2.009,0.726,2.86l-9.829,9.829C32.542,17.634,30.846,17,29,17
+                s-3.542,0.634-4.898,1.688l-7.669-7.669C16.785,10.424,17,9.74,17,9c0-2.206-1.794-4-4-4S9,6.794,9,9s1.794,4,4,4
+                c0.74,0,1.424-0.215,2.019-0.567l7.669,7.669C21.634,21.458,21,23.154,21,25s0.634,3.542,1.688,4.897L10.024,42.562
+                C8.958,41.595,7.549,41,6,41c-3.309,0-6,2.691-6,6s2.691,6,6,6s6-2.691,6-6c0-1.035-0.263-2.009-0.726-2.86l12.829-12.829
+                c1.106,0.86,2.44,1.436,3.898,1.619v10.16c-2.833,0.478-5,2.942-5,5.91c0,3.309,2.691,6,6,6s6-2.691,6-6c0-2.967-2.167-5.431-5-5.91
+                v-10.16c1.458-0.183,2.792-0.759,3.898-1.619l7.669,7.669C41.215,39.576,41,40.26,41,41c0,2.206,1.794,4,4,4s4-1.794,4-4
+                s-1.794-4-4-4c-0.74,0-1.424,0.215-2.019,0.567l-7.669-7.669C36.366,28.542,37,26.846,37,25s-0.634-3.542-1.688-4.897l9.665-9.665
+                C46.042,11.405,47.451,12,49,12c3.309,0,6-2.691,6-6S52.309,0,49,0z M11,9c0-1.103,0.897-2,2-2s2,0.897,2,2s-0.897,2-2,2
+                S11,10.103,11,9z M6,51c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S8.206,51,6,51z M33,49c0,2.206-1.794,4-4,4s-4-1.794-4-4
+                s1.794-4,4-4S33,46.794,33,49z M29,31c-3.309,0-6-2.691-6-6s2.691-6,6-6s6,2.691,6,6S32.309,31,29,31z M47,41c0,1.103-0.897,2-2,2
+                s-2-0.897-2-2s0.897-2,2-2S47,39.897,47,41z M49,10c-2.206,0-4-1.794-4-4s1.794-4,4-4s4,1.794,4,4S51.206,10,49,10z"></path></svg></button></div><div class="global-graph-outer"><div class="global-graph-container" data-cfg="{&quot;drag&quot;:true,&quot;zoom&quot;:true,&quot;depth&quot;:-1,&quot;scale&quot;:0.9,&quot;repelForce&quot;:0.5,&quot;centerForce&quot;:0.2,&quot;linkDistance&quot;:30,&quot;fontSize&quot;:0.6,&quot;opacityScale&quot;:1,&quot;showTags&quot;:true,&quot;removeTags&quot;:[],&quot;focusOnHover&quot;:true,&quot;enableRadial&quot;:true}"></div></div></div><div class="toc desktop-only"><button type="button" class="toc-header" aria-controls="toc-1" aria-expanded="true"><h3>Table of Contents</h3><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fold"><polyline points="6 9 12 15 18 9"></polyline></svg></button><ul id="list-1" class="toc-content overflow"><li class="depth-0"><a href="#bug-registry--royal-game-of-ur" data-for="bug-registry--royal-game-of-ur">Bug Registry — Royal Game of Ur</a></li><li class="depth-1"><a href="#quick-reference" data-for="quick-reference">Quick Reference</a></li><li class="depth-1"><a href="#critical--high-severity" data-for="critical--high-severity">Critical &amp; High Severity</a></li><li class="depth-2"><a href="#bug-a01" data-for="bug-a01">BUG-A01</a></li><li class="depth-2"><a href="#bug-a02" data-for="bug-a02">BUG-A02</a></li><li class="depth-2"><a href="#bug-a03" data-for="bug-a03">BUG-A03</a></li><li class="depth-2"><a href="#bug-a04" data-for="bug-a04">BUG-A04</a></li><li class="depth-2"><a href="#bug-a05" data-for="bug-a05">BUG-A05</a></li><li class="depth-1"><a href="#medium-severity" data-for="medium-severity">Medium Severity</a></li><li class="depth-2"><a href="#bug-a06" data-for="bug-a06">BUG-A06</a></li><li class="depth-2"><a href="#bug-a07" data-for="bug-a07">BUG-A07</a></li><li class="depth-2"><a href="#bug-a08" data-for="bug-a08">BUG-A08</a></li><li class="depth-2"><a href="#bug-a09" data-for="bug-a09">BUG-A09</a></li><li class="depth-2"><a href="#bug-a10" data-for="bug-a10">BUG-A10</a></li><li class="depth-2"><a href="#bug-a11" data-for="bug-a11">BUG-A11</a></li><li class="depth-2"><a href="#bug-a12" data-for="bug-a12">BUG-A12</a></li><li class="depth-2"><a href="#bug-a13" data-for="bug-a13">BUG-A13</a></li><li class="depth-2"><a href="#bug-a14" data-for="bug-a14">BUG-A14</a></li><li class="depth-2"><a href="#bug-a15" data-for="bug-a15">BUG-A15</a></li><li class="depth-2"><a href="#bug-a16" data-for="bug-a16">BUG-A16</a></li><li class="depth-2"><a href="#bug-a17" data-for="bug-a17">BUG-A17</a></li><li class="depth-2"><a href="#bug-a18" data-for="bug-a18">BUG-A18</a></li><li class="depth-2"><a href="#bug-a19" data-for="bug-a19">BUG-A19</a></li><li class="depth-2"><a href="#bug-a20" data-for="bug-a20">BUG-A20</a></li><li class="depth-1"><a href="#low-severity" data-for="low-severity">Low Severity</a></li><li class="depth-2"><a href="#bug-a21" data-for="bug-a21">BUG-A21</a></li><li class="depth-2"><a href="#bug-a22" data-for="bug-a22">BUG-A22</a></li><li class="depth-2"><a href="#bug-a23" data-for="bug-a23">BUG-A23</a></li><li class="depth-2"><a href="#bug-a24" data-for="bug-a24">BUG-A24</a></li><li class="overflow-end"></li></ul></div></div><footer class><p>Created with <a href="https://quartz.jzhao.xyz/">Quartz v4.5.2</a> © 2026</p><ul><li><a href="https://github.com/jackyzha0/quartz">GitHub</a></li><li><a href="https://discord.gg/cRFFHYye7t">Discord Community</a></li></ul></footer></div></div></body><script type="application/javascript" data-persist="true">function n(){let t=this.parentElement;t.classList.toggle("is-collapsed");let e=t.getElementsByClassName("callout-content")[0];if(!e)return;let l=t.classList.contains("is-collapsed");e.style.gridTemplateRows=l?"0fr":"1fr"}function c(){let t=document.getElementsByClassName("callout is-collapsible");for(let e of t){let l=e.getElementsByClassName("callout-title")[0],s=e.getElementsByClassName("callout-content")[0];if(!l||!s)continue;l.addEventListener("click",n),window.addCleanup(()=>l.removeEventListener("click",n));let o=e.classList.contains("is-collapsed");s.style.gridTemplateRows=o?"0fr":"1fr"}}document.addEventListener("nav",c);
+</script><script type="module" data-persist="true">function E(a,e){if(!a)return;function t(o){o.target===this&&(o.preventDefault(),o.stopPropagation(),e())}function n(o){o.key.startsWith("Esc")&&(o.preventDefault(),e())}a?.addEventListener("click",t),window.addCleanup(()=>a?.removeEventListener("click",t)),document.addEventListener("keydown",n),window.addCleanup(()=>document.removeEventListener("keydown",n))}function f(a){for(;a.firstChild;)a.removeChild(a.firstChild)}var m=class{constructor(e,t){this.container=e;this.content=t;this.setupEventListeners(),this.setupNavigationControls(),this.resetTransform()}isDragging=!1;startPan={x:0,y:0};currentPan={x:0,y:0};scale=1;MIN_SCALE=.5;MAX_SCALE=3;cleanups=[];setupEventListeners(){let e=this.onMouseDown.bind(this),t=this.onMouseMove.bind(this),n=this.onMouseUp.bind(this),o=this.onTouchStart.bind(this),r=this.onTouchMove.bind(this),i=this.onTouchEnd.bind(this),s=this.resetTransform.bind(this);this.container.addEventListener("mousedown",e),document.addEventListener("mousemove",t),document.addEventListener("mouseup",n),this.container.addEventListener("touchstart",o,{passive:!1}),document.addEventListener("touchmove",r,{passive:!1}),document.addEventListener("touchend",i),window.addEventListener("resize",s),this.cleanups.push(()=>this.container.removeEventListener("mousedown",e),()=>document.removeEventListener("mousemove",t),()=>document.removeEventListener("mouseup",n),()=>this.container.removeEventListener("touchstart",o),()=>document.removeEventListener("touchmove",r),()=>document.removeEventListener("touchend",i),()=>window.removeEventListener("resize",s))}cleanup(){for(let e of this.cleanups)e()}setupNavigationControls(){let e=document.createElement("div");e.className="mermaid-controls";let t=this.createButton("+",()=>this.zoom(.1)),n=this.createButton("-",()=>this.zoom(-.1)),o=this.createButton("Reset",()=>this.resetTransform());e.appendChild(n),e.appendChild(o),e.appendChild(t),this.container.appendChild(e)}createButton(e,t){let n=document.createElement("button");return n.textContent=e,n.className="mermaid-control-button",n.addEventListener("click",t),window.addCleanup(()=>n.removeEventListener("click",t)),n}onMouseDown(e){e.button===0&&(this.isDragging=!0,this.startPan={x:e.clientX-this.currentPan.x,y:e.clientY-this.currentPan.y},this.container.style.cursor="grabbing")}onMouseMove(e){this.isDragging&&(e.preventDefault(),this.currentPan={x:e.clientX-this.startPan.x,y:e.clientY-this.startPan.y},this.updateTransform())}onMouseUp(){this.isDragging=!1,this.container.style.cursor="grab"}onTouchStart(e){if(e.touches.length!==1)return;this.isDragging=!0;let t=e.touches[0];this.startPan={x:t.clientX-this.currentPan.x,y:t.clientY-this.currentPan.y}}onTouchMove(e){if(!this.isDragging||e.touches.length!==1)return;e.preventDefault();let t=e.touches[0];this.currentPan={x:t.clientX-this.startPan.x,y:t.clientY-this.startPan.y},this.updateTransform()}onTouchEnd(){this.isDragging=!1}zoom(e){let t=Math.min(Math.max(this.scale+e,this.MIN_SCALE),this.MAX_SCALE),n=this.content.getBoundingClientRect(),o=n.width/2,r=n.height/2,i=t-this.scale;this.currentPan.x-=o*i,this.currentPan.y-=r*i,this.scale=t,this.updateTransform()}updateTransform(){this.content.style.transform=`translate(${this.currentPan.x}px, ${this.currentPan.y}px) scale(${this.scale})`}resetTransform(){let t=this.content.querySelector("svg").getBoundingClientRect(),n=t.width/this.scale,o=t.height/this.scale;this.scale=1,this.currentPan={x:(this.container.clientWidth-n)/2,y:(this.container.clientHeight-o)/2},this.updateTransform()}},T=["--secondary","--tertiary","--gray","--light","--lightgray","--highlight","--dark","--darkgray","--codeFont"],y;document.addEventListener("nav",async()=>{let e=document.querySelector(".center").querySelectorAll("code.mermaid");if(e.length===0)return;y||=await import("https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.4.0/mermaid.esm.min.mjs");let t=y.default,n=new WeakMap;for(let r of e)n.set(r,r.innerText);async function o(){for(let s of e){s.removeAttribute("data-processed");let c=n.get(s);c&&(s.innerHTML=c)}let r=T.reduce((s,c)=>(s[c]=window.getComputedStyle(document.documentElement).getPropertyValue(c),s),{}),i=document.documentElement.getAttribute("saved-theme")==="dark";t.initialize({startOnLoad:!1,securityLevel:"loose",theme:i?"dark":"base",themeVariables:{fontFamily:r["--codeFont"],primaryColor:r["--light"],primaryTextColor:r["--darkgray"],primaryBorderColor:r["--tertiary"],lineColor:r["--darkgray"],secondaryColor:r["--secondary"],tertiaryColor:r["--tertiary"],clusterBkg:r["--light"],edgeLabelBackground:r["--highlight"]}}),await t.run({nodes:e})}await o(),document.addEventListener("themechange",o),window.addCleanup(()=>document.removeEventListener("themechange",o));for(let r=0;r<e.length;r++){let v=function(){let g=l.querySelector("#mermaid-space"),h=l.querySelector(".mermaid-content");if(!h)return;f(h);let w=i.querySelector("svg").cloneNode(!0);h.appendChild(w),l.classList.add("active"),g.style.cursor="grab",u=new m(g,h)},M=function(){l.classList.remove("active"),u?.cleanup(),u=null},i=e[r],s=i.parentElement,c=s.querySelector(".clipboard-button"),d=s.querySelector(".expand-button"),p=window.getComputedStyle(c),L=c.offsetWidth+parseFloat(p.marginLeft||"0")+parseFloat(p.marginRight||"0");d.style.right=`calc(${L}px + 0.3rem)`,s.prepend(d);let l=s.querySelector("#mermaid-container");if(!l)return;let u=null;d.addEventListener("click",v),E(l,M),window.addCleanup(()=>{u?.cleanup(),d.removeEventListener("click",v)})}});
+</script><script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/copy-tex.min.js" type="application/javascript" data-persist="true"></script><script type="application/javascript" data-persist="true">
+        const socket = new WebSocket('ws://localhost:3001')
+        // reload(true) ensures resources like images and scripts are fetched again in firefox
+        socket.addEventListener('message', () => document.location.reload(true))
+      </script><script src="../postscript.js" type="module" data-persist="true"></script></html>

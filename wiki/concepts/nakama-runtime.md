@@ -2,7 +2,7 @@
 
 > The authoritative match server: how the backend tick loop, state machine, and timer system work inside `backend/modules/index.ts`.
 
-**Last updated:** 2026-04-11 (AFK rejoin fix — commit `e6c9c06b`)  
+**Last updated:** 2026-04-12 (commits `5435613c`, `54b3a797`, `a1e996f4`)  
 **Sources:** [[2026-04-11-ur-codebase]]  
 **Related:** [[transport-layer]], [[match-protocol]], [[tournament-flow]], [[matchmaking]], [[zustand-game-store]]
 
@@ -167,11 +167,46 @@ This is what connects the in-match gameplay back to the [[tournament-flow]] brac
 
 ---
 
-## Result Processing (`processCompletedMatch`)
+## Result Processing (`finalizeCompletedMatch`)
 
-Called at match end (when `matchEnd` is populated):
+Called at match end (when `matchEnd` is populated). Returns `true` if all result processing committed, `false` if a tournament synchronization failure requires deferral:
 
-1. ELO ratings updated for both players (see [[elo-system]])
-2. XP awarded for the match result (see [[progression-system]])
-3. Challenge evaluators run against the match telemetry (see [[challenge-system]])
-4. Nakama notifications sent to both players with the result payload, which the client's `ProgressionProvider` and `EloRatingProvider` consume
+1. `syncCompletedMatchEnd` — syncs end state
+2. `processCompletedMatchRatings` — ELO update (see [[elo-system]])
+3. `awardWinnerProgression` — XP/challenge awards (see [[progression-system]], [[challenge-system]])
+4. `processCompletedTournamentMatch` — bracket advancement if `tournamentContext` is set
+5. `processCompletedMatchSummaries` — per-player challenge summaries
+6. **Tournament deferral guard:** if `tournamentContext` is present and the tournament processing step failed with a retryable failure, `resultRecorded` is set to `false` and the function returns `false` — the tick loop will retry on the next tick
+7. `broadcastTournamentMatchRewardSummaries` — sends result notifications to both players
+8. `recordMatchEndAnalyticsEvent` — buffered via `AnalyticsEventWriteBuffer` (see below)
+9. `maybeFinalizeRecordedTournamentRun` — if this was the final match of the tournament, triggers bracket finalization
+
+All analytics writes within this function are buffered and flushed in a single `nk.storageWrite` call inside a `try/finally` block, ensuring the flush fires even if processing throws (see [[performance]] #12).
+
+---
+
+## Authoritative Dice Roll — Secure RNG (commit `5435613c`)
+
+The server-side dice roll previously used `Math.random()` via the shared `rollDice` function from `logic/engine.ts`. This was replaced with a cryptographically secure random source.
+
+**`rollDice(randomSource?)`** now accepts an injectable `DiceRandomSource = () => number`. The default remains `Math.random` for client-side / offline use.
+
+**`rollAuthoritativeDice(nk?)`** — used exclusively in the backend match loop — provides a secure `randomSource` via `getSecureRandomUnit(nk)`:
+
+```
+Priority 1: globalThis.crypto.getRandomValues(new Uint32Array(1)) → CSPRNG
+Priority 2: nk.uuidv4() hex slice → cryptographic UUID fallback
+Throws:     if neither source is available
+```
+
+This ensures tournament and ranked match dice outcomes cannot be predicted or manipulated, which is particularly important for the authoritative (server-side) roll path. Client-side rolls (local game state preview) continue to use `Math.random`.
+
+---
+
+## RPC Payload Hardening (commit `54b3a797`)
+
+`backend/modules/index.ts` received a major hardening pass on all RPC payload parsing. Private match code reservation and join flows were the primary targets:
+
+- All RPC handlers now validate payloads more strictly, failing fast with descriptive error messages rather than operating on undefined fields
+- The private match code reservation flow ensures codes are reserved atomically and race conditions in concurrent reservation attempts are handled via OCC version checks
+- `backend/modules/privateMatch.rpc.test.ts` expanded with 69 new lines of tests covering the reservation concurrency edge cases

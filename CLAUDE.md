@@ -184,7 +184,8 @@ At the start of every new session:
 1. Read `CLAUDE.md` (this file)
 2. Read `log.md` — last 5–10 entries to understand recent context
 3. Read `index.md` — to know what's in the wiki
-4. Briefly summarize: "Here's where we left off..." then ask Michel what to do
+4. **Check for source changes** — if the session context contains a `📥 SOURCES UPDATED` block (injected by the sources-check hook), immediately begin the ingest workflow for each listed source **without waiting to be asked**. Use batch ingest mode (write without back-and-forth discussion) unless the change set is large or ambiguous. Announce what you're ingesting and why, then proceed.
+5. Briefly summarize: "Here's where we left off..." then ask Michel what to do (skip this if step 4 consumed the session open)
 
 This ensures continuity across sessions without Michel having to re-explain context.
 
@@ -215,6 +216,39 @@ This wiki is a **codebase second brain** for the **Royal Game of Ur** — a mult
 - Progression, challenges, XP, and ELO systems
 - Auth (Google OAuth, username onboarding)
 - Shared types and protocol definitions between client and server
+
+---
+
+## 13. Codebase Source
+
+The Royal Game of Ur source repo is at:
+**https://github.com/micho8cho93/ur**
+
+`sources/ur/` is **no longer the ingest path for codebase changes**. Do not `git pull` into it or read from it for ingest purposes. The full repo (including `node_modules`) is too large to store locally and causes tooling issues.
+
+### How to ingest codebase changes
+
+When Michel says **"ingest codebase"** or **"ingest latest changes"**:
+
+1. **Fetch file tree** — use the GitHub API to list changed or relevant files:
+   ```
+   https://api.github.com/repos/micho8cho93/ur/git/trees/main?recursive=1
+   ```
+2. **Fetch specific files** — read individual files via raw GitHub URLs:
+   ```
+   https://raw.githubusercontent.com/micho8cho93/ur/main/<path/to/file>
+   ```
+3. **For targeted updates** — ask Michel which files or directories changed, then fetch only those
+4. **For a full re-ingest** — use a shallow sparse clone in a temp location, read what's needed, delete it:
+   ```bash
+   git clone --depth 1 --filter=blob:none --sparse https://github.com/micho8cho93/ur /tmp/ur-ingest
+   cd /tmp/ur-ingest && git sparse-checkout set app backend components constants
+   # read files, then rm -rf /tmp/ur-ingest
+   ```
+
+### What `sources/` is for
+
+`sources/` is reserved for **non-repo materials** that Michel explicitly places there: design docs, PDFs, meeting notes, external articles, architecture diagrams. It is not a git working directory.
 
 ---
 

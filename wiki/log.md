@@ -3,6 +3,13 @@
 Append-only chronological record of all wiki operations.  
 Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
 
+## [2026-04-13] lint | Fixed broken wikilinks — stripped wiki/ path prefix
+
+- **Root cause:** `index.md`, `overview.md`, and `concepts/performance.md` used path-prefixed links like `[[wiki/concepts/architecture]]`. Quartz's `markdownLinkResolution: "shortest"` resolves these literally, generating hrefs like `./wiki/concepts/architecture` — but the built output has no `wiki/` subdirectory. Pages live at `concepts/architecture.html`, not `wiki/concepts/architecture.html`, so every clicked link returned 404. Sidebar navigation worked because it is generated separately from the folder structure.
+- **Fix:** Stripped `wiki/` prefix from all wikilinks in the three affected files. All links now use shortest-path form (e.g. `[[architecture]]`, `[[nakama-service]]`) which Quartz resolves correctly against the flat `concepts/` and `entities/` output directories.
+- **Files updated:** `wiki/index.md` (21 links), `wiki/overview.md` (1 link), `wiki/concepts/performance.md` (7 links)
+- **Next step:** Run `npm run wiki:build` locally to regenerate `public/` with corrected hrefs
+
 ## [2026-04-12] schema-update | Wiki restructure — queries removed, ur-internals added, next-steps added
 
 - **Removed:** `wiki/queries/` folder (manually delete `wiki/queries/q-tournament-bugs.md` — file deletion not available via tool)

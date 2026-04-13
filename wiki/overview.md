@@ -4,7 +4,7 @@
 
 **Last updated:** 2026-04-12 (rev 4)  
 **Sources:** [[2026-04-11-ur-codebase]]  
-**Related:** [[wiki/index]]
+**Related:** [[index]]
 
 ---
 

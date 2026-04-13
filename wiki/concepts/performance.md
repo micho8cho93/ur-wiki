@@ -3,8 +3,8 @@
 > Frontend and backend performance findings, bottlenecks, and optimization opportunities across the Royal Game of Ur codebase.
 
 **Last updated:** 2026-04-12 (commits `c79284cb`, `a1e996f4`, `014062358`)  
-**Sources:** [[wiki/sources/2026-04-11-ur-codebase]]  
-**Related:** [[wiki/concepts/architecture]], [[wiki/concepts/transport-layer]], [[wiki/entities/zustand-game-store]], [[wiki/entities/nakama-service]], [[wiki/concepts/nakama-runtime]], [[wiki/concepts/tournament-flow]]
+**Sources:** [[2026-04-11-ur-codebase]]  
+**Related:** [[architecture]], [[transport-layer]], [[zustand-game-store]], [[nakama-service]], [[nakama-runtime]], [[tournament-flow]]
 
 ---
 

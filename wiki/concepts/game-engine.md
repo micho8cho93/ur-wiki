@@ -3,7 +3,7 @@
 > The pure, transport-agnostic logic layer that implements the Royal Game of Ur rules.
 
 **Last updated:** 2026-04-12 (commit `5435613c`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[architecture]], [[match-configs]], [[transport-layer]], [[zustand-game-store]]
 
 ---

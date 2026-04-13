@@ -3,7 +3,7 @@
 > How the app switches between offline (local bot) and online (Nakama) gameplay modes, and where the seam lives in the code.
 
 **Last updated:** 2026-04-12 (commit `0d6cc748`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[architecture]], [[zustand-game-store]], [[nakama-service]], [[match-protocol]], [[game-engine]], [[nakama-runtime]], [[spectator-mode]]
 
 ---

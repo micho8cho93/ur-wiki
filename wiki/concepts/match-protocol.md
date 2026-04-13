@@ -3,7 +3,7 @@
 > The typed message bus between client and Nakama server: op codes, payload types, and flow.
 
 **Last updated:** 2026-04-12 (commit `0d6cc748`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[transport-layer]], [[architecture]], [[zustand-game-store]], [[game-engine]], [[spectator-mode]]
 
 ---

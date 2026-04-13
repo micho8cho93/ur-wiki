@@ -3,7 +3,7 @@
 > The single source of truth for all in-match runtime state. Bridges the game engine, transport layer, and UI.
 
 **Last updated:** 2026-04-11  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[transport-layer]], [[game-engine]], [[match-protocol]], [[architecture]]
 
 ---

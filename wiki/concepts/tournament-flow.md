@@ -3,7 +3,7 @@
 > End-to-end lifecycle of a public tournament: registration, bracket creation, match launch (including the race condition), in-match play, result recording, and round advancement.
 
 **Last updated:** 2026-04-12 (commits `a1e996f4`, `eddbabca`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[matchmaking]], [[nakama-runtime]], [[match-protocol]], [[zustand-game-store]], [[q-tournament-bugs]]
 
 ---

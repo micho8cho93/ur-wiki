@@ -3,7 +3,7 @@
 > High-level structure of the Royal Game of Ur app: how the frontend, backend, and shared logic are layered.
 
 **Last updated:** 2026-04-11  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[transport-layer]], [[game-engine]], [[nakama-service]], [[zustand-game-store]], [[expo-router]], [[match-protocol]]
 
 ---

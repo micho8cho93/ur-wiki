@@ -3,7 +3,7 @@
 > Read-only participation in a live match: watch any active game in real time without joining as a player.
 
 **Last updated:** 2026-04-12 (commit `0d6cc748`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[matchmaking]], [[match-protocol]], [[nakama-runtime]], [[transport-layer]], [[expo-router]]
 
 ---

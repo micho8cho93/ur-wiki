@@ -3,7 +3,7 @@
 > XP awards, rank ladder, and how the client and server share the same progression logic.
 
 **Last updated:** 2026-04-11  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[match-protocol]], [[architecture]], [[elo-system]], [[match-configs]]
 
 ---

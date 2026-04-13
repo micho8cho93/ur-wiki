@@ -3,7 +3,7 @@
 > How players find each other: ranked queue, private matches, and the matchmaking service layer.
 
 **Last updated:** 2026-04-12 (commit `0d6cc748`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[transport-layer]], [[nakama-service]], [[match-protocol]], [[architecture]], [[spectator-mode]]
 
 ---

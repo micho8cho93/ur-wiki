@@ -3,7 +3,7 @@
 > The rating system for competitive online matches: formula, K-factors, provisional period, and leaderboard.
 
 **Last updated:** 2026-04-12 (commit `a1e996f4`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[progression-system]], [[match-protocol]], [[architecture]], [[match-configs]]
 
 ---

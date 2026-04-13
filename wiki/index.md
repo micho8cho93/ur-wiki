@@ -1,8 +1,8 @@
 # Wiki Index
 
-**Last updated:** 2026-04-12  
-**Total pages:** 21  
-**Total sources ingested:** 1 (+ 4 git updates, commits `e6c9c06b`, `94debe5`, 8×commits `d81fd307`→`014062358`, `0d6cc748`)
+**Last updated:** 2026-04-13  
+**Total pages:** 22  
+**Total sources ingested:** GitHub repo (micho8cho93/ur)
 
 ---
 
@@ -12,8 +12,7 @@
 
 ## Sources
 
-- [[2026-04-11-ur-codebase]] — Full Expo + Nakama codebase for the Royal Game of Ur (2026-04-11)
-- [[2026-04-11-190351-ur-codebase]] — Auto-generated snapshot after "Fix test coverage snapshot generation" (2026-04-11)
+- GitHub repo: [micho8cho93/ur](https://github.com/micho8cho93/ur) — Expo + Nakama codebase (ongoing)
 
 ## Concepts
 
@@ -41,3 +40,4 @@
 ## Reference
 
 - [[next-steps]] — Open bugs, performance gaps, test coverage gaps, and wiki maintenance tasks
+- [[WIP]] — Work-in-progress ideas: economic models, monetization, and organic user growth

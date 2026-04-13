@@ -3,7 +3,7 @@
 > The authoritative match server: how the backend tick loop, state machine, and timer system work inside `backend/modules/index.ts`.
 
 **Last updated:** 2026-04-12 (commits `5435613c`, `54b3a797`, `a1e996f4`, `0d6cc748`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[transport-layer]], [[match-protocol]], [[tournament-flow]], [[matchmaking]], [[zustand-game-store]], [[spectator-mode]]
 
 ---

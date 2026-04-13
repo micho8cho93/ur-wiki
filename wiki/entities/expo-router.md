@@ -3,7 +3,7 @@
 > File-based routing layout of the app — all screens, groups, and provider wrapping.
 
 **Last updated:** 2026-04-12 (commit `0d6cc748`)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[architecture]], [[transport-layer]], [[matchmaking]], [[spectator-mode]]
 
 ---

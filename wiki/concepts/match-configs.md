@@ -3,7 +3,7 @@
 > The configuration system that defines all game modes — piece counts, rules variants, XP eligibility, and path variants.
 
 **Last updated:** 2026-04-11  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[game-engine]], [[progression-system]], [[architecture]]
 
 ---

@@ -3,6 +3,14 @@
 Append-only chronological record of all wiki operations.  
 Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
 
+## [2026-04-13] schema-update | Remove broken source refs; create WIP.md
+
+- Removed all `Sources: [[2026-04-11-ur-codebase]]` frontmatter references from every concept and entity page (18 pages) — source summary files could not be located and the links were dead
+- Replaced with plain-text attribution: `Sources: GitHub repo (micho8cho93/ur)`
+- Updated `index.md`: replaced Sources section entries with a single GitHub repo link; bumped total pages to 22; updated date
+- Created `wiki/WIP.md` — work-in-progress ideas covering economic models (cosmetics, subscriptions, tournament fees, soft currency), monetization considerations (platform cuts, regional pricing), and organic growth strategies (virality, community, ASO, creator angle)
+- Added `[[WIP]]` to `index.md` Reference section
+
 ## [2026-04-13] lint | Fixed broken wikilinks — stripped wiki/ path prefix
 
 - **Root cause:** `index.md`, `overview.md`, and `concepts/performance.md` used path-prefixed links like `[[wiki/concepts/architecture]]`. Quartz's `markdownLinkResolution: "shortest"` resolves these literally, generating hrefs like `./wiki/concepts/architecture` — but the built output has no `wiki/` subdirectory. Pages live at `concepts/architecture.html`, not `wiki/concepts/architecture.html`, so every clicked link returned 404. Sidebar navigation worked because it is generated separately from the folder structure.

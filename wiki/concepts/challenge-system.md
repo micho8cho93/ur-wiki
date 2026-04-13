@@ -3,7 +3,7 @@
 > How per-match challenges are defined, shared between client and server, and evaluated authoritatively at match end.
 
 **Last updated:** 2026-04-11  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[nakama-runtime]], [[progression-system]], [[match-configs]], [[zustand-game-store]]
 
 ---

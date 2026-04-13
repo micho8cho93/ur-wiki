@@ -180,8 +180,12 @@
       "bases:Create new base": false
     }
   },
-  "active": "7125bd396f6c8a0d",
+  "active": "c4c1df02f24c3f49",
   "lastOpenFiles": [
+    "wiki/WIP.md",
+    "public/next-steps.html",
+    "public/entities/ur-internals.html",
+    "public/concepts/spectator-mode.html",
     "wiki/next-steps.md",
     "wiki/entities/ur-internals.md",
     "wiki/concepts/spectator-mode.md",
@@ -192,9 +196,6 @@
     "public/queries/index.html",
     "public/queries",
     "public/entities/zustand-game-store.html",
-    "public/entities/nakama-service.html",
-    "public/entities/index.html",
-    "public/entities/expo-router.html",
     "public/static/og-image.png",
     "public/static/icon.png",
     "node_modules/pixi.js/README.md",
@@ -219,7 +220,6 @@
     "node_modules/linebreak/node_modules/base64-js/README.md",
     "node_modules/mdast-util-from-markdown/node_modules/@types/unist/README.md",
     "node_modules/unified/node_modules/@types/unist/README.md",
-    "node_modules/unist-util-modify-children/node_modules/@types/unist/README.md",
     "node_modules/gifuct-js/demo/horses.gif",
     "node_modules/gifuct-js/demo/jblack.gif",
     "node_modules/gifuct-js/demo/dog.gif",

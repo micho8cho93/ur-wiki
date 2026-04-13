@@ -3,7 +3,7 @@
 > Master synthesis of the Royal Game of Ur codebase wiki.
 
 **Last updated:** 2026-04-12 (rev 4)  
-**Sources:** [[2026-04-11-ur-codebase]]  
+**Sources:** GitHub repo (micho8cho93/ur)  
 **Related:** [[index]]
 
 ---

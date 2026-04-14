@@ -4,7 +4,7 @@
 
 **Last updated:** 2026-04-12 (commit `0d6cc748`)  
 **Sources:** GitHub repo (micho8cho93/ur)  
-**Related:** [[architecture]], [[transport-layer]], [[matchmaking]], [[spectator-mode]]
+**Related:** [[architecture]], [[layer-transport]], [[matchmaking]], [[spectator-mode]]
 
 ---
 

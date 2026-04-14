@@ -4,7 +4,7 @@
 
 **Last updated:** 2026-04-11  
 **Sources:** GitHub repo (micho8cho93/ur)  
-**Related:** [[transport-layer]], [[game-engine]], [[match-protocol]], [[architecture]]
+**Related:** [[layer-transport]], [[game-engine]], [[match-protocol]], [[architecture]]
 
 ---
 
@@ -69,9 +69,9 @@ All prefixed `authoritative*`. Set by `applyServerSnapshot`. Examples:
 
 **`initGame(matchId, options?)`** — resets game state for a new match. Sets `matchConfig`, clears all authoritative fields and post-match data.
 
-**`roll(options?)`** — the transport seam for rolling. See [[transport-layer]].
+**`roll(options?)`** — the transport seam for rolling. See [[layer-transport]].
 
-**`makeMove(move)`** — the transport seam for moves. See [[transport-layer]].
+**`makeMove(move)`** — the transport seam for moves. See [[layer-transport]].
 
 **`applyServerSnapshot(snapshot)`** — replaces all state from a `STATE_SNAPSHOT` payload. Guards: matchId must match, revision must not be stale. Recomputes `validMoves` from the new state.
 

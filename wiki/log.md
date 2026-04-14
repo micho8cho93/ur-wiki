@@ -251,3 +251,24 @@ Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
   - `5435613c` — Use secure RNG for authoritative rolls and stabilize animation effects → **BUG-A12, A13, A14 fixed**
   - `243ee9d2` — Harden session restore and tighten validation across auth and protocol → **BUG-A15, A16, A17, A18, A19, A20, A21, A22 fixed**
 - Still open (not addressed): BUG-A02 (inverted onboarding guard), BUG-A04 (presence payload not JSON.parsed)
+
+## [2026-04-14] schema-update | Major wiki reorganization into semantic folders
+
+- **Reorganized concept pages** into 6 new semantic folders:
+  - `architecture/` — architecture.md, layer-frontend.md (NEW), layer-backend.md (NEW), layer-transport.md
+  - `features/` — game-engine, matchmaking, spectator-mode, tournament-flow, challenge-system, progression-system, elo-system
+  - `protocol/` — match-protocol, match-configs, shared-types.md (NEW)
+  - `runtime/` — nakama-runtime
+  - `quality/` — performance, test-coverage, bugs, next-steps (moved from root)
+  - `knowledge/` — decisions.md (NEW)
+- **Created 4 new pages:**
+  - `architecture/layer-frontend.md` — detailed frontend stack, screens, state management, services, styling
+  - `architecture/layer-backend.md` — Nakama runtime, storage schema, match lifecycle, deployment, command processing
+  - `protocol/shared-types.md` — cross-cutting types and enums (GameState, Player, progression, ELO, challenges)
+  - `knowledge/decisions.md` — architectural decisions, trade-offs, and design rationale (15 documented decisions)
+- **Streamlined and rewrote:**
+  - `overview.md` — removed evolution notes, reorganized as architecture reference with navigation guide; updated all links
+  - `index.md` — reorganized into semantic sections matching the new folder structure (26 pages total)
+- **Updated all wikilinks** across the wiki to use shortest-path form (e.g. `[[layer-transport]]` not `[[architecture/layer-transport]]`)
+- **Removed old concepts/ folder** (pages copied to new locations; original left for cleanup)
+- **Rationale:** Previous flat "concepts" structure mixed layers, features, protocols, and audit findings. New structure groups by purpose (architecture/features/protocol/runtime/quality/knowledge) — easier navigation, clearer task tracking, better for onboarding.

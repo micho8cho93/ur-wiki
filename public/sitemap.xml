@@ -1,70 +1,88 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/architecture</loc>
-    <lastmod>2026-04-11T09:00:39.938Z</lastmod>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/WIP</loc>
+    <lastmod>2026-04-14T05:21:44.988Z</lastmod>
   </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/bugs</loc>
-    <lastmod>2026-04-11T20:57:45.823Z</lastmod>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/architecture/architecture</loc>
+    <lastmod>2026-04-14T05:21:45.257Z</lastmod>
   </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/challenge-system</loc>
-    <lastmod>2026-04-11T10:16:49.247Z</lastmod>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/architecture/layer-backend</loc>
+    <lastmod>2026-04-14T05:21:45.277Z</lastmod>
   </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/elo-system</loc>
-    <lastmod>2026-04-12T18:53:52.894Z</lastmod>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/architecture/layer-frontend</loc>
+    <lastmod>2026-04-14T05:21:45.297Z</lastmod>
   </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/game-engine</loc>
-    <lastmod>2026-04-12T18:54:04.253Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/match-configs</loc>
-    <lastmod>2026-04-11T09:02:37.950Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/match-protocol</loc>
-    <lastmod>2026-04-12T19:35:34.644Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/matchmaking</loc>
-    <lastmod>2026-04-12T19:35:18.479Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/nakama-runtime</loc>
-    <lastmod>2026-04-12T19:36:01.478Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/performance</loc>
-    <lastmod>2026-04-13T05:26:31.169Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/progression-system</loc>
-    <lastmod>2026-04-11T09:03:02.296Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/spectator-mode</loc>
-    <lastmod>2026-04-12T19:37:19.896Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/test-coverage</loc>
-    <lastmod>2026-04-12T18:54:37.864Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/tournament-flow</loc>
-    <lastmod>2026-04-12T18:53:35.218Z</lastmod>
-  </url><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/concepts/transport-layer</loc>
-    <lastmod>2026-04-12T19:36:36.594Z</lastmod>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/architecture/layer-transport</loc>
+    <lastmod>2026-04-14T05:21:45.237Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/entities/expo-router</loc>
-    <lastmod>2026-04-12T19:36:20.388Z</lastmod>
+    <lastmod>2026-04-14T05:21:45.455Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/entities/nakama-service</loc>
-    <lastmod>2026-04-12T18:52:37.705Z</lastmod>
+    <lastmod>2026-04-14T05:21:45.425Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/entities/ur-internals</loc>
-    <lastmod>2026-04-12T19:56:31.828Z</lastmod>
+    <lastmod>2026-04-14T05:21:45.415Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/entities/zustand-game-store</loc>
-    <lastmod>2026-04-11T09:04:05.364Z</lastmod>
+    <lastmod>2026-04-14T05:21:45.439Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/challenge-system</loc>
+    <lastmod>2026-04-14T05:21:45.060Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/elo-system</loc>
+    <lastmod>2026-04-14T05:21:45.133Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/game-engine</loc>
+    <lastmod>2026-04-14T05:21:45.119Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/matchmaking</loc>
+    <lastmod>2026-04-14T05:21:45.068Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/progression-system</loc>
+    <lastmod>2026-04-14T05:21:45.091Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/spectator-mode</loc>
+    <lastmod>2026-04-14T05:21:45.078Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/tournament-flow</loc>
+    <lastmod>2026-04-14T05:21:45.106Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/</loc>
-    <lastmod>2026-04-13T05:26:15.667Z</lastmod>
+    <lastmod>2026-04-14T05:22:12.288Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/knowledge/decisions</loc>
+    <lastmod>2026-04-14T05:21:45.317Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/log</loc>
-    <lastmod>2026-04-13T05:27:12.947Z</lastmod>
+    <lastmod>2026-04-14T05:22:36.367Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/next-steps</loc>
-    <lastmod>2026-04-12T19:56:50.550Z</lastmod>
+    <lastmod>2026-04-14T05:21:45.332Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/overview</loc>
-    <lastmod>2026-04-13T05:26:23.880Z</lastmod>
+    <lastmod>2026-04-14T05:22:28.283Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/protocol/match-configs</loc>
+    <lastmod>2026-04-14T05:21:45.180Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/protocol/match-protocol</loc>
+    <lastmod>2026-04-14T05:21:45.198Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/protocol/shared-types</loc>
+    <lastmod>2026-04-14T05:21:45.165Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/quality/bugs</loc>
+    <lastmod>2026-04-14T05:21:45.022Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/quality/next-steps</loc>
+    <lastmod>2026-04-14T05:21:45.052Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/quality/performance</loc>
+    <lastmod>2026-04-14T05:21:45.043Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/quality/test-coverage</loc>
+    <lastmod>2026-04-14T05:21:45.033Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/runtime/nakama-runtime</loc>
+    <lastmod>2026-04-14T05:21:45.150Z</lastmod>
   </url></urlset>

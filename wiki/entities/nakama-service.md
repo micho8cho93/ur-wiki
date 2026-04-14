@@ -4,7 +4,7 @@
 
 **Last updated:** 2026-04-12 (commit `eddbabca`)  
 **Sources:** GitHub repo (micho8cho93/ur)  
-**Related:** [[transport-layer]], [[matchmaking]], [[architecture]]
+**Related:** [[layer-transport]], [[matchmaking]], [[architecture]]
 
 ---
 

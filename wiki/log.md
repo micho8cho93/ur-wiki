@@ -3,6 +3,28 @@
 Append-only chronological record of all wiki operations.  
 Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
 
+## [2026-04-14] ingest | Economy & monetization specification
+
+- **Source:** `economy_monetization_spec_ur.md` (comprehensive economic model spec)
+- **Action:** Split monolithic spec into 5 modular wiki pages under `features/economy/`
+- **Pages created:**
+  - `wiki/features/economy/economy-overview.md` — Master synthesis linking all systems
+  - `wiki/features/economy/progression-currency.md` — XP, ranks, soft currency (extends [[progression-system]])
+  - `wiki/features/economy/monetization.md` — Premium currency, pricing, IAP strategy
+  - `wiki/features/economy/tournament-economy.md` — Tournament entry/rewards (extends [[tournament-flow]])
+  - `wiki/features/economy/cosmetic-store.md` — Store UI/UX, rotation, preview system
+  - `wiki/sources/2026-04-14-economy-monetization-spec.md` — Source summary
+- **Updated:**
+  - `wiki/index.md` — Added Economy cluster (5 pages) under Features; incremented total from 26→31; updated Sources section
+  - `wiki/overview.md` — Added economy link to "Progression, rewards, and economy" section; added economy navigation link; added economy source
+- **Key decisions:**
+  - Modular structure: Each page stands alone but links to others (no single monolithic page)
+  - Integration points: Economy pages extend existing [[progression-system]], [[tournament-flow]], [[elo-system]]
+  - Wiki location: `features/economy/` (not top-level) because economy is a feature cluster like tournament or progression
+  - Note conflicts: Spec XP values differ from current codebase; current codebase is canonical; spec is aspirational for future extension
+- **Key content:** Dual-currency system (soft + premium), no pay-to-win (all cosmetics), retention targets (D7 20%+ before scaling monetization), tournament currency sinks, rotation-driven store engagement
+- **Next:** WIP.md can be deleted (content now in economy-overview)
+
 ## [2026-04-13] schema-update | Remove broken source refs; create WIP.md
 
 - Removed all `Sources: [[2026-04-11-ur-codebase]]` frontmatter references from every concept and entity page (18 pages) — source summary files could not be located and the links were dead

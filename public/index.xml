@@ -10,19 +10,49 @@
     <link>https://https://micho8cho93.github.io/ur-wiki/log</link>
     <guid>https://https://micho8cho93.github.io/ur-wiki/log</guid>
     <description><![CDATA[ Wiki Log Append-only chronological record of all wiki operations. Grep tip: grep &quot;^## \[&quot; log.md | tail -10 → last 10 entries. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:22:36 GMT</pubDate>
+    <pubDate>Tue, 14 Apr 2026 05:52:49 GMT</pubDate>
   </item><item>
     <title>overview</title>
     <link>https://https://micho8cho93.github.io/ur-wiki/overview</link>
     <guid>https://https://micho8cho93.github.io/ur-wiki/overview</guid>
     <description><![CDATA[ Overview Master synthesis of the Royal Game of Ur codebase: architecture, features, and current state. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:22:28 GMT</pubDate>
+    <pubDate>Tue, 14 Apr 2026 05:52:41 GMT</pubDate>
   </item><item>
     <title>index</title>
     <link>https://https://micho8cho93.github.io/ur-wiki/</link>
     <guid>https://https://micho8cho93.github.io/ur-wiki/</guid>
-    <description><![CDATA[ Wiki Index Last updated: 2026-04-14 Total pages: 26 Total sources ingested: GitHub repo (micho8cho93/ur) Overview overview — Master synthesis of the codebase, architecture reference, and navigation guide Architecture architecture — High-level three-layer design and data flow layer-frontend — Expo Ro... ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:22:12 GMT</pubDate>
+    <description><![CDATA[ Wiki Index Last updated: 2026-04-14 Total pages: 31 Total sources ingested: GitHub repo (micho8cho93/ur) + economy spec Overview overview — Master synthesis of the codebase, architecture reference, and navigation guide Architecture architecture — High-level three-layer design and data flow layer-fro... ]]></description>
+    <pubDate>Tue, 14 Apr 2026 05:35:54 GMT</pubDate>
+  </item><item>
+    <title>cosmetic-store</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/cosmetic-store</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/cosmetic-store</guid>
+    <description><![CDATA[ Cosmetic Store &amp; Rotation System Store UI/UX, cosmetic rotation mechanics, preview system, and bundle strategy. ]]></description>
+    <pubDate>Tue, 14 Apr 2026 05:35:40 GMT</pubDate>
+  </item><item>
+    <title>tournament-economy</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/tournament-economy</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/tournament-economy</guid>
+    <description><![CDATA[ Tournament Economy Entry fees, reward pools, cosmetic prizes, and how tournaments integrate with the currency system. ]]></description>
+    <pubDate>Tue, 14 Apr 2026 05:35:00 GMT</pubDate>
+  </item><item>
+    <title>monetization</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/monetization</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/monetization</guid>
+    <description><![CDATA[ Monetization Strategy Premium currency, pricing psychology, IAP structure, and ethical constraints. ]]></description>
+    <pubDate>Tue, 14 Apr 2026 05:34:40 GMT</pubDate>
+  </item><item>
+    <title>progression-currency</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/progression-currency</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/progression-currency</guid>
+    <description><![CDATA[ Progression &amp; Currency System XP sources, rank ladder, soft currency earnings and spending, and session economics. ]]></description>
+    <pubDate>Tue, 14 Apr 2026 05:34:15 GMT</pubDate>
+  </item><item>
+    <title>economy-overview</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/economy-overview</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/economy-overview</guid>
+    <description><![CDATA[ Economy System Master synthesis of Ur’s progression, currency, monetization, and cosmetic marketplace. ]]></description>
+    <pubDate>Tue, 14 Apr 2026 05:33:53 GMT</pubDate>
   </item><item>
     <title>expo-router</title>
     <link>https://https://micho8cho93.github.io/ur-wiki/entities/expo-router</link>
@@ -34,36 +64,6 @@
     <link>https://https://micho8cho93.github.io/ur-wiki/entities/zustand-game-store</link>
     <guid>https://https://micho8cho93.github.io/ur-wiki/entities/zustand-game-store</guid>
     <description><![CDATA[ Zustand Game Store The single source of truth for all in-match runtime state. Bridges the game engine, transport layer, and UI. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:21:45 GMT</pubDate>
-  </item><item>
-    <title>nakama-service</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/entities/nakama-service</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/entities/nakama-service</guid>
-    <description><![CDATA[ NakamaService The singleton service class that manages Nakama auth sessions, the WebSocket, and token lifecycle. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:21:45 GMT</pubDate>
-  </item><item>
-    <title>ur-internals</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/entities/ur-internals</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/entities/ur-internals</guid>
-    <description><![CDATA[ ur-internals The admin web application for the Royal Game of Ur — a separate package used to manage the Nakama backend from a browser UI. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:21:45 GMT</pubDate>
-  </item><item>
-    <title>next-steps</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/next-steps</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/next-steps</guid>
-    <description><![CDATA[ Next Steps A living list of outstanding tasks, open questions, and planned work for the Royal Game of Ur codebase and this wiki. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:21:45 GMT</pubDate>
-  </item><item>
-    <title>decisions</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/knowledge/decisions</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/knowledge/decisions</guid>
-    <description><![CDATA[ Architectural Decisions Why the system is designed the way it is: key decisions, trade-offs, and constraints. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:21:45 GMT</pubDate>
-  </item><item>
-    <title>layer-frontend</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/architecture/layer-frontend</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/architecture/layer-frontend</guid>
-    <description><![CDATA[ Frontend Layer Expo + React Native client: screens, routing, state management, and service layer. ]]></description>
     <pubDate>Tue, 14 Apr 2026 05:21:45 GMT</pubDate>
   </item>
     </channel>

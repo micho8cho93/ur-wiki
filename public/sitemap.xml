@@ -1,7 +1,4 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml"><url>
-    <loc>https://https://micho8cho93.github.io/ur-wiki/WIP</loc>
-    <lastmod>2026-04-14T05:21:44.988Z</lastmod>
-  </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/architecture/architecture</loc>
     <lastmod>2026-04-14T05:21:45.257Z</lastmod>
   </url><url>
@@ -29,6 +26,21 @@
     <loc>https://https://micho8cho93.github.io/ur-wiki/features/challenge-system</loc>
     <lastmod>2026-04-14T05:21:45.060Z</lastmod>
   </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/economy/cosmetic-store</loc>
+    <lastmod>2026-04-14T05:35:40.002Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/economy/economy-overview</loc>
+    <lastmod>2026-04-14T05:33:53.415Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/economy/monetization</loc>
+    <lastmod>2026-04-14T05:34:40.259Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/economy/progression-currency</loc>
+    <lastmod>2026-04-14T05:34:15.315Z</lastmod>
+  </url><url>
+    <loc>https://https://micho8cho93.github.io/ur-wiki/features/economy/tournament-economy</loc>
+    <lastmod>2026-04-14T05:35:00.442Z</lastmod>
+  </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/features/elo-system</loc>
     <lastmod>2026-04-14T05:21:45.133Z</lastmod>
   </url><url>
@@ -48,19 +60,19 @@
     <lastmod>2026-04-14T05:21:45.106Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/</loc>
-    <lastmod>2026-04-14T05:22:12.288Z</lastmod>
+    <lastmod>2026-04-14T05:35:54.220Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/knowledge/decisions</loc>
     <lastmod>2026-04-14T05:21:45.317Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/log</loc>
-    <lastmod>2026-04-14T05:22:36.367Z</lastmod>
+    <lastmod>2026-04-14T05:52:49.981Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/next-steps</loc>
     <lastmod>2026-04-14T05:21:45.332Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/overview</loc>
-    <lastmod>2026-04-14T05:22:28.283Z</lastmod>
+    <lastmod>2026-04-14T05:52:41.044Z</lastmod>
   </url><url>
     <loc>https://https://micho8cho93.github.io/ur-wiki/protocol/match-configs</loc>
     <lastmod>2026-04-14T05:21:45.180Z</lastmod>

@@ -1,8 +1,8 @@
 # Wiki Index
 
 **Last updated:** 2026-04-14  
-**Total pages:** 26  
-**Total sources ingested:** GitHub repo (micho8cho93/ur)
+**Total pages:** 31  
+**Total sources ingested:** GitHub repo (micho8cho93/ur) + economy spec
 
 ---
 
@@ -30,6 +30,14 @@
 - [[challenge-system]] — Challenge definitions, evaluators, server-side evaluation
 - [[progression-system]] — XP sources, 15-rank ladder, server-authoritative grants
 - [[elo-system]] — Rating formula, K-factors, provisional period, leaderboard
+
+### Economy (New Feature Cluster)
+
+- [[features/economy/economy-overview]] — Master synthesis of progression, currency, monetization, and store
+- [[features/economy/progression-currency]] — XP system, rank ladder, soft currency earnings and spending
+- [[features/economy/monetization]] — Premium currency, pricing psychology, IAP structure, retention targets
+- [[features/economy/tournament-economy]] — Tournament entry fees, reward pools, cosmetic prizes
+- [[features/economy/cosmetic-store]] — Store UI/UX, rotation mechanics, preview system, bundles
 
 ---
 
@@ -68,11 +76,12 @@
 ## Knowledge
 
 - [[knowledge/decisions]] — Architectural decisions, trade-offs, and design rationale
-- [[WIP]] — Work-in-progress ideas: economic models, monetization, organic growth
+- [[WIP]] — Work-in-progress ideas (archived; moved to economy spec)
 
 ---
 
 ## Sources
 
 - GitHub repo: [micho8cho93/ur](https://github.com/micho8cho93/ur) — Expo + Nakama codebase (ongoing)
-- [[wiki/sources/]] — Source summary pages (6 entries from 2026-04-11 to 2026-04-12)
+- [[2026-04-14-economy-monetization-spec]] — Economy, progression, monetization, and store design spec
+- [[wiki/sources/]] — Source summary pages (7 entries from 2026-04-11 to 2026-04-14)

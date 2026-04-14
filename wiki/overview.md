@@ -3,8 +3,8 @@
 > Master synthesis of the Royal Game of Ur codebase: architecture, features, and current state.
 
 **Last updated:** 2026-04-14  
-**Sources:** GitHub repo (micho8cho93/ur)  
-**Related:** [[index]], [[architecture]], [[layer-frontend]], [[layer-backend]], [[decisions]]
+**Sources:** GitHub repo (micho8cho93/ur), [[2026-04-14-economy-monetization-spec]]  
+**Related:** [[index]], [[architecture]], [[layer-frontend]], [[layer-backend]], [[decisions]], [[features/economy/economy-overview]]
 
 ---
 
@@ -47,11 +47,12 @@ See [[architecture]] for the full three-layer design, or jump to [[layer-fronten
 - [[spectator-mode]] — read-only live match viewing and lobby integration
 - [[nakama-runtime]] — match lifecycle handlers, tick loop, state machine
 
-**Progression and rewards:**
+**Progression, rewards, and economy:**
 - [[progression-system]] — XP sources, 15-rank ladder, server-authoritative grants
 - [[elo-system]] — rating formula, K-factors, provisional period, leaderboard
 - [[challenge-system]] — challenge definitions, server-side evaluation
 - [[tournament-flow]] — bracket registration, launch, in-match, results, advancement
+- **[[features/economy/economy-overview]]** — Monetization, currency systems, cosmetic store (NEW)
 
 **Infrastructure:**
 - [[nakama-service]] — singleton auth + session + socket manager
@@ -95,6 +96,7 @@ The codebase is **well-structured** with clear separation of concerns:
 - **Online mode** → [[layer-transport]], [[nakama-runtime]], [[nakama-service]]
 - **Progression/rewards** → [[progression-system]], [[elo-system]], [[challenge-system]]
 - **Tournaments** → [[tournament-flow]]
+- **Economy/monetization** → [[features/economy/economy-overview]], [[features/economy/progression-currency]], [[features/economy/monetization]], [[features/economy/cosmetic-store]]
 - **Performance issues** → [[performance]], [[next-steps]]
 - **Existing bugs** → [[bugs]]
 - **Test gaps** → [[test-coverage]]

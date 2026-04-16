@@ -2,9 +2,9 @@
 
 > Expo + React Native client: screens, routing, state management, and service layer.
 
-**Last updated:** 2026-04-14  
-**Sources:** GitHub repo (micho8cho93/ur)  
-**Related:** [[architecture]], [[nakama-service]], [[zustand-game-store]], [[expo-router]], [[layer-transport]]
+**Last updated:** 2026-04-16 (commit `1fbf253`)
+**Sources:** GitHub repo (micho8cho93/ur)
+**Related:** [[architecture]], [[nakama-service]], [[zustand-game-store]], [[expo-router]], [[layer-transport]], [[wallet-system]], [[cosmetic-store]]
 
 ---
 
@@ -35,10 +35,14 @@ ProgressionProvider
   ↓
 ChallengesProvider
   ↓
+WalletProvider          ← new (commit 1fbf253)
+  ↓
 ScreenTransitionProvider
   ↓
 [App screens]
 ```
+
+The match screen additionally wraps its children in `CosmeticThemeProvider` (keyed to the user's active cosmetic selection), making cosmetic asset sources available to all game components via `useCosmeticTheme()`.
 
 Each provider manages a feature domain and exposes hooks for screens and components to consume state and dispatch actions.
 
@@ -54,11 +58,12 @@ Expo Router uses file-based routing from `app/`. Key structure:
   - `app/(game)/lobby.tsx` — match list, queue UI, spectator browse
   - `app/(game)/game.tsx` — in-match board and controls
   - `app/(game)/spectate.tsx` — live spectator view (read-only)
+  - `app/(game)/store.tsx` — cosmetic store (NEW, commit `1fbf253`, 632 lines)
   - `app/(game)/profile.tsx` — user stats, ELO, progression
   - `app/(game)/tournaments.tsx` — tournament list and bracket UI
 - `app/(game)/settings.tsx` — user preferences
 
-Each screen uses hooks from the feature providers to read state and dispatch actions.
+See [[expo-router]] for the full screen map. Each screen uses hooks from the feature providers to read state and dispatch actions.
 
 ---
 
@@ -116,9 +121,28 @@ Located in `src/`:
 - **EloRatingProvider** — leaderboard, rating changes, provisional period tracking
 - **ProgressionProvider** — XP ledger, rank progression, reward notifications
 - **ChallengesProvider** — active challenges, completion tracking, unlock notifications
+- **WalletProvider** (`src/wallet/WalletContext.tsx`) — fetches soft + premium currency balance via `get_wallet` RPC; auto-refreshes when auth state changes; guest users get balance 0. Exposes `useWallet()` hook returning `{ softCurrency, wallet, status, refresh }`.
+- **StoreProvider** (`src/store/StoreProvider.tsx`) — fetches storefront via `get_storefront` RPC; exposes `purchaseItem(itemId)` with error normalization (`INSUFFICIENT_FUNDS`, `ALREADY_OWNED`, etc.). Depends on `WalletProvider`.
+- **CosmeticThemeProvider** (`src/store/CosmeticThemeContext.tsx`) — wraps the match screen with the active `CosmeticTheme`; resolves asset keys to typed `ImageSourcePropType` and audio sources via the `src/cosmetics/` asset registries. Exposes `useCosmeticTheme()`.
 - **ScreenTransitionProvider** — screen animations, transition timing
 
-Each provider reads from the Zustand store and exposes hooks for screens to subscribe to specific slices.
+Each provider reads from the Zustand store and/or Nakama RPCs and exposes hooks for screens to subscribe to specific slices.
+
+---
+
+## Cosmetic Asset System (`src/cosmetics/`)
+
+Five typed asset registries map theme keys to bundled `require()` sources:
+
+| File | Asset Type |
+|---|---|
+| `boardAssets.ts` | Board image (`ImageSourcePropType`) |
+| `tileAssets.ts` | Tile images per board theme |
+| `pieceAssets.ts` | Light/dark/reserve piece images |
+| `diceAssets.ts` | Marked/unmarked die images |
+| `audioAssets.ts` | Music tracks and sound effect previews |
+
+`CosmeticThemeContext` calls these registries with the current theme key and distributes the resolved sources to all child components via context. Board, Tile, Piece, and Dice components all read from this context to apply cosmetic overrides.
 
 ---
 

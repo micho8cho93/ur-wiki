@@ -2,9 +2,9 @@
 
 > File-based routing layout of the app — all screens, groups, and provider wrapping.
 
-**Last updated:** 2026-04-12 (commit `0d6cc748`)  
-**Sources:** GitHub repo (micho8cho93/ur)  
-**Related:** [[architecture]], [[layer-transport]], [[matchmaking]], [[spectator-mode]]
+**Last updated:** 2026-04-16 (commit `1fbf253`)
+**Sources:** GitHub repo (micho8cho93/ur)
+**Related:** [[architecture]], [[layer-transport]], [[matchmaking]], [[spectator-mode]], [[cosmetic-store]]
 
 ---
 
@@ -40,7 +40,8 @@ Stack-level options: transparent header with parchment text, Fredoka font family
 | `/match/*` | `app/match/` | In-progress match screen |
 | `/match/[id]?spectator=1` | `app/match/[id].tsx` | Match viewed in spectator mode |
 | `/(game)/*` | `app/(game)/` | Game mode selection group |
-| `/(game)/spectate` | `app/(game)/spectate.tsx` | Browse live matches to spectate (NEW) |
+| `/(game)/spectate` | `app/(game)/spectate.tsx` | Browse live matches to spectate |
+| `/(game)/store` | `app/(game)/store.tsx` | Cosmetic store (NEW, commit `1fbf253`) |
 | `/(auth)/*` | `app/(auth)/` | Auth screens group |
 
 ---
@@ -52,7 +53,8 @@ Stack-level options: transparent header with parchment text, Fredoka font family
 - `bot.tsx` — bot/offline game launch
 - `game-modes.tsx` — mode selection screen
 - `lobby.tsx` — online lobby / waiting for match (updated for 4-column ultra-wide layout)
-- `spectate.tsx` — browse spectatable live matches (NEW, 449 lines, commit `0d6cc748`)
+- `spectate.tsx` — browse spectatable live matches (commit `0d6cc748`, 449 lines)
+- `store.tsx` — cosmetic store screen (NEW, commit `1fbf253`, 632 lines)
 - `tournaments/` — tournament-specific screens
 
 **`(auth)/`** — auth screens:

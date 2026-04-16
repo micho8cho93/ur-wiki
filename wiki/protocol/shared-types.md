@@ -2,9 +2,9 @@
 
 > Cross-cutting types and enums used by both client and server. Single source of truth for game rules, progression, and matchmaking.
 
-**Last updated:** 2026-04-14  
-**Sources:** GitHub repo (micho8cho93/ur)  
-**Related:** [[match-protocol]], [[match-configs]], [[architecture]]
+**Last updated:** 2026-04-16 (commit `1fbf253`)
+**Sources:** GitHub repo (micho8cho93/ur)
+**Related:** [[match-protocol]], [[match-configs]], [[architecture]], [[wallet-system]], [[cosmetic-store]]
 
 ---
 
@@ -21,6 +21,9 @@ Shared types live in two directories:
   - `shared/elo.ts` — ELO formula, K-factors, leaderboard definitions
   - `shared/challenges.ts` — challenge definitions and evaluators
   - `shared/privateMatchCode.ts` — code generation and validation
+  - `shared/wallet.ts` — currency keys, `WalletBalances`, sanitization helpers (NEW, commit `1fbf253`)
+  - `shared/cosmetics.ts` — `CosmeticDefinition`, `StorefrontResponse`, purchase types (NEW)
+  - `shared/cosmeticTheme.ts` — `CosmeticTheme`, `BoardTheme`, asset key map (NEW)
 
 ---
 
@@ -211,6 +214,68 @@ function validatePrivateMatchCode(code: string): boolean {
 ```
 
 Used by the private match flow. Code is shared verbally or via chat; player enters it on the `JoinPrivateMatch` screen.
+
+---
+
+## Wallet Types (`shared/wallet.ts`)
+
+```typescript
+export const SOFT_CURRENCY_KEY = "soft_currency";
+export const PREMIUM_CURRENCY_KEY = "premium_currency";
+export const COIN_REWARD_RATE = 0.1;
+
+type WalletBalances = {
+  soft_currency: number;
+  premium_currency: number;
+};
+
+type WalletRpcResponse = {
+  wallet: WalletBalances;
+  softCurrency: number;    // convenience copy of wallet.soft_currency
+  premiumCurrency: number;
+};
+```
+
+Helpers: `sanitizeSoftCurrencyAmount`, `sanitizePremiumCurrencyAmount` (guard against NaN/Infinity), `buildWalletRpcResponse`, `parseWalletBalances` (accepts JSON string or object), `calculateChallengeSoftCurrencyReward(rewardXp)` (= XP × 0.1).
+
+---
+
+## Cosmetic Types (`shared/cosmetics.ts`)
+
+Key types used by both client and backend:
+
+```typescript
+type CosmeticTier = "common" | "rare" | "epic" | "legendary";
+type CosmeticType = "board" | "pieces" | "dice_animation" | "emote" | "music" | "sound_effect";
+type CurrencyType = "soft" | "premium";
+type RotationPool = "daily" | "featured" | "limited";
+
+type CosmeticDefinition = { id, name, tier, type, price, rotationPools, rarityWeight, assetKey, ... };
+type StorefrontResponse = { dailyRotation, featured, limitedTime, bundles, ownedIds, rotationExpiresAt };
+type PurchaseItemRequest = { itemId: string };
+type PurchaseItemResponse = { success: true; cosmeticId; updatedWallet };
+type OwnedCosmetic = { cosmeticId; acquiredAt; source: "purchase_soft"|"purchase_premium"|"tournament_reward"|"gift" };
+type BundleDefinition = { id, name, cosmeticIds, price, availabilityWindow, assetKey };
+type LimitedTimeEvent = { id, name, cosmeticIds, startsAt, endsAt, disabled? };
+```
+
+Admin-facing types also defined here: `AdminUpsertCosmeticRequest`, `AdminToggleCosmeticRequest`, `StoreRotationStateResponse`, `StoreStatsResponse`.
+
+---
+
+## Cosmetic Theme Types (`shared/cosmeticTheme.ts`)
+
+```typescript
+type CosmeticTheme = {
+  board?: Partial<BoardTheme>;       // imageAssetKey, tile asset keys, backgroundColor
+  pieces?: Partial<PiecesTheme>;     // lightPieceAssetKey, darkPieceAssetKey, reservePieceAssetKey
+  dice?: Partial<DiceTheme>;         // markedDieAssetKey, unmarkedDieAssetKey
+  music?: Partial<MusicTheme>;       // trackAssetKey
+  soundEffects?: Partial<SoundEffectsTheme>;
+};
+```
+
+`COSMETIC_ASSET_MAP: Record<string, CosmeticTheme>` maps cosmetic `assetKey` values to their theme. Resolve helpers (`resolveBoardTheme`, etc.) merge overrides onto the `DEFAULT_*_THEME` baseline.
 
 ---
 

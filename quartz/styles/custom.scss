@@ -1,3 +1,83 @@
 @use "./base.scss";
 
 // put your custom CSS here!
+
+.ur-landing {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  h1 {
+    margin-bottom: 0.5rem;
+    font-size: 2.4rem;
+  }
+
+  > p {
+    margin: 0 0 1.75rem;
+    color: var(--darkgray);
+    font-size: 1.1rem;
+  }
+}
+
+.ur-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 12rem));
+  gap: 1rem;
+}
+
+.ur-choice-button {
+  display: flex;
+  min-height: 4rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--secondary);
+  border-radius: 8px;
+  background: var(--secondary);
+  color: var(--light) !important;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+
+  &:hover,
+  &:focus-visible {
+    border-color: var(--tertiary);
+    background: var(--tertiary);
+    transform: translateY(-1px);
+  }
+}
+
+body[data-slug="index"] {
+  #quartz-body {
+    grid-template:
+      "grid-sidebar-left grid-center grid-sidebar-right" 1fr
+      "grid-sidebar-left grid-footer grid-sidebar-right" auto
+      / minmax(0, 1fr) minmax(0, 42rem) minmax(0, 1fr);
+  }
+
+  .left.sidebar,
+  .right.sidebar,
+  .page-header,
+  .page-footer,
+  footer {
+    display: none;
+  }
+
+  .center {
+    max-width: 42rem;
+  }
+}
+
+@media all and (max-width: 600px) {
+  .ur-landing h1 {
+    font-size: 2rem;
+  }
+
+  .ur-choice-grid {
+    grid-template-columns: 1fr;
+  }
+}

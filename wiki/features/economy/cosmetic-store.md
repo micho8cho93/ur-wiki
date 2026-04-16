@@ -2,9 +2,190 @@
 
 > Store UI/UX, cosmetic rotation mechanics, preview system, and bundle strategy.
 
-**Last updated:** 2026-04-14  
-**Sources:** [[2026-04-14-economy-monetization-spec]]  
-**Related:** [[economy-overview]], [[progression-currency]], [[monetization]]
+**Last updated:** 2026-04-16 (commit `1fbf253`)
+**Sources:** [[2026-04-14-economy-monetization-spec]], GitHub repo (micho8cho93/ur)
+**Related:** [[economy-overview]], [[progression-currency]], [[monetization]], [[wallet-system]]
+
+---
+
+## Implementation Status: ✅ Implemented
+
+As of commit `1fbf253`, the cosmetic store system is fully implemented. The spec below describes design intent; the sections marked **[IMPLEMENTED]** describe the actual code.
+
+---
+
+## [IMPLEMENTED] Backend Architecture
+
+### Storage Collections
+
+| Collection | Key | Purpose |
+|---|---|---|
+| `cosmetics` | `owned` | Per-user list of owned cosmetics (`OwnedCosmetic[]`) |
+| `store_state` | `rotation` | Global rotation record (daily IDs, featured IDs, generated timestamp, previous days, manual override flag, limited-time events) |
+| Global catalog collection | — | Cosmetic definitions stored in Nakama storage via `cosmeticCatalog.ts` |
+
+### RPCs Registered (`backend/modules/cosmeticStore.ts`)
+
+| RPC | Purpose |
+|---|---|
+| `get_storefront` | Returns full store: daily rotation, featured, limited-time, bundles, owned IDs, rotation expiry |
+| `get_full_catalog` | Returns all cosmetic definitions (player-facing) |
+| `purchase_item` | Deducts currency, writes owned record, emits analytics event |
+| `get_owned_cosmetics` | Returns player's owned cosmetic list |
+| `admin_get_full_catalog` | Admin: full catalog |
+| `admin_upsert_cosmetic` | Admin: create or update a cosmetic definition |
+| `admin_disable_cosmetic` | Admin: disable a cosmetic |
+| `admin_enable_cosmetic` | Admin: re-enable a cosmetic |
+| `admin_get_rotation_state` | Admin: current rotation state |
+| `admin_set_manual_rotation` | Admin: override rotation manually |
+| `admin_clear_manual_rotation` | Admin: clear manual override |
+| `admin_set_limited_time_event` | Admin: add a limited-time event |
+| `admin_remove_limited_time_event` | Admin: remove a limited-time event |
+| `admin_get_store_stats` | Admin: purchase analytics |
+
+### Purchase Flow
+
+1. Verify cosmetic exists in catalog (`cosmeticCatalog.loadCatalogFromStorage`)
+2. Verify user does not already own it (read `cosmetics/owned`)
+3. Read user wallet via `nk.accountGetId(userId).wallet`
+4. Validate sufficient balance (soft or premium currency)
+5. Deduct via `nk.walletUpdate` (Nakama ledger, atomic)
+6. Append `OwnedCosmetic` to storage with OCC retry
+7. Emit `cosmetic_purchase` analytics event
+8. Return `PurchaseItemResponse` with `updatedWallet`
+
+Error codes thrown as strings: `ITEM_NOT_FOUND`, `ALREADY_OWNED`, `INSUFFICIENT_FUNDS`.
+
+---
+
+## [IMPLEMENTED] Rotation Algorithm (`backend/modules/storeRotation.ts`)
+
+### Daily Rotation (`getDailyRotation`)
+
+Constants: `DAILY_ROTATION_SIZE = 8`
+
+Steps:
+1. Filter catalog to items in `daily` rotation pool and within their `availabilityWindow`
+2. Exclude items that appeared in yesterday's rotation
+3. If eligible pool < 8, fall back to all active daily items
+4. **Weighted sample**: pick items by `rarityWeight`; items seen in 2–3 days ago get weight halved to reduce repetition
+5. **Type diversity repair**: if selected set is missing a `board`, `pieces`, or any animation/emote type, swap out the lowest-weight selected item to add the missing type
+
+### Featured Items (`getFeaturedItems`)
+
+Returns epic or legendary items in the `featured` rotation pool, sorted by `rarityWeight` descending, capped at 2 items.
+
+### Manual Override
+
+Admin can write specific IDs to the rotation state via `admin_set_manual_rotation`. The `manualOverride` flag bypasses the algorithm.
+
+---
+
+## [IMPLEMENTED] Catalog (`backend/modules/cosmeticCatalog.ts`)
+
+The cosmetic catalog is stored in Nakama storage as a JSON array of `CosmeticDefinition` objects. The catalog is read and in-memory cached per-request. Admin RPCs expose CRUD on the catalog with OCC version guards.
+
+---
+
+## [IMPLEMENTED] Cosmetic Types (`shared/cosmetics.ts`)
+
+```typescript
+type CosmeticTier = "common" | "rare" | "epic" | "legendary";
+type CosmeticType = "board" | "pieces" | "dice_animation" | "emote" | "music" | "sound_effect";
+type CurrencyType = "soft" | "premium";
+type RotationPool = "daily" | "featured" | "limited";
+
+type CosmeticDefinition = {
+  id: string;                          // e.g. "board_lapis_001"
+  name: string;
+  tier: CosmeticTier;
+  type: CosmeticType;
+  price: { currency: CurrencyType; amount: number };
+  rotationPools: RotationPool[];
+  rarityWeight: number;                // 0–∞ (higher = more likely in rotation)
+  availabilityWindow?: { start: string; end: string };
+  releasedDate: string;
+  assetKey: string;                    // maps to COSMETIC_ASSET_MAP in cosmeticTheme.ts
+  disabled?: boolean;
+};
+```
+
+---
+
+## [IMPLEMENTED] Theme System (`shared/cosmeticTheme.ts`)
+
+`COSMETIC_ASSET_MAP` maps asset keys to `CosmeticTheme` objects:
+
+```typescript
+type CosmeticTheme = {
+  board?: Partial<BoardTheme>;         // imageAssetKey, tile asset keys, backgroundColor
+  pieces?: Partial<PiecesTheme>;       // lightPieceAssetKey, darkPieceAssetKey
+  dice?: Partial<DiceTheme>;           // markedDieAssetKey, unmarkedDieAssetKey
+  music?: Partial<MusicTheme>;         // trackAssetKey
+  soundEffects?: Partial<SoundEffectsTheme>;
+};
+```
+
+Pre-defined themes: `board_cedar_001`, `board_alabaster_001`, `board_lapis_001`, `board_obsidian_001`, `board_gold_001` (and more).
+
+---
+
+## [IMPLEMENTED] Frontend Architecture
+
+### Provider Stack Addition
+
+`StoreProvider` and `WalletProvider` are added to the provider stack in `app/_layout.tsx`. `CosmeticThemeProvider` wraps the match screen with the active cosmetic theme.
+
+### New React Contexts
+
+| Context | File | Purpose |
+|---|---|---|
+| `WalletProvider` | `src/wallet/WalletContext.tsx` | Fetches and exposes wallet balance; auto-refreshes on auth change |
+| `StoreProvider` | `src/store/StoreProvider.tsx` | Storefront state, purchase action, silent refresh |
+| `CosmeticThemeProvider` | `src/store/CosmeticThemeContext.tsx` | Resolves owned cosmetic theme into typed asset sources |
+
+### Store Screen (`app/(game)/store.tsx`)
+
+New route `/(game)/store` — the full store UI screen (632 lines). Connects to `StoreProvider` to display rotation, featured items, limited-time events, and purchase flow.
+
+### Cosmetic Asset Registries (`src/cosmetics/`)
+
+Each cosmetic dimension has a typed asset file:
+- `boardAssets.ts` — board image `require()` map
+- `tileAssets.ts` — tile image map
+- `pieceAssets.ts` — piece image map
+- `diceAssets.ts` — dice image map
+- `audioAssets.ts` — music tracks and sound effect previews
+
+These return `ImageSourcePropType` (or audio sources) for use in components.
+
+### Preview Modal (`components/CosmeticPreviewModal.tsx`)
+
+587-line modal component for live cosmetic preview. Applies the cosmetic's theme to a rendered board/piece/dice preview before purchase.
+
+### Home Screen Wallet Chip
+
+`src/screens/AuthenticatedHome.tsx` displays a "Coins" balance chip in the top bar using `useWallet().softCurrency`. Guest users see 0.
+
+---
+
+## [IMPLEMENTED] ur-internals Admin Pages
+
+Three new admin pages in the ur-internals web app:
+
+- `StoreCatalog.tsx` — browse, create, edit cosmetic definitions
+- `StoreRotation.tsx` — view current rotation, set/clear manual override, manage limited-time events
+- `StoreStats.tsx` — view purchase analytics
+
+API client: `ur-internals/src/api/store.ts` (calls admin RPCs via existing proxy).
+
+---
+
+## [IMPLEMENTED] Analytics
+
+`cosmetic_purchase` event type added to `backend/modules/analytics/tracking.ts`. Fires when a purchase completes, records `cosmeticId`, timestamp, userId, and purchase source (soft vs premium).
+
+---
 
 ---
 

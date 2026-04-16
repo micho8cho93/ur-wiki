@@ -3,6 +3,32 @@
 Append-only chronological record of all wiki operations.  
 Grep tip: `grep "^## \[" log.md | tail -10` → last 10 entries.
 
+## [2026-04-16] ingest | commit `1fbf253` — Full cosmetic store, wallet, and home screen redesign
+
+- **Commit:** `1fbf253ce3aba224208ea35fde4c3d0b7c2e94af` (2026-04-16T18:35:05+0200)
+- **Summary:** 89 files changed, 10,003 insertions, 869 deletions — the largest single commit to date. Implements the full cosmetic economy stack: wallet ledger, store catalog, rotation algorithm, purchase flow, cosmetic theme system, asset registries, store screen, preview modal, admin pages, and 15+ new test files.
+- **Pages created:**
+  - `wiki/features/economy/wallet-system.md` — Dual-currency wallet: shared types, backend ledger, RPC, service wrapper, `WalletProvider`, `useWallet` hook, home screen display
+- **Pages updated:**
+  - `wiki/features/economy/cosmetic-store.md` — Major rewrite: added full "Implementation Status: ✅ Implemented" sections covering backend RPCs, storage collections, purchase flow, rotation algorithm, catalog, shared types, theme system, frontend architecture, preview modal, asset registries, admin pages, analytics
+  - `wiki/features/economy/economy-overview.md` — Added implementation status table; updated "Next Steps" to reflect what's live vs. remaining
+  - `wiki/features/economy/progression-currency.md` — Confirmed currency name as "Coins"; documented challenge reward rate (XP × 0.1); updated earnings table with implementation status
+  - `wiki/architecture/layer-frontend.md` — Added `WalletProvider` to provider stack diagram; added `/(game)/store` screen; added new feature contexts section (WalletProvider, StoreProvider, CosmeticThemeProvider); added cosmetic asset system section
+  - `wiki/entities/expo-router.md` — Added `/(game)/store` route to screen map and route group listing
+  - `wiki/protocol/shared-types.md` — Added wallet types, cosmetic types, and cosmetic theme types; updated type location list with new shared/ files
+  - `wiki/features/challenge-system.md` — Added "Soft Currency Rewards" section documenting `COIN_REWARD_RATE = 0.1`, `awardChallengeSoftCurrency`, ledger deduplication
+  - `wiki/quality/test-coverage.md` — Rewrote summary table with updated counts (~292 src / ~123 tests / ~42%); documented 15 new test files added in this commit
+  - `wiki/overview.md` — Added wallet-system and cosmetic-store links; updated date
+  - `wiki/index.md` — Added `wallet-system` page; total 31→32; updated date; Economy section note updated
+- **Key takeaways:**
+  - The economy spec from 2026-04-14 is now largely implemented: catalog, rotation, purchase, wallet, theme, store screen, admin are all live
+  - Soft currency name is confirmed "Coins"; challenge completions earn XP × 0.1 Coins via Nakama wallet ledger
+  - CosmeticThemeProvider + 5 asset registries in `src/cosmetics/` apply visual cosmetics to Board, Tile, Piece, Dice, and audio in real time
+  - `StoreProvider` depends on `WalletProvider`; purchase responses include `updatedWallet` to avoid a second RPC round-trip
+  - Premium currency IAP, tournament cosmetic prizes, and match-end soft currency awards are still planned (not yet wired)
+  - Home screen (`src/screens/AuthenticatedHome.tsx`) is a new file — old home component replaced, now shows wallet balance chip in header
+  - ur-internals gains 3 new admin pages: StoreCatalog, StoreRotation, StoreStats
+
 ## [2026-04-14] ingest | Economy & monetization specification
 
 - **Source:** `economy_monetization_spec_ur.md` (comprehensive economic model spec)

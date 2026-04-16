@@ -3,39 +3,60 @@
 > Static analysis of test file presence vs. source files across frontend, backend, and shared layers.
 > **Note:** This is file-level coverage (does a test file exist?), not line/branch coverage. No test runner was executed.
 
-**Generated:** 2026-04-12 (updated after commits `c79284cb`, `a1e996f4`, `eddbabca`)
-**Codebase root:** `sources/ur/`
+**Generated:** 2026-04-16 (updated after commit `1fbf253`)
+**Codebase root:** GitHub repo (micho8cho93/ur)
 
-## Summary
+## Summary (post commit `1fbf253`)
 
 | Layer | Source Files | Test Files | Coverage Ratio | Notes |
 |-------|-------------|------------|----------------|-------|
-| **Backend** | 27 | 18 | ~67% | `privateMatch.rpc.test.ts` expanded (+69 lines) |
-| **Frontend (components)** | 60 | 25 | ~42% | `Tile.test.tsx` (new, 59 lines), `Piece.test.tsx` (new, 28 lines) |
-| **Logic (game engine)** | 8 | 7 | ~88% | Best-covered area; engine tested deeply |
-| **Shared** | 10 | 7 | ~70% | 3 utility modules missing tests |
-| **Services** | 13 | 6 | ~46% | `nakama.test.ts` (new, 268 lines; socket lifecycle + retry) |
-| **src/ (hooks/match/auth)** | 47 | 25 | ~53% | `useTournamentDetail.test.tsx` expanded (+53 lines); `useTournamentList.test.tsx` new (180 lines) |
-| **ur-internals** | 66 | 2 | ~3% | Admin app, mostly untested |
-| **store/** | 1 | 1 | ~100% | useGameStore covered |
-| **hooks/** | 5 | 1 | ~20% | Only useMatchmaking tested |
-| **app/ (routes)** | 19 | 5 | ~26% | Zero route-level tests |
-| **tutorials/** | 3 | 1 | ~33% | Playthrough tested |
-| **TOTAL** | ~259 | ~98* | ~38% | *Excluding node_modules and type-only files |
+| **Backend** | ~36 | ~26 | ~72% | +9 new source files (wallet, cosmeticStore, cosmeticCatalog, storeRotation, matchSoftCurrency + tests) |
+| **Frontend (components)** | ~63 | ~27 | ~43% | `CosmeticPreviewModal.test.tsx` (194 lines) added |
+| **Logic (game engine)** | ~9 | ~8 | ~89% | `previewState.ts` + test added |
+| **Shared** | ~13 | ~10 | ~77% | `cosmetics.test.ts` (70), `cosmeticTheme.test.ts` (94), `wallet` covered via shared tests |
+| **Services** | ~15 | ~8 | ~53% | `cosmetics.test.ts` (116 lines), `wallet.test.ts` (56 lines) added |
+| **src/ (hooks/contexts/auth)** | ~54 | ~30 | ~56% | `CosmeticThemeContext.test.tsx` (66), `StoreProvider.test.tsx` (115), `WalletContext.test.tsx` (79) added |
+| **ur-internals** | ~72 | ~3 | ~4% | `routes.test.ts` expanded (+6 lines); store admin pages untested |
+| **store/** | 1 | 1 | ~100% | Unchanged |
+| **hooks/** | 5 | 1 | ~20% | Unchanged |
+| **app/ (routes/specs)** | ~21 | ~8 | ~38% | `specs/app.store.test.tsx` (143), `specs/app.lobby.test.tsx` (+19) added |
+| **tutorials/** | 3 | 1 | ~33% | Unchanged |
+| **TOTAL** | ~292 | ~123* | ~42% | *Excluding node_modules and type-only files |
 
-## New Tests Added (2026-04-12)
+## New Tests Added (commit `1fbf253`)
 
-- **`components/game/Tile.test.tsx`** (59 lines) — new; tests the memoized `Tile` component rendering and `areTilePropsEqual` comparator
-- **`components/game/Piece.test.tsx`** (28 lines) — new; tests the memoized `Piece` component rendering and `arePiecePropsEqual` comparator  
-- **`src/tournaments/useTournamentList.test.tsx`** (180 lines) — new; tests the tournament list hook including socket notification handling and polling fallback
-- **`src/tournaments/useTournamentDetail.test.tsx`** — expanded (+53 lines); adds socket notification and disconnect edge cases
-- **`services/nakama.test.ts`** (268 lines) — new; tests socket lifecycle (stale socket detection, disconnect handlers, retry logic)
-- **`backend/modules/privateMatch.rpc.test.ts`** — expanded (+69 lines); adds reservation concurrency and OCC conflict edge cases
-- **`components/game/Board.renderMetrics.test.ts`** — expanded (+73 lines); adds vertical board row metrics, non-uniform row heights
-- **`components/game/matchDiceStageLayout.test.ts`** — expanded (+25 lines)
+### Backend
+- **`backend/modules/cosmeticStore.test.ts`** (280 lines) — storefront query, purchase flow, duplicate prevention, admin RPCs
+- **`backend/modules/storeRotation.test.ts`** (113 lines) — weighted sampling, type diversity repair, featured item selection
+- **`backend/modules/wallet.test.ts`** (52 lines) — wallet read, challenge currency award, sanitization edge cases
+- **`backend/modules/matchSoftCurrency.test.ts`** (119 lines) — soft currency from match end (spec coverage)
+- **`backend/modules/index.rpc-registration.test.ts`** (+33 lines) — new RPC registration assertions
+
+### Frontend
+- **`components/CosmeticPreviewModal.test.tsx`** (194 lines) — preview modal rendering, cosmetic application
+- **`src/store/CosmeticThemeContext.test.tsx`** (66 lines) — theme context default and override resolution
+- **`src/store/StoreProvider.test.tsx`** (115 lines) — storefront loading, purchase action, error handling
+- **`src/wallet/WalletContext.test.tsx`** (79 lines) — wallet loading, auth change reset, guest handling
+- **`services/cosmetics.test.ts`** (116 lines) — `getStorefront`, `purchaseItem` service wrappers
+- **`services/wallet.test.ts`** (56 lines) — `getWallet` service wrapper
+- **`specs/app.store.test.tsx`** (143 lines) — store screen integration test
+- **`specs/app.lobby.test.tsx`** (+19 lines) — updated for new lobby layout
+
+### Shared
+- **`shared/cosmetics.test.ts`** (70 lines) — type guard validation
+- **`shared/cosmeticTheme.test.ts`** (94 lines) — theme resolution and asset map coverage
+- **`logic/previewState.test.ts`** (27 lines) — preview state logic
+- **`src/cosmetics/boardAssets.test.ts`** (92 lines) — asset registry completeness
+
+## Previous Test Additions (2026-04-12)
+
+- **`components/game/Tile.test.tsx`** (59 lines), **`Piece.test.tsx`** (28 lines)
+- **`src/tournaments/useTournamentList.test.tsx`** (180 lines), **`useTournamentDetail.test.tsx`** (expanded)
+- **`services/nakama.test.ts`** (268 lines)
+- **`backend/modules/privateMatch.rpc.test.ts`** (expanded +69 lines)
 
 ## Notes
 
 - This report is generated from file presence, not execution coverage.
 - App routes are counted as uncovered unless they have direct tests under `specs/`.
-- Backend and frontend sections are intentionally broad to keep the report stable as the codebase evolves.
+- ur-internals store admin pages (StoreCatalog, StoreRotation, StoreStats) are not yet unit-tested.

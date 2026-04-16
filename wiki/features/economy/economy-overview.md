@@ -2,9 +2,9 @@
 
 > Master synthesis of Ur's progression, currency, monetization, and cosmetic marketplace.
 
-**Last updated:** 2026-04-14  
-**Sources:** [[2026-04-14-economy-monetization-spec]]  
-**Related:** [[progression-system]], [[progression-currency]], [[monetization]], [[tournament-economy]], [[cosmetic-store]]
+**Last updated:** 2026-04-16 (commit `1fbf253`)
+**Sources:** [[2026-04-14-economy-monetization-spec]], GitHub repo (micho8cho93/ur)
+**Related:** [[progression-system]], [[progression-currency]], [[monetization]], [[tournament-economy]], [[cosmetic-store]], [[wallet-system]]
 
 ---
 
@@ -163,10 +163,30 @@ Once retention is healthy, monetization (premium currency offers, battle pass, s
 
 ---
 
-## Next Steps
+## Implementation Status (2026-04-16)
 
-1. **Store UI implementation** — preview system + rotation backend
-2. **Premium currency integration** — Nakama wallet + purchase flow
-3. **Analytics tracking** — cosmetic views, purchases, conversion funnel
-4. **A/B testing** — price points, rotation frequency, featured cosmetics
-5. **Retention campaigns** — double XP events, challenge events, seasonal passes (post-launch)
+As of commit `1fbf253`, the core economy systems are **fully implemented** in the codebase:
+
+| System | Status |
+|---|---|
+| Soft currency wallet | ✅ Implemented (`backend/modules/wallet.ts`, `shared/wallet.ts`, `src/wallet/WalletContext.tsx`) |
+| Challenge → currency rewards | ✅ Implemented (`calculateChallengeSoftCurrencyReward`, rate = XP × 0.1) |
+| Cosmetic catalog & storage | ✅ Implemented (`backend/modules/cosmeticCatalog.ts`) |
+| Store rotation algorithm | ✅ Implemented (`backend/modules/storeRotation.ts`) |
+| Storefront + purchase RPCs | ✅ Implemented (14 RPCs in `cosmeticStore.ts`) |
+| Cosmetic theme system | ✅ Implemented (`shared/cosmeticTheme.ts`, `src/store/CosmeticThemeContext.tsx`) |
+| Store screen | ✅ Implemented (`app/(game)/store.tsx`) |
+| Purchase analytics | ✅ Implemented (`cosmetic_purchase` event) |
+| Admin store management | ✅ Implemented (ur-internals StoreCatalog, StoreRotation, StoreStats) |
+| Premium currency IAP | 🔲 Not yet implemented (spec only) |
+| Battle pass / seasonal passes | 🔲 Not yet implemented |
+| Tournament cosmetic rewards | 🔲 Not yet wired up |
+
+See [[wallet-system]] for wallet implementation details. See [[cosmetic-store]] for store/rotation implementation.
+
+## Remaining Next Steps
+
+1. **Premium currency IAP** — real-money purchase flow (App Store / Google Play)
+2. **Tournament cosmetic prizes** — wire up `tournament_reward` source in owned cosmetics
+3. **A/B testing** — price points, rotation frequency, featured cosmetics
+4. **Retention campaigns** — double XP events, challenge events, seasonal passes

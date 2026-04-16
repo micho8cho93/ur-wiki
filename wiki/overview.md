@@ -2,7 +2,7 @@
 
 > Master synthesis of the Royal Game of Ur codebase: architecture, features, and current state.
 
-**Last updated:** 2026-04-14  
+**Last updated:** 2026-04-16 (commit `1fbf253`)
 **Sources:** GitHub repo (micho8cho93/ur), [[2026-04-14-economy-monetization-spec]]  
 **Related:** [[index]], [[architecture]], [[layer-frontend]], [[layer-backend]], [[decisions]], [[features/economy/economy-overview]]
 
@@ -50,9 +50,11 @@ See [[architecture]] for the full three-layer design, or jump to [[layer-fronten
 **Progression, rewards, and economy:**
 - [[progression-system]] — XP sources, 15-rank ladder, server-authoritative grants
 - [[elo-system]] — rating formula, K-factors, provisional period, leaderboard
-- [[challenge-system]] — challenge definitions, server-side evaluation
+- [[challenge-system]] — challenge definitions, server-side evaluation (now also awards Coins)
 - [[tournament-flow]] — bracket registration, launch, in-match, results, advancement
-- **[[features/economy/economy-overview]]** — Monetization, currency systems, cosmetic store (NEW)
+- [[features/economy/economy-overview]] — Monetization, currency systems, cosmetic store
+- [[features/economy/wallet-system]] — Dual-currency wallet: backend ledger + frontend context (NEW)
+- [[features/economy/cosmetic-store]] — Store screen, rotation algorithm, theme system (IMPLEMENTED)
 
 **Infrastructure:**
 - [[nakama-service]] — singleton auth + session + socket manager

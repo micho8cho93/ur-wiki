@@ -6,65 +6,65 @@
       <description>Last 10 notes on Ur Wiki</description>
       <generator>Quartz -- quartz.jzhao.xyz</generator>
       <item>
+    <title>Ur</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/</guid>
+    <description><![CDATA[ Royal Game of Ur Choose where you want to go. Wiki Course . ]]></description>
+    <pubDate>Thu, 16 Apr 2026 17:05:56 GMT</pubDate>
+  </item><item>
+    <title>codex-store-nav-admin-prompt</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/queries/codex-store-nav-admin-prompt</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/queries/codex-store-nav-admin-prompt</guid>
+    <description><![CDATA[ Codex Prompt: Store Navigation + Admin Control Panel Saved prompt for delegating store navigation and admin panel implementation to Codex. ]]></description>
+    <pubDate>Thu, 16 Apr 2026 05:27:41 GMT</pubDate>
+  </item><item>
+    <title>codex-preview-system-prompt</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/queries/codex-preview-system-prompt</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/queries/codex-preview-system-prompt</guid>
+    <description><![CDATA[ Codex Prompt: Preview System (Phase 3) Saved prompt for delegating the cosmetic preview system implementation to Codex. ]]></description>
+    <pubDate>Wed, 15 Apr 2026 19:11:10 GMT</pubDate>
+  </item><item>
+    <title>codex-cosmetic-store-prompt</title>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/queries/codex-cosmetic-store-prompt</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/queries/codex-cosmetic-store-prompt</guid>
+    <description><![CDATA[ Codex Prompt: Cosmetic Data Model + Basic Store Saved prompt for delegating the cosmetic store implementation to Codex. ]]></description>
+    <pubDate>Wed, 15 Apr 2026 18:34:40 GMT</pubDate>
+  </item><item>
     <title>log</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/log</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/log</guid>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/log</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/log</guid>
     <description><![CDATA[ Wiki Log Append-only chronological record of all wiki operations. Grep tip: grep &quot;^## \[&quot; log.md | tail -10 → last 10 entries. ]]></description>
     <pubDate>Tue, 14 Apr 2026 05:52:49 GMT</pubDate>
   </item><item>
     <title>overview</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/overview</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/overview</guid>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/overview</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/overview</guid>
     <description><![CDATA[ Overview Master synthesis of the Royal Game of Ur codebase: architecture, features, and current state. ]]></description>
     <pubDate>Tue, 14 Apr 2026 05:52:41 GMT</pubDate>
   </item><item>
     <title>index</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/</guid>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/</guid>
     <description><![CDATA[ Wiki Index Last updated: 2026-04-14 Total pages: 31 Total sources ingested: GitHub repo (micho8cho93/ur) + economy spec Overview overview — Master synthesis of the codebase, architecture reference, and navigation guide Architecture architecture — High-level three-layer design and data flow layer-fro... ]]></description>
     <pubDate>Tue, 14 Apr 2026 05:35:54 GMT</pubDate>
   </item><item>
     <title>cosmetic-store</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/cosmetic-store</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/cosmetic-store</guid>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/features/economy/cosmetic-store</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/features/economy/cosmetic-store</guid>
     <description><![CDATA[ Cosmetic Store &amp; Rotation System Store UI/UX, cosmetic rotation mechanics, preview system, and bundle strategy. ]]></description>
     <pubDate>Tue, 14 Apr 2026 05:35:40 GMT</pubDate>
   </item><item>
     <title>tournament-economy</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/tournament-economy</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/tournament-economy</guid>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/features/economy/tournament-economy</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/features/economy/tournament-economy</guid>
     <description><![CDATA[ Tournament Economy Entry fees, reward pools, cosmetic prizes, and how tournaments integrate with the currency system. ]]></description>
     <pubDate>Tue, 14 Apr 2026 05:35:00 GMT</pubDate>
   </item><item>
     <title>monetization</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/monetization</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/monetization</guid>
+    <link>https://https://micho8cho93.github.io/ur-wiki/wiki/features/economy/monetization</link>
+    <guid>https://https://micho8cho93.github.io/ur-wiki/wiki/features/economy/monetization</guid>
     <description><![CDATA[ Monetization Strategy Premium currency, pricing psychology, IAP structure, and ethical constraints. ]]></description>
     <pubDate>Tue, 14 Apr 2026 05:34:40 GMT</pubDate>
-  </item><item>
-    <title>progression-currency</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/progression-currency</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/progression-currency</guid>
-    <description><![CDATA[ Progression &amp; Currency System XP sources, rank ladder, soft currency earnings and spending, and session economics. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:34:15 GMT</pubDate>
-  </item><item>
-    <title>economy-overview</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/features/economy/economy-overview</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/features/economy/economy-overview</guid>
-    <description><![CDATA[ Economy System Master synthesis of Ur’s progression, currency, monetization, and cosmetic marketplace. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:33:53 GMT</pubDate>
-  </item><item>
-    <title>expo-router</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/entities/expo-router</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/entities/expo-router</guid>
-    <description><![CDATA[ Expo Router (Screen Structure) File-based routing layout of the app — all screens, groups, and provider wrapping. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:21:45 GMT</pubDate>
-  </item><item>
-    <title>zustand-game-store</title>
-    <link>https://https://micho8cho93.github.io/ur-wiki/entities/zustand-game-store</link>
-    <guid>https://https://micho8cho93.github.io/ur-wiki/entities/zustand-game-store</guid>
-    <description><![CDATA[ Zustand Game Store The single source of truth for all in-match runtime state. Bridges the game engine, transport layer, and UI. ]]></description>
-    <pubDate>Tue, 14 Apr 2026 05:21:45 GMT</pubDate>
   </item>
     </channel>
   </rss>

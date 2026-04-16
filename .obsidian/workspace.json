@@ -180,8 +180,9 @@
       "bases:Create new base": false
     }
   },
-  "active": "7125bd396f6c8a0d",
+  "active": "c4c1df02f24c3f49",
   "lastOpenFiles": [
+    "wiki/features/economy/wallet-system.md",
     "public/runtime/nakama-runtime.html",
     "public/quality/test-coverage.html",
     "public/quality/performance.html",
@@ -192,7 +193,6 @@
     "public/protocol/match-configs.html",
     "public/overview.html",
     "public/next-steps.html",
-    "public/log.html",
     "public/static/og-image.png",
     "public/static/icon.png",
     "wiki/WIP.md",

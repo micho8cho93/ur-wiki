@@ -2,9 +2,9 @@
 
 > XP sources, rank ladder, soft currency earnings and spending, and session economics.
 
-**Last updated:** 2026-04-14  
-**Sources:** [[2026-04-14-economy-monetization-spec]], [[progression-system]]  
-**Related:** [[economy-overview]], [[challenge-system]], [[tournament-economy]]
+**Last updated:** 2026-04-16 (commit `1fbf253`)
+**Sources:** [[2026-04-14-economy-monetization-spec]], [[progression-system]], GitHub repo (micho8cho93/ur)
+**Related:** [[economy-overview]], [[challenge-system]], [[tournament-economy]], [[wallet-system]]
 
 ---
 
@@ -61,21 +61,36 @@
 ## Soft Currency (Primary Economy)
 
 ### Currency Name
-Placeholder options: "Coins" / "Silver" / "Shekels"
+**"Coins"** — confirmed in `src/screens/AuthenticatedHome.tsx` (`${displayedSoftCurrency.toLocaleString()} Coins`). The home screen wallet chip displays the balance in real time.
 
-### Earnings
+### [IMPLEMENTED] Challenge Currency Reward
 
-| Action | Soft Currency |
-|--------|-------|
-| Win | 15 |
-| Loss | 5 |
-| Daily login | 50 |
-| Challenge completion | 25–100 |
-| First win of day bonus | +25 |
+As of commit `1fbf253`, challenges award soft currency on completion, implemented in `backend/modules/challenges.ts`:
 
-**Target per session:** 80–150 currency (3–6 matches + daily bonus)
+```typescript
+// shared/wallet.ts
+export const COIN_REWARD_RATE = 0.1;
+export const calculateChallengeSoftCurrencyReward = (rewardXp: number): number =>
+  sanitizeSoftCurrencyAmount(rewardXp * COIN_REWARD_RATE);
+```
 
-This rate is designed to be achievable without purchase, allowing free players to afford cosmetics every 1–2 days.
+Currency is awarded via `awardChallengeSoftCurrency` in `backend/modules/wallet.ts`, which uses the Nakama wallet ledger (`nk.walletUpdate`) with metadata tracking `source: "challenge_completion"`, `matchId`, and `challengeId`.
+
+**Effective rate:** A challenge rewarding 100 XP also awards 10 soft currency (Coins).
+
+### Earnings (Spec — Partially Implemented)
+
+| Action | Soft Currency | Status |
+|--------|-------|---|
+| Win | 15 | 🔲 Spec (not yet wired to match end) |
+| Loss | 5 | 🔲 Spec (not yet wired) |
+| Daily login | 50 | 🔲 Spec (not yet wired) |
+| Challenge completion | XP × 0.1 | ✅ Implemented |
+| First win of day bonus | +25 | 🔲 Spec |
+
+**Target per session:** 80–150 currency (3–6 matches + daily bonus) — spec target, not yet fully wired.
+
+The wallet system is fully in place; the remaining task is wiring match-end and daily-login sources to issue wallet credits.
 
 ### Spending
 

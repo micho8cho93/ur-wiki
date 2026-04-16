@@ -1,0 +1,2001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Royal Game of Ur — How It's Built</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   ROYAL GAME OF UR — IMMERSIVE COURSE
+   Full-screen slide-by-slide navigation
+   ═══════════════════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --accent:        #2A7B9B;
+  --accent-dark:   #1F6280;
+  --accent-light:  #E4F2F7;
+  --accent-glow:   rgba(42,123,155,0.15);
+  --gold:          #C9A84C;
+  --gold-light:    #FDF5DC;
+  --bg:            #0F1117;
+  --bg2:           #161B26;
+  --bg3:           #1C2333;
+  --surface:       #1E2640;
+  --surface2:      #242C42;
+  --border:        rgba(255,255,255,0.08);
+  --border2:       rgba(255,255,255,0.12);
+  --text:          #E8EAF0;
+  --text2:         #9BA3B8;
+  --text3:         #5A6280;
+  --success:       #2D8B55;
+  --success-light: rgba(45,139,85,0.15);
+  --error:         #C93B3B;
+  --error-light:   rgba(201,59,59,0.15);
+  --code-bg:       #0D1117;
+  --font-display:  'Bricolage Grotesque', Georgia, serif;
+  --font-body:     'DM Sans', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+  --ease:          cubic-bezier(0.16,1,0.3,1);
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── SLIDE CONTAINER ─────────────────────────────────── */
+#deck {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 32px 72px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+  transform: translateY(24px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+}
+.slide::-webkit-scrollbar { display: none; }
+
+.slide.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+  z-index: 2;
+}
+.slide.exit-up {
+  opacity: 0;
+  transform: translateY(-24px);
+  z-index: 1;
+}
+.slide.exit-down {
+  opacity: 0;
+  transform: translateY(24px);
+  z-index: 1;
+}
+
+/* Module backgrounds — each module gets a subtle tint */
+.slide[data-module="1"] { background: radial-gradient(ellipse at 30% 40%, rgba(42,123,155,0.08) 0%, transparent 60%), var(--bg); }
+.slide[data-module="2"] { background: radial-gradient(ellipse at 70% 30%, rgba(201,168,76,0.06) 0%, transparent 60%), var(--bg); }
+.slide[data-module="3"] { background: radial-gradient(ellipse at 20% 70%, rgba(123,109,170,0.07) 0%, transparent 60%), var(--bg); }
+.slide[data-module="4"] { background: radial-gradient(ellipse at 80% 50%, rgba(45,139,85,0.06) 0%, transparent 60%), var(--bg); }
+.slide[data-module="5"] { background: radial-gradient(ellipse at 50% 20%, rgba(217,79,48,0.06) 0%, transparent 60%), var(--bg); }
+
+/* ── SLIDE CONTENT ───────────────────────────────────── */
+.slide-inner {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+/* ── TOP NAV ─────────────────────────────────────────── */
+#topnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  background: rgba(15,17,23,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--text2);
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.nav-brand span { color: var(--accent); }
+
+/* Module tabs */
+.module-tabs {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.module-tab {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text3);
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.module-tab:hover { color: var(--text2); background: var(--surface); }
+.module-tab.active {
+  background: var(--accent);
+  color: white;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* Slide counter */
+.nav-counter {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text3);
+  white-space: nowrap;
+}
+
+/* ── PROGRESS BAR ────────────────────────────────────── */
+#progress {
+  position: fixed;
+  top: 56px; left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--gold));
+  z-index: 100;
+  transition: width 0.4s var(--ease);
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* ── BOTTOM NAV ──────────────────────────────────────── */
+#bottomnav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 60px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(15,17,23,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid var(--border);
+}
+
+.nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  color: var(--text2);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-btn:hover { background: var(--surface2); color: var(--text); border-color: var(--border2); }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-btn.primary {
+  background: var(--accent);
+  color: white;
+  border-color: transparent;
+}
+.nav-btn.primary:hover { background: var(--accent-dark); }
+.nav-btn .arrow { font-size: 1rem; }
+
+/* Dot strip */
+.dot-strip {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--text3);
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.dot.active { background: var(--accent); width: 20px; border-radius: 3px; }
+.dot.done { background: var(--accent); opacity: 0.5; }
+
+/* ── KEYBOARD HINT ───────────────────────────────────── */
+#keyhint {
+  position: fixed;
+  bottom: 72px;
+  right: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text3);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════════
+   SLIDE CONTENT COMPONENTS
+══════════════════════════════════════════════════════ */
+
+/* Module label chip */
+.module-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 14px;
+  border-radius: 20px;
+  background: var(--accent-glow);
+  border: 1px solid rgba(42,123,155,0.3);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+
+/* Hero slide */
+.hero-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 3.8rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  margin-bottom: 20px;
+}
+.hero-title .highlight { color: var(--accent); }
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--text2);
+  line-height: 1.6;
+  max-width: 560px;
+  margin-bottom: 32px;
+}
+
+/* Section heading */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 16px;
+  letter-spacing: -0.015em;
+}
+.section-body {
+  font-size: 1rem;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 28px;
+  max-width: 680px;
+}
+
+/* ── CARDS ─────────────────────────────────────────── */
+.cards {
+  display: grid;
+  gap: 14px;
+  margin: 24px 0;
+}
+.cards-3 { grid-template-columns: repeat(3, 1fr); }
+.cards-2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 640px) {
+  .cards-3, .cards-2 { grid-template-columns: 1fr; }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+.card:hover { border-color: rgba(42,123,155,0.3); }
+.card-icon { font-size: 1.6rem; margin-bottom: 10px; display: block; }
+.card h3, .card h4 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.card p {
+  font-size: 0.875rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.card.accent-top { border-top: 3px solid var(--accent); }
+.card.gold-top   { border-top: 3px solid var(--gold); }
+.card.green-top  { border-top: 3px solid var(--success); }
+.card.purple-top { border-top: 3px solid #7B6DAA; }
+
+/* Actor cards with colored left border */
+.actor-card {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  transition: border-color 0.2s;
+}
+.actor-card:hover { border-color: rgba(255,255,255,0.15); }
+.actor-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+.actor-info h4 {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.actor-info p {
+  font-size: 0.83rem;
+  color: var(--text2);
+  line-height: 1.5;
+}
+.actor-role {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 4px;
+}
+
+/* ── CALLOUT / AHA BOX ──────────────────────────────── */
+.callout {
+  background: rgba(42,123,155,0.08);
+  border: 1px solid rgba(42,123,155,0.25);
+  border-left: 3px solid var(--accent);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin: 20px 0;
+  font-size: 0.9rem;
+  color: var(--text2);
+  line-height: 1.6;
+}
+.callout strong { color: var(--accent); }
+.callout.gold {
+  background: rgba(201,168,76,0.08);
+  border-color: rgba(201,168,76,0.25);
+  border-left-color: var(--gold);
+}
+.callout.gold strong { color: var(--gold); }
+
+/* ── CODE ↔ ENGLISH ─────────────────────────────────── */
+.translation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  margin: 24px 0;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+}
+@media (max-width: 680px) { .translation { grid-template-columns: 1fr; } }
+
+.trans-code {
+  background: var(--code-bg);
+  padding: 20px 22px;
+  position: relative;
+}
+.trans-label {
+  position: absolute;
+  top: 10px; right: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.trans-code pre {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: #CDD6F4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  margin-top: 12px;
+}
+.trans-english {
+  background: var(--surface);
+  padding: 20px 22px;
+  border-left: 1px solid var(--border);
+}
+.trans-english .trans-label { color: var(--text3); }
+.trans-lines { margin-top: 12px; }
+.tl {
+  font-size: 0.83rem;
+  color: var(--text2);
+  line-height: 1.6;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--border);
+}
+.tl:last-child { border-bottom: none; }
+
+/* Syntax colors */
+.kw  { color: #CBA6F7; }
+.fn  { color: #89DCEB; }
+.str { color: #A6E3A1; }
+.num { color: #FAB387; }
+.cm  { color: #585B70; font-style: italic; }
+.pr  { color: #89B4FA; }
+.ty  { color: #F9E2AF; }
+
+/* ── FLOW ANIMATION ─────────────────────────────────── */
+.flow-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 28px 24px 20px;
+  margin: 20px 0;
+}
+.flow-actors {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+.flow-actors::before {
+  content: '';
+  position: absolute;
+  top: 30px; left: 15%; right: 15%;
+  height: 1px;
+  background: var(--border2);
+}
+.flow-actor {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  z-index: 1;
+  transition: all 0.3s var(--ease);
+}
+.flow-actor-orb {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--bg2);
+  border: 2px solid var(--border2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  transition: all 0.3s var(--ease);
+}
+.flow-actor.active .flow-actor-orb {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  box-shadow: 0 0 0 4px rgba(42,123,155,0.15), 0 0 20px rgba(42,123,155,0.2);
+  transform: scale(1.1);
+}
+.flow-actor-name {
+  font-size: 0.75rem;
+  color: var(--text3);
+  font-weight: 500;
+  transition: color 0.3s;
+}
+.flow-actor.active .flow-actor-name { color: var(--accent); }
+
+.flow-step-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  min-height: 48px;
+  font-size: 0.9rem;
+  color: var(--text2);
+  margin-bottom: 16px;
+  transition: all 0.3s;
+  line-height: 1.5;
+}
+.flow-step-box.lit {
+  border-color: rgba(42,123,155,0.3);
+  color: var(--text);
+  background: rgba(42,123,155,0.05);
+}
+
+/* packet animation */
+.flow-packet-track {
+  position: relative;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 10% 16px;
+  overflow: visible;
+}
+.flow-packet {
+  position: absolute;
+  top: -4px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 8px var(--accent);
+  display: none;
+  transition: left 0.5s var(--ease);
+}
+
+.flow-btns { display: flex; gap: 10px; }
+.flow-btn {
+  padding: 7px 18px;
+  border-radius: 7px;
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--text2);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.flow-btn:hover { background: var(--surface2); color: var(--text); }
+.flow-btn.primary { background: var(--accent); color: white; border-color: transparent; }
+.flow-btn.primary:hover { background: var(--accent-dark); }
+.flow-progress-text { font-family: var(--font-mono); font-size: 0.72rem; color: var(--text3); margin-left: auto; align-self: center; }
+
+/* ── CHAT ───────────────────────────────────────────── */
+.chat-wrap {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 20px 0;
+}
+.chat-header {
+  padding: 12px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.chat-status-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+}
+.chat-messages {
+  padding: 16px;
+  min-height: 160px;
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.chat-messages::-webkit-scrollbar { width: 3px; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.chat-msg { display: flex; gap: 10px; align-items: flex-start; }
+.chat-msg.right { flex-direction: row-reverse; }
+.chat-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.85rem; flex-shrink: 0; font-weight: 700;
+  color: white;
+}
+.chat-bubble {
+  max-width: 75%;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 10px 14px;
+}
+.chat-msg.right .chat-bubble {
+  background: rgba(42,123,155,0.15);
+  border-color: rgba(42,123,155,0.3);
+}
+.chat-sender {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  display: block;
+}
+.chat-bubble p { font-size: 0.875rem; color: var(--text2); line-height: 1.5; }
+
+.chat-typing {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+.typing-dots { display: flex; gap: 4px; }
+.typing-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text3);
+  animation: bounce 1.4s infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-5px); } }
+
+.chat-footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+}
+
+/* ── QUIZ ───────────────────────────────────────────── */
+.quiz-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+}
+.quiz-q {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  line-height: 1.4;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 9px; margin-bottom: 16px; }
+.quiz-opt {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  background: var(--bg2);
+  border: 1.5px solid var(--border2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text2);
+  text-align: left;
+  transition: all 0.2s;
+  width: 100%;
+}
+.quiz-opt:hover { border-color: var(--accent); color: var(--text); background: rgba(42,123,155,0.05); }
+.quiz-opt.selected { border-color: var(--accent); color: var(--text); background: rgba(42,123,155,0.1); }
+.quiz-opt.correct  { border-color: var(--success); background: var(--success-light); color: #6ee7a0; }
+.quiz-opt.wrong    { border-color: var(--error); background: var(--error-light); color: #f28b8b; }
+.quiz-radio {
+  width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0;
+  border: 2px solid var(--border2);
+  transition: all 0.2s;
+}
+.quiz-opt.selected .quiz-radio { border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 3px var(--surface); }
+.quiz-opt.correct .quiz-radio  { border-color: var(--success); background: var(--success); box-shadow: inset 0 0 0 3px var(--surface); }
+.quiz-opt.wrong .quiz-radio    { border-color: var(--error);   background: var(--error);   box-shadow: inset 0 0 0 3px var(--surface); }
+
+.quiz-feedback {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-top: 12px;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok   { background: var(--success-light); color: #6ee7a0; border: 1px solid rgba(45,139,85,0.3); }
+.quiz-feedback.bad  { background: var(--error-light);   color: #f28b8b; border: 1px solid rgba(201,59,59,0.3); }
+
+.quiz-actions { display: flex; gap: 10px; margin-top: 16px; }
+.qbtn {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border2);
+  background: var(--bg2);
+  color: var(--text2);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.qbtn:hover { background: var(--surface2); color: var(--text); }
+.qbtn.primary { background: var(--accent); color: white; border-color: transparent; }
+.qbtn.primary:hover { background: var(--accent-dark); }
+
+/* ── TOOLTIP ────────────────────────────────────────── */
+.tip {
+  border-bottom: 1px dashed var(--accent);
+  cursor: pointer;
+  color: var(--accent);
+  position: relative;
+}
+#tooltip-box {
+  position: fixed;
+  z-index: 999;
+  max-width: 280px;
+  background: var(--bg3);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 0.82rem;
+  color: var(--text2);
+  line-height: 1.5;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+#tooltip-box.show { opacity: 1; }
+
+/* ── FILE TREE ──────────────────────────────────────── */
+.filetree {
+  background: var(--code-bg);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 18px 20px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 2;
+  margin: 20px 0;
+}
+.ft-dir { color: var(--accent); font-weight: 600; }
+.ft-file { color: var(--text3); padding-left: 1.4em; }
+.ft-file span { color: var(--text2); }
+.ft-note { color: var(--text3); font-style: italic; }
+.ft-comment { color: var(--text3); }
+
+/* ── ARCH DIAGRAM ───────────────────────────────────── */
+.arch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+.arch-zone {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 16px;
+}
+.arch-zone-title {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text3);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.arch-components { display: flex; flex-wrap: wrap; gap: 6px; }
+.arch-comp {
+  padding: 5px 10px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.78rem;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.arch-comp:hover, .arch-comp.active { background: var(--accent-glow); border-color: var(--accent); color: var(--text); }
+.arch-desc {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--bg2);
+  border-radius: 8px;
+  font-size: 0.83rem;
+  color: var(--text2);
+  line-height: 1.5;
+  border: 1px solid var(--border);
+  min-height: 52px;
+}
+
+/* ── STEPS ──────────────────────────────────────────── */
+.steps { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; }
+.step {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+}
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
+  background: var(--accent-glow);
+  border: 1px solid rgba(42,123,155,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.step-body h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.step-body p { font-size: 0.83rem; color: var(--text2); line-height: 1.5; }
+
+/* ── BOARD VIZ ──────────────────────────────────────── */
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 5px;
+  max-width: 400px;
+  margin: 0 auto 8px;
+}
+.board-cell {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+}
+.bc-normal   { background: #1E2640; border: 1px solid #2A3050; }
+.bc-rosette  { background: #1A3A4A; border: 1px solid var(--accent); box-shadow: 0 0 8px rgba(42,123,155,0.3); }
+.bc-war-r    { background: #3A2A10; border: 1px solid var(--gold); box-shadow: 0 0 8px rgba(201,168,76,0.3); }
+.bc-empty    { background: transparent; border: 1px dashed #2A2A3A; opacity: 0.3; }
+.board-label {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text3);
+  text-align: center;
+  margin: 4px 0;
+}
+
+/* ── RANK DISPLAY ───────────────────────────────────── */
+.rank-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 16px 0;
+}
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+.rank-item:hover { border-color: var(--border2); }
+.rank-idx {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text3);
+  width: 24px;
+}
+.rank-title {
+  font-size: 0.85rem;
+  color: var(--text2);
+  flex: 1;
+}
+.rank-xp {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--text3);
+}
+.rank-item.highlight {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.06);
+}
+.rank-item.highlight .rank-title { color: var(--gold); font-weight: 600; }
+
+/* ── MISC UTILITIES ─────────────────────────────────── */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.tag-blue { background: var(--accent-glow); color: var(--accent); border: 1px solid rgba(42,123,155,0.3); }
+.tag-gold { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.3); }
+.tag-green { background: var(--success-light); color: #6ee7a0; border: 1px solid rgba(45,139,85,0.3); }
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--accent);
+}
+
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 600px) { .two-col { grid-template-columns: 1fr; } }
+
+/* ── COMPARISON ─────────────────────────────────────── */
+.compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 20px 0;
+}
+.compare-col {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+.compare-col.bad  { border-top: 3px solid var(--error); }
+.compare-col.good { border-top: 3px solid var(--success); }
+.compare-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.compare-col.bad .compare-label  { color: var(--error); }
+.compare-col.good .compare-label { color: var(--success); }
+.compare-col h4 { font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.compare-col p  { font-size: 0.83rem; color: var(--text2); line-height: 1.5; }
+
+/* Module end card */
+.end-card {
+  text-align: center;
+  padding: 40px 20px;
+}
+.end-icon { font-size: 3rem; margin-bottom: 16px; display: block; }
+.end-title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.end-sub { font-size: 1rem; color: var(--text2); margin-bottom: 24px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════ TOP NAV ═══════ -->
+<nav id="topnav">
+  <div class="nav-brand">🏺 <span>Ur</span> — How It's Built</div>
+  <div class="module-tabs">
+    <button class="module-tab" onclick="jumpToModule(1)">The Game</button>
+    <button class="module-tab" onclick="jumpToModule(2)">The Cast</button>
+    <button class="module-tab" onclick="jumpToModule(3)">The Engine</button>
+    <button class="module-tab" onclick="jumpToModule(4)">The Server</button>
+    <button class="module-tab" onclick="jumpToModule(5)">The Full Picture</button>
+  </div>
+  <div class="nav-counter" id="nav-counter">1 / 27</div>
+</nav>
+
+<div id="progress"></div>
+<div id="tooltip-box"></div>
+
+<!-- ═══════ SLIDE DECK ═══════ -->
+<div id="deck">
+
+<!-- ───────────────────────────────────────────────
+     MODULE 1 — THE GAME
+──────────────────────────────────────────────── -->
+
+<!-- Slide 1 -->
+<div class="slide active" data-module="1" data-idx="0">
+<div class="slide-inner">
+  <div class="hero-eyebrow">Module 01 — The Game</div>
+  <h1 class="hero-title">A 4,500-year-old board game.<br>Running on your <span class="highlight">phone in 2025.</span></h1>
+  <p class="hero-sub">This is the Royal Game of Ur — discovered in an ancient Sumerian tomb, reimagined as a live cross-platform multiplayer app. Here's how it works under the hood.</p>
+  <div class="cards cards-3">
+    <div class="card accent-top"><span class="card-icon">📱</span><h3>Cross-platform</h3><p>One codebase → iOS, Android, and web browser.</p></div>
+    <div class="card gold-top"><span class="card-icon">🌐</span><h3>Real multiplayer</h3><p>Two players anywhere in the world, live, in real-time.</p></div>
+    <div class="card green-top"><span class="card-icon">🤖</span><h3>AI opponents</h3><p>Four difficulty levels — easy to unbeatable.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 2 -->
+<div class="slide" data-module="1" data-idx="1">
+<div class="slide-inner">
+  <div class="section-label">Module 01 — The Game</div>
+  <h2 class="section-title">The board — where paths collide</h2>
+  <p class="section-body">Two players race 7 pieces from start to finish. Each player has a private lane, but the middle row is <em>shared</em> — that's where captures happen.</p>
+  <div style="background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:24px;max-width:480px;margin:0 auto;">
+    <div class="board-label" style="color:var(--accent)">▲ DARK PLAYER</div>
+    <div class="board-grid">
+      <div class="board-cell bc-rosette">🌸</div><div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div><div class="board-cell bc-empty"></div><div class="board-cell bc-empty"></div><div class="board-cell bc-rosette">🌸</div><div class="board-cell bc-normal"></div>
+    </div>
+    <div class="board-grid" style="margin:5px 0">
+      <div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div><div class="board-cell bc-war-r">⚔️</div><div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div>
+    </div>
+    <div class="board-grid">
+      <div class="board-cell bc-rosette">🌸</div><div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div><div class="board-cell bc-normal"></div><div class="board-cell bc-empty"></div><div class="board-cell bc-empty"></div><div class="board-cell bc-rosette">🌸</div><div class="board-cell bc-normal"></div>
+    </div>
+    <div class="board-label" style="color:var(--gold)">▼ LIGHT PLAYER</div>
+    <div style="display:flex;gap:16px;justify-content:center;margin-top:12px;font-size:0.72rem;color:var(--text3);font-family:var(--font-mono);">
+      <span style="color:var(--accent)">🌸 Rosette = bonus turn</span>
+      <span style="color:var(--gold)">⚔️ War rosette = safe + bonus</span>
+    </div>
+  </div>
+  <div class="callout" style="margin-top:16px;"><strong>Capture rule:</strong> If your piece lands on an opponent's piece in the middle row, theirs goes back to start. Except on the war rosette — pieces there are safe.</div>
+</div>
+</div>
+
+<!-- Slide 3 -->
+<div class="slide" data-module="1" data-idx="2">
+<div class="slide-inner">
+  <div class="section-label">Module 01 — The Game</div>
+  <h2 class="section-title">Trace a turn: what happens when you tap Roll</h2>
+  <p class="section-body">You already know the experience. Here's what the app actually does, step by step.</p>
+  <div class="flow-wrap" id="flow-1">
+    <div class="flow-actors">
+      <div class="flow-actor" id="f1-a1"><div class="flow-actor-orb">📱</div><div class="flow-actor-name">UI</div></div>
+      <div class="flow-actor" id="f1-a2"><div class="flow-actor-orb">🗃️</div><div class="flow-actor-name">Store</div></div>
+      <div class="flow-actor" id="f1-a3"><div class="flow-actor-orb">⚙️</div><div class="flow-actor-name">Engine</div></div>
+    </div>
+    <div class="flow-packet-track"><div class="flow-packet" id="f1-pkt"></div></div>
+    <div class="flow-step-box" id="f1-label">Click "Next Step" to trace a turn</div>
+    <div class="flow-btns">
+      <button class="flow-btn primary" onclick="flowNext('flow1')">Next Step ›</button>
+      <button class="flow-btn" onclick="flowReset('flow1')">↺ Restart</button>
+      <span class="flow-progress-text" id="f1-prog">0 / 6</span>
+    </div>
+  </div>
+  <div class="callout gold"><strong>One-way data flow.</strong> Data always moves in one direction: UI → Store → Engine → Store → UI. When a bug appears, you always know <em>which step</em> to inspect.</div>
+</div>
+</div>
+
+<!-- Slide 4 -->
+<div class="slide" data-module="1" data-idx="3">
+<div class="slide-inner">
+  <div class="section-label">Module 01 — The Game</div>
+  <h2 class="section-title">Two modes, one codebase — a single flag switches everything</h2>
+  <p class="section-body">The app can run in two completely different ways, chosen by an environment variable set at startup. The game logic and UI don't change at all between modes.</p>
+  <div class="compare">
+    <div class="compare-col good">
+      <div class="compare-label">🌐 Nakama (Online)</div>
+      <h4>Real multiplayer</h4>
+      <p>Moves go to a cloud server, which validates them and broadcasts results to both players. ELO rankings, challenges, and XP all apply.</p>
+      <div style="margin-top:10px"><span class="tag tag-blue">EXPO_PUBLIC_GAME_TRANSPORT=nakama</span></div>
+    </div>
+    <div class="compare-col" style="border-top:3px solid var(--gold)">
+      <div class="compare-label" style="color:var(--gold)">📴 Offline</div>
+      <h4>Local / bot play</h4>
+      <p>The full game engine runs locally on your device. No internet needed. Perfect for testing or bot matches.</p>
+      <div style="margin-top:10px"><span class="tag tag-gold">EXPO_PUBLIC_GAME_TRANSPORT=offline</span></div>
+    </div>
+  </div>
+  <div class="callout"><strong>Transport abstraction</strong> — the <span class="tip" data-tip="A design pattern where you swap one implementation for another without changing the code that uses it. Like using a plug adapter in another country — your laptop doesn't care.">transport layer</span> is swappable. The game doesn't know or care how moves get processed — it just calls functions, and the plumbing underneath changes.</div>
+</div>
+</div>
+
+<!-- Slide 5 — Module 1 Quiz -->
+<div class="slide" data-module="1" data-idx="4">
+<div class="slide-inner">
+  <div class="section-label">Module 01 — Quiz</div>
+  <h2 class="section-title">Check your understanding</h2>
+  <div class="quiz-wrap" id="qz1">
+    <div class="quiz-q">You want to add a rule: pieces on rosettes can't be captured, even in online mode. Where would you tell your AI to make that change?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="qPick(this,'qz1','a')"><div class="quiz-radio"></div>In the UI components — that's where the board is drawn</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz1','b')"><div class="quiz-radio"></div>In the game engine — that's where move validity is calculated</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz1','c')"><div class="quiz-radio"></div>In the Nakama server — so it only applies online</button>
+    </div>
+    <div class="quiz-feedback" id="qz1-fb"></div>
+    <div class="quiz-actions">
+      <button class="qbtn primary" onclick="qCheck('qz1','b','The engine is the referee — it decides what moves are valid. It runs identically offline and online, so one change covers both modes.','The engine contains all move-validity logic. The UI just shows what the engine says, and the server runs the same engine code.')">Check Answer</button>
+      <button class="qbtn" onclick="qReset('qz1')">Try Again</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ───────────────────────────────────────────────
+     MODULE 2 — THE CAST
+──────────────────────────────────────────────── -->
+
+<!-- Slide 6 -->
+<div class="slide" data-module="2" data-idx="5">
+<div class="slide-inner">
+  <div class="hero-eyebrow">Module 02 — The Cast</div>
+  <h1 class="hero-title">Every great app has <span class="highlight">characters.</span></h1>
+  <p class="hero-sub">Know who they are, and you'll always know where to look — and where to tell your AI to make a change.</p>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
+    <div class="actor-card"><div class="actor-icon">⚙️</div><div class="actor-info"><h4 style="color:#89DCEB">logic/ — The Referee</h4><p>Pure game rules. No screens, no servers. Given state + move → returns new state.</p><div class="actor-role">Pure TypeScript · No React · Fully testable</div></div></div>
+    <div class="actor-card"><div class="actor-icon">🗃️</div><div class="actor-info"><h4 style="color:#89B4FA">store/ — The Scoreboard</h4><p>Single source of truth. Holds dice, turn, piece positions. Tells the UI when something changes.</p><div class="actor-role">Zustand · Global state · Frontend only</div></div></div>
+    <div class="actor-card"><div class="actor-icon">📡</div><div class="actor-info"><h4 style="color:#CBA6F7">services/ — The Production Office</h4><p>Talks to the outside world: matchmaking, auth, real-time sockets.</p><div class="actor-role">Nakama client · API calls · Socket management</div></div></div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 7 -->
+<div class="slide" data-module="2" data-idx="6">
+<div class="slide-inner">
+  <div class="section-label">Module 02 — The Cast</div>
+  <h2 class="section-title">The other actors</h2>
+  <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px;">
+    <div class="actor-card"><div class="actor-icon">📱</div><div class="actor-info"><h4 style="color:#FAB387">components/ — The Set</h4><p>What you see on screen. Reads from the store, sends actions back. Never touches game rules directly.</p><div class="actor-role">React Native · Expo · NativeWind styling</div></div></div>
+    <div class="actor-card"><div class="actor-icon">🖥️</div><div class="actor-info"><h4 style="color:#A6E3A1">backend/ — The Studio</h4><p>The Nakama server running in the cloud. Receives moves from both players, validates them, broadcasts authoritative state.</p><div class="actor-role">Nakama runtime · TypeScript → JS · Docker</div></div></div>
+  </div>
+  <div class="callout"><strong>The golden rule:</strong> When you describe a change to your AI, always specify which actor it belongs to. "Add this to the engine" vs "add this to the store" produces completely different code.</div>
+</div>
+</div>
+
+<!-- Slide 8 — File tree -->
+<div class="slide" data-module="2" data-idx="7">
+<div class="slide-inner">
+  <div class="section-label">Module 02 — The Cast</div>
+  <h2 class="section-title">The file map</h2>
+  <p class="section-body">Here's how every folder maps to an actor.</p>
+  <div class="filetree">
+    <div class="ft-dir">⚙️ logic/ <span class="ft-comment">← game rules, pure TypeScript</span></div>
+    <div class="ft-file">engine.ts <span>rollDice · getValidMoves · applyMove</span></div>
+    <div class="ft-file">rules.ts <span>captures · rosettes · extra turns</span></div>
+    <div class="ft-file">bot/ <span>AI opponents: easy → perfect</span></div>
+    <div class="ft-dir" style="margin-top:6px">🗃️ store/ <span class="ft-comment">← global state</span></div>
+    <div class="ft-file">useGameStore.ts <span>the one store to rule them all</span></div>
+    <div class="ft-dir" style="margin-top:6px">📡 services/ <span class="ft-comment">← external world</span></div>
+    <div class="ft-file">nakama.ts <span>auth · sockets · RPCs</span></div>
+    <div class="ft-file">matchmaking.ts <span>find opponent · private matches</span></div>
+    <div class="ft-dir" style="margin-top:6px">📱 components/ <span class="ft-comment">← visual building blocks</span></div>
+    <div class="ft-file">game/ · tournaments/ · home/ · ...</div>
+    <div class="ft-dir" style="margin-top:6px">🖥️ backend/modules/ <span class="ft-comment">← Nakama server runtime</span></div>
+    <div class="ft-dir" style="margin-top:6px">🤝 shared/ <span class="ft-comment">← code that runs on BOTH sides</span></div>
+    <div class="ft-file">urMatchProtocol.ts <span>message types: roll, move, snapshot</span></div>
+    <div class="ft-file">challenges.ts <span>40+ achievements — defined once</span></div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 9 — Shared folder -->
+<div class="slide" data-module="2" data-idx="8">
+<div class="slide-inner">
+  <div class="section-label">Module 02 — The Cast</div>
+  <h2 class="section-title">The <code>shared/</code> folder — a contract between two worlds</h2>
+  <p class="section-body">Code in <code>shared/</code> runs on <em>both</em> the app and the server. It defines the language they use to talk to each other.</p>
+  <div class="translation">
+    <div class="trans-code">
+      <span class="trans-label">CODE</span>
+      <pre><span class="kw">export const</span> <span class="fn">MatchOpCode</span> = {
+  <span class="pr">ROLL_REQUEST</span>:  <span class="num">1</span>,
+  <span class="pr">MOVE_REQUEST</span>:  <span class="num">2</span>,
+  <span class="pr">STATE_SNAPSHOT</span>: <span class="num">100</span>,
+  <span class="pr">SERVER_ERROR</span>:   <span class="num">101</span>,
+} <span class="kw">as const</span>;</pre>
+    </div>
+    <div class="trans-english">
+      <span class="trans-label">PLAIN ENGLISH</span>
+      <div class="trans-lines">
+        <p class="tl">A dictionary of message types that client and server share…</p>
+        <p class="tl">Code 1 = "I want to roll the dice"</p>
+        <p class="tl">Code 2 = "I want to make this move"</p>
+        <p class="tl">Code 100 = "here is the full game state" (server → clients)</p>
+        <p class="tl">Code 101 = "something went wrong on the server"</p>
+        <p class="tl">"as const" = these numbers can never be changed accidentally</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout"><strong>One definition, two users.</strong> If the app sends a move with code 2 and the server expects code 2, they stay in sync forever. Change it in one place and both sides update instantly.</div>
+</div>
+</div>
+
+<!-- Slide 10 — Chat: actors talking -->
+<div class="slide" data-module="2" data-idx="9">
+<div class="slide-inner">
+  <div class="section-label">Module 02 — The Cast</div>
+  <h2 class="section-title">When you move a piece, here's the conversation</h2>
+  <div class="chat-wrap">
+    <div class="chat-header"><div class="chat-status-dot"></div>LIVE MATCH CHANNEL — 4 actors online</div>
+    <div class="chat-messages" id="chat2-msgs"></div>
+    <div class="chat-typing" id="chat2-typing" style="display:none;padding:8px 16px;">
+      <div class="chat-avatar" id="chat2-typing-av" style="background:#555;font-size:0.7rem">…</div>
+      <div class="typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>
+    </div>
+    <div class="chat-footer">
+      <button class="flow-btn primary" onclick="chatNext('chat2')">Next Message ›</button>
+      <button class="flow-btn" onclick="chatReset('chat2')">↺ Replay</button>
+      <span class="flow-progress-text" id="chat2-prog">0 / 6</span>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 11 — Module 2 Quiz -->
+<div class="slide" data-module="2" data-idx="10">
+<div class="slide-inner">
+  <div class="section-label">Module 02 — Quiz</div>
+  <h2 class="section-title">Check your understanding</h2>
+  <div class="quiz-wrap" id="qz2">
+    <div class="quiz-q">You're adding a new server message type — "OPPONENT_SURRENDERED." Where should the definition live?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="qPick(this,'qz2','a')"><div class="quiz-radio"></div>In services/nakama.ts — that's where server communication lives</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz2','b')"><div class="quiz-radio"></div>In shared/urMatchProtocol.ts — so both app and server use the same definition</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz2','c')"><div class="quiz-radio"></div>In backend/modules/ — only the server sends it</button>
+    </div>
+    <div class="quiz-feedback" id="qz2-fb"></div>
+    <div class="quiz-actions">
+      <button class="qbtn primary" onclick="qCheck('qz2','b','The shared/ folder is the contract between client and server. Define it once, import it everywhere — client knows how to send it, server knows how to handle it.','If you define it separately on each side, they will eventually drift out of sync. shared/ exists exactly for this.')">Check Answer</button>
+      <button class="qbtn" onclick="qReset('qz2')">Try Again</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ───────────────────────────────────────────────
+     MODULE 3 — THE ENGINE
+──────────────────────────────────────────────── -->
+
+<!-- Slide 12 -->
+<div class="slide" data-module="3" data-idx="11">
+<div class="slide-inner">
+  <div class="hero-eyebrow">Module 03 — The Engine</div>
+  <h1 class="hero-title">The referee who never makes <span class="highlight">a bad call.</span></h1>
+  <p class="hero-sub">The <code>logic/</code> folder is the entire brain of the game. Pure TypeScript functions. No React. No server. No randomness hidden inside. Given input → always returns the same output.</p>
+  <div class="callout gold"><strong>Why pure functions matter.</strong> A <span class="tip" data-tip="A function that always returns the same output for the same input, with no side effects. Like a math formula — f(x) always equals the same thing, every time.">pure function</span> is like a vending machine: put in coins + selection, get your snack. It never affects anything outside itself. This is why the engine has hundreds of passing tests.</div>
+  <div class="cards cards-3" style="margin-top:20px">
+    <div class="card accent-top"><code>engine.ts</code><p style="margin-top:8px">rollDice, getValidMoves, applyMove</p></div>
+    <div class="card gold-top"><code>rules.ts</code><p style="margin-top:8px">captures, rosettes, extra turns</p></div>
+    <div class="card green-top"><code>matchConfigs.ts</code><p style="margin-top:8px">standard, capture, no-capture variants</p></div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 13 — Dice -->
+<div class="slide" data-module="3" data-idx="12">
+<div class="slide-inner">
+  <div class="section-label">Module 03 — The Engine</div>
+  <h2 class="section-title">Rolling the dice — 4 binary coins</h2>
+  <p class="section-body">The ancient game used 4 pyramid-shaped dice, each a coin flip. Result: 0 to 4. The code is elegant and testable.</p>
+  <div class="translation">
+    <div class="trans-code">
+      <span class="trans-label">CODE — logic/engine.ts</span>
+      <pre><span class="kw">export const</span> <span class="fn">rollDice</span> = (
+  randomSource = Math.<span class="fn">random</span>
+): <span class="ty">number</span> => {
+  <span class="kw">let</span> sum = <span class="num">0</span>;
+  <span class="kw">for</span> (<span class="kw">let</span> i = <span class="num">0</span>; i &lt; <span class="num">4</span>; i++) {
+    <span class="kw">if</span> (randomSource() &gt;= <span class="num">0.5</span>) sum++;
+  }
+  <span class="kw">return</span> sum;
+};</pre>
+    </div>
+    <div class="trans-english">
+      <span class="trans-label">PLAIN ENGLISH</span>
+      <div class="trans-lines">
+        <p class="tl">Create "rollDice" — it accepts an optional random source…</p>
+        <p class="tl">(Default: Math.random. Tests can pass a fake one for predictable results.)</p>
+        <p class="tl">Start counting at zero.</p>
+        <p class="tl">Flip each of the 4 "coins" one by one…</p>
+        <p class="tl">If the flip is ≥ 0.5, count it as 1 (marked side up).</p>
+        <p class="tl">Return the total — 0 (all blank) to 4 (all marked).</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout"><strong>Dependency injection.</strong> <code>randomSource = Math.random</code> means tests can swap in a controlled function so the dice always roll a specific value. This is how you write code that's both real and testable — a core skill to ask AI for.</div>
+</div>
+</div>
+
+<!-- Slide 14 — Valid moves -->
+<div class="slide" data-module="3" data-idx="13">
+<div class="slide-inner">
+  <div class="section-label">Module 03 — The Engine</div>
+  <h2 class="section-title">Calculating valid moves — the bouncer's checklist</h2>
+  <p class="section-body">After rolling, the engine checks every piece against a checklist. Only pieces that pass every check become valid moves.</p>
+  <div class="steps">
+    <div class="step"><div class="step-num">1</div><div class="step-body"><h4>Roll of zero?</h4><p>No moves possible. Return empty list immediately — turn is lost.</p></div></div>
+    <div class="step"><div class="step-num">2</div><div class="step-body"><h4>Already finished?</h4><p>Skip pieces that have already crossed the finish line.</p></div></div>
+    <div class="step"><div class="step-num">3</div><div class="step-body"><h4>Would land past the end?</h4><p>Must roll the exact number to bear off — overshooting is illegal.</p></div></div>
+    <div class="step"><div class="step-num">4</div><div class="step-body"><h4>Own piece already there?</h4><p>Can't stack — skip this move.</p></div></div>
+    <div class="step"><div class="step-num">5</div><div class="step-body"><h4>Opponent on the war rosette?</h4><p>Pieces on the center rosette are invulnerable — can't capture them.</p></div></div>
+    <div class="step"><div class="step-num">✓</div><div class="step-body"><h4>Valid move — add it to the list</h4><p>All checks passed. This piece can move.</p></div></div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 15 — applyMove -->
+<div class="slide" data-module="3" data-idx="14">
+<div class="slide-inner">
+  <div class="section-label">Module 03 — The Engine</div>
+  <h2 class="section-title">Applying a move — the photocopier pattern</h2>
+  <p class="section-body"><code>applyMove()</code> never changes the existing state. It makes a perfect copy, modifies the copy, and returns it. The original is always preserved.</p>
+  <div class="translation">
+    <div class="trans-code">
+      <span class="trans-label">CODE — logic/engine.ts</span>
+      <pre><span class="kw">export const</span> <span class="fn">applyMove</span> = (
+  state: <span class="ty">GameState</span>,
+  move: <span class="ty">MoveAction</span>
+): <span class="ty">GameState</span> => {
+  <span class="kw">const</span> newState = JSON.<span class="fn">parse</span>(
+    JSON.<span class="fn">stringify</span>(state)
+  ) <span class="kw">as</span> <span class="ty">GameState</span>;
+  <span class="cm">// all changes go on newState only</span>
+  <span class="kw">return</span> newState;
+};</pre>
+    </div>
+    <div class="trans-english">
+      <span class="trans-label">PLAIN ENGLISH</span>
+      <div class="trans-lines">
+        <p class="tl">A function that takes current game state + a move…</p>
+        <p class="tl">…and returns a new game state (same shape).</p>
+        <p class="tl">Deep-clone the entire state by serializing to text…</p>
+        <p class="tl">…then immediately parsing back to an object. Totally independent copy.</p>
+        <p class="tl">All edits happen on newState — original "state" is untouched.</p>
+        <p class="tl">Return the new, modified state.</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout gold"><strong>Immutability</strong> = never changing data in place, always creating a new copy. This makes it trivial to "undo" a move, replay match history, or debug — the old state is always intact.</div>
+</div>
+</div>
+
+<!-- Slide 16 — Quiz module 3 -->
+<div class="slide" data-module="3" data-idx="15">
+<div class="slide-inner">
+  <div class="section-label">Module 03 — Quiz</div>
+  <h2 class="section-title">Check your understanding</h2>
+  <div class="quiz-wrap" id="qz3">
+    <div class="quiz-q">You want to add a "replay last move" feature. The immutable state design makes this:</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="qPick(this,'qz3','a')"><div class="quiz-radio"></div>Harder — you'd have to reconstruct the previous state from scratch</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz3','b')"><div class="quiz-radio"></div>Straightforward — just save the state snapshot before applying the move, then restore it</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz3','c')"><div class="quiz-radio"></div>Impossible without adding a database</button>
+    </div>
+    <div class="quiz-feedback" id="qz3-fb"></div>
+    <div class="quiz-actions">
+      <button class="qbtn primary" onclick="qCheck('qz3','b','Exactly. Because applyMove never mutates the original state, you can keep a reference to the previous state and simply restore it. No database needed — it\'s just a variable.','Immutability means the previous state is never destroyed. Keep a reference to it before calling applyMove, and you can always go back.')">Check Answer</button>
+      <button class="qbtn" onclick="qReset('qz3')">Try Again</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ───────────────────────────────────────────────
+     MODULE 4 — THE SERVER
+──────────────────────────────────────────────── -->
+
+<!-- Slide 17 -->
+<div class="slide" data-module="4" data-idx="16">
+<div class="slide-inner">
+  <div class="hero-eyebrow">Module 04 — The Server</div>
+  <h1 class="hero-title">The neutral third party <span class="highlight">neither player can fool.</span></h1>
+  <p class="hero-sub">Nakama is an open-source game server that handles matchmaking, real-time messaging, leaderboards, and player storage — so you don't have to build any of it yourself.</p>
+  <div class="cards cards-2">
+    <div class="card accent-top"><span class="card-icon">🏛️</span><h3>What is Nakama?</h3><p>A ready-made backend designed for games. Think of it as a managed game server platform — auth, real-time, storage, all included.</p></div>
+    <div class="card" style="border-top:3px solid var(--error)"><span class="card-icon">⚖️</span><h3>Why a server at all?</h3><p>Without a server, each player's device could claim whatever moves it wanted. The server is the <strong style="color:var(--text)">authoritative source of truth.</strong></p></div>
+  </div>
+  <div class="callout"><strong>Server-authoritative</strong> means the server runs the game engine itself. It doesn't trust what players say happened — it calculates what actually happened.</div>
+</div>
+</div>
+
+<!-- Slide 18 — Matchmaking flow -->
+<div class="slide" data-module="4" data-idx="17">
+<div class="slide-inner">
+  <div class="section-label">Module 04 — The Server</div>
+  <h2 class="section-title">Finding an opponent — how matchmaking works</h2>
+  <div class="flow-wrap" id="flow-2">
+    <div class="flow-actors">
+      <div class="flow-actor" id="f2-a1"><div class="flow-actor-orb">📱</div><div class="flow-actor-name">Your App</div></div>
+      <div class="flow-actor" id="f2-a2"><div class="flow-actor-orb">🖥️</div><div class="flow-actor-name">Nakama</div></div>
+      <div class="flow-actor" id="f2-a3"><div class="flow-actor-orb">📱</div><div class="flow-actor-name">Opponent</div></div>
+    </div>
+    <div class="flow-packet-track"><div class="flow-packet" id="f2-pkt"></div></div>
+    <div class="flow-step-box" id="f2-label">Click "Next Step" to trace matchmaking</div>
+    <div class="flow-btns">
+      <button class="flow-btn primary" onclick="flowNext('flow2')">Next Step ›</button>
+      <button class="flow-btn" onclick="flowReset('flow2')">↺ Restart</button>
+      <span class="flow-progress-text" id="f2-prog">0 / 6</span>
+    </div>
+  </div>
+  <div class="callout gold"><strong>Private matches</strong> work differently: you create a match, get a 6-character code, share it with your friend. They enter it and join your specific match. The server holds the slot open while it waits.</div>
+</div>
+</div>
+
+<!-- Slide 19 — Authoritative state -->
+<div class="slide" data-module="4" data-idx="18">
+<div class="slide-inner">
+  <div class="section-label">Module 04 — The Server</div>
+  <h2 class="section-title">The server always wins</h2>
+  <div class="translation">
+    <div class="trans-code">
+      <span class="trans-label">CODE — backend/modules/</span>
+      <pre><span class="kw">const</span> newState = <span class="fn">applyMove</span>(
+  matchState.gameState,
+  move
+);
+matchState.gameState = newState;
+<span class="fn">dispatcher.broadcastMessage</span>(
+  MatchOpCode.<span class="pr">STATE_SNAPSHOT</span>,
+  JSON.<span class="fn">stringify</span>(payload),
+);</pre>
+    </div>
+    <div class="trans-english">
+      <span class="trans-label">PLAIN ENGLISH</span>
+      <div class="trans-lines">
+        <p class="tl">Run the move through the engine to get the new state…</p>
+        <p class="tl">Save it as the server's canonical version of this match.</p>
+        <p class="tl">Broadcast a STATE_SNAPSHOT message (opcode 100)…</p>
+        <p class="tl">…containing the full game state as JSON…</p>
+        <p class="tl">…to every connected player simultaneously.</p>
+      </div>
+    </div>
+  </div>
+  <div class="compare" style="margin-top:16px">
+    <div class="compare-col bad"><div class="compare-label">❌ Client-authoritative</div><p>Each device decides what happened. A cheater modifies their app to always win. No defense.</p></div>
+    <div class="compare-col good"><div class="compare-label">✅ Server-authoritative</div><p>The server runs <code>applyMove()</code> itself. It decides what's real. Neither player can lie to it.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 20 — XP + ranks -->
+<div class="slide" data-module="4" data-idx="19">
+<div class="slide-inner">
+  <div class="section-label">Module 04 — The Server</div>
+  <h2 class="section-title">XP, Ranks &amp; Challenges — all server-side</h2>
+  <p class="section-body">Winning earns XP. XP unlocks ranks. 40+ challenges reward different play styles. All of this lives on the server — so it can't be faked.</p>
+  <div class="rank-bar">
+    <div class="rank-item"><div class="rank-idx">01</div><div class="rank-title">Laborer</div><div class="rank-xp">0 XP</div></div>
+    <div class="rank-item"><div class="rank-idx">02</div><div class="rank-title">Servant of the Temple</div><div class="rank-xp">100 XP</div></div>
+    <div class="rank-item highlight"><div class="rank-idx">07</div><div class="rank-title">Priest</div><div class="rank-xp">1,975 XP</div></div>
+    <div class="rank-item"><div class="rank-idx">12</div><div class="rank-title">Royalty</div><div class="rank-xp">13,175 XP</div></div>
+    <div class="rank-item"><div class="rank-idx">15</div><div class="rank-title">Immortal</div><div class="rank-xp">40,000 XP</div></div>
+  </div>
+  <div class="callout"><strong>Idempotent ledger</strong> — the server uses a pattern where running the same XP award twice doesn't double-count it. Even if a network glitch causes a message to arrive twice, you only get the XP once. Ask your AI: "make this award idempotent."</div>
+</div>
+</div>
+
+<!-- Slide 21 — Auth chat -->
+<div class="slide" data-module="4" data-idx="20">
+<div class="slide-inner">
+  <div class="section-label">Module 04 — The Server</div>
+  <h2 class="section-title">How auth works — the silent handshake</h2>
+  <div class="chat-wrap">
+    <div class="chat-header"><div class="chat-status-dot"></div>AUTH CHANNEL — Session token negotiation</div>
+    <div class="chat-messages" id="chat4-msgs"></div>
+    <div class="chat-typing" id="chat4-typing" style="display:none;padding:8px 16px;">
+      <div class="chat-avatar" id="chat4-typing-av" style="background:#555;font-size:0.7rem">…</div>
+      <div class="typing-dots"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>
+    </div>
+    <div class="chat-footer">
+      <button class="flow-btn primary" onclick="chatNext('chat4')">Next Message ›</button>
+      <button class="flow-btn" onclick="chatReset('chat4')">↺ Replay</button>
+      <span class="flow-progress-text" id="chat4-prog">0 / 5</span>
+    </div>
+  </div>
+  <div class="quiz-wrap" id="qz4" style="margin-top:16px">
+    <div class="quiz-q">A cheater modifies their app to send "I won" to the server. What happens?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="qPick(this,'qz4','a')"><div class="quiz-radio"></div>The server trusts the client and records the win</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz4','b')"><div class="quiz-radio"></div>The server ignores it — it runs the game engine itself and knows the real state</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz4','c')"><div class="quiz-radio"></div>The opponent's app notices the inconsistency and reports it</button>
+    </div>
+    <div class="quiz-feedback" id="qz4-fb"></div>
+    <div class="quiz-actions">
+      <button class="qbtn primary" onclick="qCheck('qz4','b','Correct. The server runs applyMove() on its own copy. It knows what moves were made and what the result is. A fake "I won" message has no effect on that.','Server-authoritative means the server is the single source of truth. Player claims are ignored — only validated moves count.')">Check Answer</button>
+      <button class="qbtn" onclick="qReset('qz4')">Try Again</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ───────────────────────────────────────────────
+     MODULE 5 — THE FULL PICTURE
+──────────────────────────────────────────────── -->
+
+<!-- Slide 22 -->
+<div class="slide" data-module="5" data-idx="21">
+<div class="slide-inner">
+  <div class="hero-eyebrow">Module 05 — The Full Picture</div>
+  <h1 class="hero-title">Step back and see <span class="highlight">the whole machine.</span></h1>
+  <p class="hero-sub">You've met all the actors. Now let's look at the architecture — the "why" behind how everything is wired together. This is the most leveraged knowledge you can have.</p>
+  <div class="callout gold"><strong>Architecture is the most leveraged skill.</strong> When you understand <em>why</em> the project is structured the way it is, you make better decisions about what to build next — and you can direct AI with precision instead of hoping it guesses right.</div>
+</div>
+</div>
+
+<!-- Slide 23 — Zustand -->
+<div class="slide" data-module="5" data-idx="22">
+<div class="slide-inner">
+  <div class="section-label">Module 05 — The Full Picture</div>
+  <h2 class="section-title">Zustand — why one global scoreboard beats passing notes</h2>
+  <p class="section-body">React apps have a tree of components. Getting data from a grandparent to a grandchild means passing it through every level. Zustand breaks that chain — any component reads directly from the store.</p>
+  <div class="translation">
+    <div class="trans-code">
+      <span class="trans-label">CODE — any component</span>
+      <pre><span class="kw">const</span> roll = <span class="fn">useGameStore</span>(
+  (state) =&gt; state.<span class="pr">roll</span>
+);
+<span class="kw">const</span> gameState = <span class="fn">useGameStore</span>(
+  (state) =&gt; state.<span class="pr">gameState</span>
+);</pre>
+    </div>
+    <div class="trans-english">
+      <span class="trans-label">PLAIN ENGLISH</span>
+      <div class="trans-lines">
+        <p class="tl">Subscribe to just the "roll" function from the global store…</p>
+        <p class="tl">(This component re-renders ONLY when "roll" changes — nothing else.)</p>
+        <p class="tl">Subscribe to just the "gameState" object…</p>
+        <p class="tl">(Only re-renders when gameState changes — efficient and predictable.)</p>
+      </div>
+    </div>
+  </div>
+  <div class="callout"><strong>Selective subscriptions = performance.</strong> The store has 50+ fields. A dice component only subscribes to the roll value. The board doesn't flicker when the timer ticks. Each component only re-renders when <em>its</em> specific data changes.</div>
+</div>
+</div>
+
+<!-- Slide 24 — Resilience -->
+<div class="slide" data-module="5" data-idx="23">
+<div class="slide-inner">
+  <div class="section-label">Module 05 — The Full Picture</div>
+  <h2 class="section-title">When things go wrong — resilience patterns</h2>
+  <p class="section-body">Production apps need to handle network drops, timing edge cases, and disconnections gracefully.</p>
+  <div class="cards cards-2">
+    <div class="card"><span class="card-icon">🔄</span><h4>Reconnection grace window</h4><p>Lose connection mid-game? The server holds your spot. Reconnect in time and the game continues as if nothing happened.</p></div>
+    <div class="card"><span class="card-icon">⏱️</span><h4>AFK timer</h4><p>If a player goes idle too long, the game auto-forfeits. Prevents abandoned games from locking out opponents.</p></div>
+    <div class="card"><span class="card-icon">🔁</span><h4>Silent session refresh</h4><p>Auth tokens expire. The Nakama service refreshes them in the background using a refresh token — you never get logged out mid-match.</p></div>
+    <div class="card"><span class="card-icon">🤝</span><h4>Rematch flow</h4><p>After a game, both players can accept a rematch. If either declines or times out, the request resolves gracefully.</p></div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 25 — What to tell AI -->
+<div class="slide" data-module="5" data-idx="24">
+<div class="slide-inner">
+  <div class="section-label">Module 05 — The Full Picture</div>
+  <h2 class="section-title">What to tell your AI assistant — practical cheat sheet</h2>
+  <div class="steps">
+    <div class="step"><div class="step-num">🎯</div><div class="step-body"><h4>Adding a new game rule?</h4><p>"Modify <code>logic/rules.ts</code> and <code>logic/engine.ts</code>. Pure TypeScript — no React. The server uses the same engine code, so one change covers both."</p></div></div>
+    <div class="step"><div class="step-num">🏆</div><div class="step-body"><h4>Adding a new challenge?</h4><p>"Add the definition to <code>shared/challenges.ts</code>. Add evaluation logic to the backend match runtime. The client picks it up via the get_challenge_definitions RPC."</p></div></div>
+    <div class="step"><div class="step-num">📊</div><div class="step-body"><h4>Adding a new screen?</h4><p>"Create a file in <code>app/</code> — Expo Router auto-creates the route. Read state from <code>useGameStore</code>. Don't put game logic in the component."</p></div></div>
+    <div class="step"><div class="step-num">🔍</div><div class="step-body"><h4>Debugging a state bug?</h4><p>"Is data wrong in the store or just displayed wrong? Log <code>useGameStore.getState()</code> — if it's correct there, the bug is in the component render, not the data."</p></div></div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 26 — Final quiz -->
+<div class="slide" data-module="5" data-idx="25">
+<div class="slide-inner">
+  <div class="section-label">Module 05 — Quiz</div>
+  <h2 class="section-title">Final check</h2>
+  <div class="quiz-wrap" id="qz5">
+    <div class="quiz-q">You're building a "Match History" screen that needs to show ELO over time. What's the right approach?</div>
+    <div class="quiz-options">
+      <button class="quiz-opt" onclick="qPick(this,'qz5','a')"><div class="quiz-radio"></div>Store ELO history inside the game engine (logic/)</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz5','b')"><div class="quiz-radio"></div>Pass ELO data as props from the main match screen down to the new screen</button>
+      <button class="quiz-opt" onclick="qPick(this,'qz5','c')"><div class="quiz-radio"></div>Fetch ELO history via a Nakama RPC, store it in Zustand, read it in the new screen</button>
+    </div>
+    <div class="quiz-feedback" id="qz5-fb"></div>
+    <div class="quiz-actions">
+      <button class="qbtn primary" onclick="qCheck('qz5','c','Exactly right. The engine is for game rules only — it knows nothing about users. Prop drilling across screens is fragile. The right pattern: fetch from server, store centrally in Zustand, read anywhere.','The engine is pure game logic — no user data. And prop drilling across unrelated screens is exactly what Zustand exists to avoid. Fetch → store → read.')">Check Answer</button>
+      <button class="qbtn" onclick="qReset('qz5')">Try Again</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Slide 27 — Finale -->
+<div class="slide" data-module="5" data-idx="26">
+<div class="slide-inner">
+  <div class="end-card">
+    <span class="end-icon">🏺</span>
+    <div class="end-title">You now speak Ur.</div>
+    <p class="end-sub">A 4,500-year-old game. A modern multiplayer app. You understand how it's built.</p>
+    <div class="cards cards-3" style="text-align:left;margin-top:24px;">
+      <div class="card"><code style="color:#89DCEB">logic/</code><p style="margin-top:6px">Pure game rules. Add rules here. Test without a server or UI.</p></div>
+      <div class="card"><code style="color:#CBA6F7">shared/</code><p style="margin-top:6px">The contract between app and server. New message types go here.</p></div>
+      <div class="card"><code style="color:#89B4FA">store/</code><p style="margin-top:6px">Frontend truth. Read state here. Never calculate game logic here.</p></div>
+      <div class="card"><code style="color:#FAB387">components/</code><p style="margin-top:6px">What players see. Thin — just display what the store says.</p></div>
+      <div class="card"><code style="color:#A6E3A1">services/</code><p style="margin-top:6px">The outside world. Matchmaking, auth, socket connections.</p></div>
+      <div class="card"><code>backend/</code><p style="margin-top:6px">The authoritative referee. The only code that can declare winners.</p></div>
+    </div>
+    <p style="margin-top:24px;font-size:0.8rem;color:var(--text3)">Built with Expo · Nakama · Zustand · TypeScript</p>
+  </div>
+</div>
+</div>
+
+</div><!-- /deck -->
+
+<!-- ═══════ BOTTOM NAV ═══════ -->
+<div id="bottomnav">
+  <button class="nav-btn" id="btn-prev" onclick="navigate(-1)" disabled><span class="arrow">←</span> Previous</button>
+  <div class="dot-strip" id="dot-strip"></div>
+  <button class="nav-btn primary" id="btn-next" onclick="navigate(1)">Next <span class="arrow">→</span></button>
+</div>
+
+<div id="keyhint">← → or Space to navigate</div>
+
+<script>
+// ════════════════════════════════════════════════════════
+// SLIDE ENGINE
+// ════════════════════════════════════════════════════════
+const slides = Array.from(document.querySelectorAll('.slide'));
+const TOTAL  = slides.length;
+let current  = 0;
+let animating = false;
+
+function goTo(idx, dir) {
+  if (idx < 0 || idx >= TOTAL || animating) return;
+  animating = true;
+  const prev = slides[current];
+  const next = slides[idx];
+
+  prev.classList.add(dir > 0 ? 'exit-up' : 'exit-down');
+  prev.classList.remove('active');
+
+  setTimeout(() => { prev.classList.remove('exit-up','exit-down'); }, 520);
+
+  next.classList.remove('exit-up','exit-down');
+  next.classList.add('active');
+
+  // Reset scroll on new slide
+  next.scrollTop = 0;
+
+  current = idx;
+  animating = false;
+  updateUI();
+}
+
+function navigate(dir) {
+  goTo(current + dir, dir);
+}
+
+function jumpToModule(mod) {
+  const idx = slides.findIndex(s => parseInt(s.dataset.module) === mod);
+  if (idx >= 0) goTo(idx, idx > current ? 1 : -1);
+}
+
+function updateUI() {
+  const s = slides[current];
+  const mod = parseInt(s.dataset.module);
+
+  // Progress bar
+  document.getElementById('progress').style.width = ((current / (TOTAL - 1)) * 100) + '%';
+
+  // Counter
+  document.getElementById('nav-counter').textContent = (current + 1) + ' / ' + TOTAL;
+
+  // Buttons
+  document.getElementById('btn-prev').disabled = current === 0;
+  const nextBtn = document.getElementById('btn-next');
+  if (current === TOTAL - 1) {
+    nextBtn.textContent = '✓ Done';
+    nextBtn.disabled = true;
+  } else {
+    nextBtn.innerHTML = 'Next <span class="arrow">→</span>';
+    nextBtn.disabled = false;
+  }
+
+  // Module tabs
+  document.querySelectorAll('.module-tab').forEach((t, i) => {
+    t.classList.toggle('active', i + 1 === mod);
+  });
+
+  // Dot strip — show dots for current module
+  const modSlides = slides.filter(s => parseInt(s.dataset.module) === mod);
+  const dotStrip = document.getElementById('dot-strip');
+  const modStart = slides.findIndex(s => parseInt(s.dataset.module) === mod);
+
+  dotStrip.innerHTML = '';
+  modSlides.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === current - modStart ? ' active' : (i < current - modStart ? ' done' : ''));
+    d.onclick = () => goTo(modStart + i, modStart + i > current ? 1 : -1);
+    dotStrip.appendChild(d);
+  });
+}
+
+// ── KEYBOARD & SWIPE ─────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); navigate(1); }
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); navigate(-1); }
+});
+
+let touchStartX = 0, touchStartY = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY; }, { passive: true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) navigate(dx < 0 ? 1 : -1);
+}, { passive: true });
+
+// ════════════════════════════════════════════════════════
+// TOOLTIP
+// ════════════════════════════════════════════════════════
+const ttBox = document.getElementById('tooltip-box');
+document.addEventListener('mouseover', e => {
+  const el = e.target.closest('.tip');
+  if (!el) return;
+  ttBox.textContent = el.dataset.tip;
+  ttBox.classList.add('show');
+  positionTooltip(e);
+});
+document.addEventListener('mousemove', e => {
+  if (!ttBox.classList.contains('show')) return;
+  positionTooltip(e);
+});
+document.addEventListener('mouseout', e => {
+  if (!e.target.closest('.tip')) return;
+  ttBox.classList.remove('show');
+});
+function positionTooltip(e) {
+  const x = e.clientX + 12, y = e.clientY - 10;
+  const w = ttBox.offsetWidth || 260;
+  ttBox.style.left = Math.min(x, window.innerWidth - w - 16) + 'px';
+  ttBox.style.top  = Math.max(8, y) + 'px';
+}
+
+// ════════════════════════════════════════════════════════
+// QUIZ
+// ════════════════════════════════════════════════════════
+let quizState = {};
+
+function qPick(btn, id, val) {
+  const opts = btn.closest('.quiz-wrap').querySelectorAll('.quiz-opt');
+  opts.forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+  quizState[id] = val;
+}
+
+function qCheck(id, correct, msgOk, msgBad) {
+  const wrap = document.getElementById(id);
+  const fb   = document.getElementById(id + '-fb');
+  const pick = quizState[id];
+  if (!pick) return;
+  const opts = wrap.querySelectorAll('.quiz-opt');
+  opts.forEach(o => {
+    o.disabled = true;
+    const v = o.getAttribute('onclick').match(/'([a-z])'\)/)[1];
+    if (v === correct)  o.classList.add('correct');
+    if (v === pick && pick !== correct) o.classList.add('wrong');
+  });
+  const ok = pick === correct;
+  fb.textContent = (ok ? '✓ ' : '✗ ') + (ok ? msgOk : msgBad);
+  fb.className = 'quiz-feedback show ' + (ok ? 'ok' : 'bad');
+}
+
+function qReset(id) {
+  const wrap = document.getElementById(id);
+  wrap.querySelectorAll('.quiz-opt').forEach(o => {
+    o.className = 'quiz-opt';
+    o.disabled = false;
+  });
+  const fb = document.getElementById(id + '-fb');
+  fb.className = 'quiz-feedback';
+  fb.textContent = '';
+  delete quizState[id];
+}
+
+// ════════════════════════════════════════════════════════
+// FLOW ANIMATIONS
+// ════════════════════════════════════════════════════════
+const flows = {
+  flow1: {
+    actors: ['f1-a1','f1-a2','f1-a3'],
+    label: 'f1-label',
+    prog:  'f1-prog',
+    pkt:   'f1-pkt',
+    step:  0,
+    steps: [
+      { actor: 0, text: 'You tap Roll. The UI sends a roll request to the Game Store.', from: null, to: null },
+      { actor: 1, text: 'The Store checks mode: online or offline. Routes to the right handler.', from: 0, to: 1 },
+      { actor: 2, text: 'The Engine rolls 4 virtual coins. Each is 0 or 1. Sum = your roll (0–4).', from: 1, to: 2 },
+      { actor: 2, text: 'The Engine runs getValidMoves() — checks all 7 pieces, returns a list.', from: null, to: null },
+      { actor: 1, text: 'New game state (roll value + valid moves) flows back to the Store.', from: 2, to: 1 },
+      { actor: 0, text: 'The UI re-renders: dice show your roll, valid pieces light up. Your move!', from: 1, to: 0 },
+    ]
+  },
+  flow2: {
+    actors: ['f2-a1','f2-a2','f2-a3'],
+    label: 'f2-label',
+    prog:  'f2-prog',
+    pkt:   'f2-pkt',
+    step:  0,
+    steps: [
+      { actor: 0, text: 'You tap "Find Opponent." The app authenticates with Nakama (logs in with your account).', from: 0, to: 1 },
+      { actor: 1, text: 'Nakama adds you to the matchmaking pool and searches for a player with similar ELO.', from: null, to: null },
+      { actor: 2, text: 'Another player taps "Find Opponent" — they join the pool too.', from: 2, to: 1 },
+      { actor: 1, text: 'Nakama pairs you both, creates a match room, generates a match ID for each.', from: null, to: null },
+      { actor: 0, text: 'Your app receives the match ID and join token.', from: 1, to: 0 },
+      { actor: 2, text: 'Both apps connect via WebSocket. Game begins with the first STATE_SNAPSHOT.', from: 1, to: 2 },
+    ]
+  }
+};
+
+function flowNext(id) {
+  const f = flows[id];
+  if (f.step >= f.steps.length) return;
+  const s = f.steps[f.step];
+
+  // Clear all actors
+  f.actors.forEach(a => document.getElementById(a)?.classList.remove('active'));
+  // Activate
+  document.getElementById(f.actors[s.actor])?.classList.add('active');
+
+  // Label
+  const lb = document.getElementById(f.label);
+  lb.textContent = s.text;
+  lb.classList.add('lit');
+
+  // Packet animation
+  if (s.from !== null && s.to !== null) {
+    animatePacket(id, s.from, s.to);
+  }
+
+  f.step++;
+  document.getElementById(f.prog).textContent = f.step + ' / ' + f.steps.length;
+}
+
+function flowReset(id) {
+  const f = flows[id];
+  f.step = 0;
+  f.actors.forEach(a => document.getElementById(a)?.classList.remove('active'));
+  const lb = document.getElementById(f.label);
+  lb.textContent = 'Click "Next Step" to begin';
+  lb.classList.remove('lit');
+  const pkt = document.getElementById(f.pkt);
+  if (pkt) { pkt.style.display = 'none'; }
+  document.getElementById(f.prog).textContent = '0 / ' + f.steps.length;
+}
+
+function animatePacket(flowId, fromIdx, toIdx) {
+  const f = flows[flowId];
+  const pkt = document.getElementById(f.pkt);
+  if (!pkt) return;
+  const track = pkt.parentElement;
+  const trackW = track.offsetWidth;
+  const actorCount = f.actors.length;
+  const posOf = i => (i / (actorCount - 1)) * trackW;
+
+  pkt.style.left = posOf(fromIdx) + 'px';
+  pkt.style.display = 'block';
+  pkt.style.transition = 'none';
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      pkt.style.transition = 'left 0.5s cubic-bezier(0.16,1,0.3,1)';
+      pkt.style.left = posOf(toIdx) + 'px';
+    });
+  });
+  setTimeout(() => { pkt.style.display = 'none'; }, 700);
+}
+
+// ════════════════════════════════════════════════════════
+// CHAT ANIMATIONS
+// ════════════════════════════════════════════════════════
+const chats = {
+  chat2: {
+    msgs: document.getElementById('chat2-msgs'),
+    typing: document.getElementById('chat2-typing'),
+    typingAv: document.getElementById('chat2-typing-av'),
+    prog: document.getElementById('chat2-prog'),
+    step: 0,
+    data: [
+      { sender: '📱', name: 'UI Component', color: '#FAB387', right: true,
+        text: 'Hey Store — player tapped piece "light-3". Valid move per engine. Send it!' },
+      { sender: '🗃️', name: 'Game Store', color: '#89B4FA', right: false,
+        text: 'On it. Calling moveCommandSender — routing to Nakama since we\'re online.' },
+      { sender: '📡', name: 'Nakama Service', color: '#CBA6F7', right: true,
+        text: 'Sending MOVE_REQUEST (opcode 2) to the server via WebSocket...' },
+      { sender: '🖥️', name: 'Nakama Backend', color: '#A6E3A1', right: false,
+        text: 'Received. Running applyMove() on server state. No capture. Not a rosette. Switching turns. Broadcasting STATE_SNAPSHOT to both players.' },
+      { sender: '🗃️', name: 'Game Store', color: '#89B4FA', right: false,
+        text: 'Got the snapshot. Updating state. Notifying all subscribed components.' },
+      { sender: '📱', name: 'UI Component', color: '#FAB387', right: true,
+        text: 'State updated! Animating piece to new position. Showing opponent\'s turn. Done! ✓' },
+    ]
+  },
+  chat4: {
+    msgs: document.getElementById('chat4-msgs'),
+    typing: document.getElementById('chat4-typing'),
+    typingAv: document.getElementById('chat4-typing-av'),
+    prog: document.getElementById('chat4-prog'),
+    step: 0,
+    data: [
+      { sender: '📱', name: 'App', color: '#FAB387', right: true,
+        text: 'Hey Nakama — I have a stored session token. Can I skip logging in?' },
+      { sender: '🖥️', name: 'Nakama', color: '#A6E3A1', right: false,
+        text: 'That token expired. But you have a refresh token — silently issuing a new session now.' },
+      { sender: '📱', name: 'App', color: '#FAB387', right: true,
+        text: 'Got it. Now joining matchmaking with my new session token. ELO ~1200, Standard mode.' },
+      { sender: '🖥️', name: 'Nakama', color: '#A6E3A1', right: false,
+        text: 'Token valid. User ID: abc-123. Added to pool. Searching...' },
+      { sender: '🖥️', name: 'Nakama', color: '#A6E3A1', right: false,
+        text: 'Match found! ID: xyz-789. Connect via WebSocket and I\'ll send the starting STATE_SNAPSHOT.' },
+    ]
+  }
+};
+
+function chatNext(id) {
+  const c = chats[id];
+  if (c.step >= c.data.length) return;
+  const m = c.data[c.step];
+
+  // Show typing first
+  c.typingAv.style.background = m.color;
+  c.typingAv.textContent = m.sender;
+  c.typing.style.display = 'flex';
+  c.msgs.scrollTop = c.msgs.scrollHeight;
+
+  setTimeout(() => {
+    c.typing.style.display = 'none';
+    // Render message
+    const div = document.createElement('div');
+    div.className = 'chat-msg' + (m.right ? ' right' : '');
+    div.innerHTML = `
+      <div class="chat-avatar" style="background:${m.color}">${m.sender}</div>
+      <div class="chat-bubble">
+        <span class="chat-sender" style="color:${m.color}">${m.name}</span>
+        <p>${m.text}</p>
+      </div>`;
+    c.msgs.appendChild(div);
+    c.msgs.scrollTop = c.msgs.scrollHeight;
+    c.step++;
+    c.prog.textContent = c.step + ' / ' + c.data.length;
+  }, 700);
+}
+
+function chatReset(id) {
+  const c = chats[id];
+  c.step = 0;
+  c.msgs.innerHTML = '';
+  c.typing.style.display = 'none';
+  c.prog.textContent = '0 / ' + c.data.length;
+}
+
+// ════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════
+updateUI();
+</script>
+</body>
+</html>

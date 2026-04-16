@@ -15,14 +15,34 @@ const config: QuartzConfig = {
     locale: "en-US",
     baseUrl: "https://micho8cho93.github.io/ur-wiki", // ← CHANGE THIS to your GitHub Pages URL
     ignorePatterns: [
+      ".claude",
+      ".github",
+      ".git",
+      ".obsidian",
+      ".quartz-cache",
+      "**/.DS_Store",
+      "**/sources",
       "private",
       "templates",
-      ".obsidian",
-      "sources",           // raw source files — don't publish these
-      "CLAUDE.md",         // internal LLM instructions
+      "course/**/*.html",
+      "sources", // raw source files — don't publish these
+      "CLAUDE.md", // internal LLM instructions
+      "PUBLISHING.md",
+      "README.md",
+      "REORGANIZATION.md",
       "claude-memory-compiler",
       "daily",
+      "node_modules",
+      "package-lock.json",
+      "package.json",
+      "public",
+      "quartz",
+      "quartz-content",
+      "quartz.config.ts",
+      "quartz.layout.ts",
       "reports",
+      "tsconfig.json",
+      "tsconfig.tsbuildinfo",
     ],
     defaultDateType: "modified",
     theme: {
@@ -92,6 +112,7 @@ const config: QuartzConfig = {
       }),
       Plugin.Assets(),
       Plugin.Static(),
+      Plugin.CoursePage(),
       Plugin.NotFoundPage(),
     ],
   },

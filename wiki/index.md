@@ -1,7 +1,7 @@
 # Wiki Index
 
-**Last updated:** 2026-04-14  
-**Total pages:** 31  
+**Last updated:** 2026-04-16 (commit `1fbf253`)
+**Total pages:** 32
 **Total sources ingested:** GitHub repo (micho8cho93/ur) + economy spec
 
 ---
@@ -31,13 +31,14 @@
 - [[progression-system]] — XP sources, 15-rank ladder, server-authoritative grants
 - [[elo-system]] — Rating formula, K-factors, provisional period, leaderboard
 
-### Economy (New Feature Cluster)
+### Economy (Implemented Feature Cluster)
 
 - [[features/economy/economy-overview]] — Master synthesis of progression, currency, monetization, and store
+- [[features/economy/wallet-system]] — Wallet implementation: soft/premium currency, backend ledger, frontend context (NEW)
 - [[features/economy/progression-currency]] — XP system, rank ladder, soft currency earnings and spending
 - [[features/economy/monetization]] — Premium currency, pricing psychology, IAP structure, retention targets
 - [[features/economy/tournament-economy]] — Tournament entry fees, reward pools, cosmetic prizes
-- [[features/economy/cosmetic-store]] — Store UI/UX, rotation mechanics, preview system, bundles
+- [[features/economy/cosmetic-store]] — Store implementation: RPCs, rotation algorithm, theme system, store screen
 
 ---
 

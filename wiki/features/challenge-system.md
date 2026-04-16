@@ -2,9 +2,9 @@
 
 > How per-match challenges are defined, shared between client and server, and evaluated authoritatively at match end.
 
-**Last updated:** 2026-04-11  
-**Sources:** GitHub repo (micho8cho93/ur)  
-**Related:** [[nakama-runtime]], [[progression-system]], [[match-configs]], [[zustand-game-store]]
+**Last updated:** 2026-04-16 (commit `1fbf253`)
+**Sources:** GitHub repo (micho8cho93/ur)
+**Related:** [[nakama-runtime]], [[progression-system]], [[match-configs]], [[zustand-game-store]], [[wallet-system]]
 
 ---
 
@@ -134,3 +134,22 @@ Client receives notification
 ## Relationship to Progression and XP
 
 Challenge completion is one of several XP sources. The XP amounts per challenge are defined alongside the challenge metadata in `shared/challenges.ts` and awarded through the same server-side XP grant mechanism as match wins (see [[progression-system]]). This means challenge XP is always consistent — the server is the only place grants are applied.
+
+---
+
+## Soft Currency Rewards (commit `1fbf253`)
+
+As of commit `1fbf253`, challenge completion also awards **soft currency (Coins)** in addition to XP. The reward is computed in `backend/modules/challenges.ts` by calling `awardChallengeSoftCurrency` from `backend/modules/wallet.ts`:
+
+```typescript
+// shared/wallet.ts
+export const COIN_REWARD_RATE = 0.1;
+export const calculateChallengeSoftCurrencyReward = (rewardXp: number) =>
+  Math.max(0, Math.floor(rewardXp * COIN_REWARD_RATE));
+```
+
+**Example:** A challenge rewarding 150 XP → 15 Coins.
+
+The wallet credit uses the Nakama ledger (`nk.walletUpdate`) with a `soft_currency` entry and metadata recording `source: "challenge_completion"`, `matchId`, and `challengeId`. This is idempotent via the ledger's deduplication — a replayed evaluation for the same match will not double-credit the wallet.
+
+See [[wallet-system]] for the full wallet backend implementation.
